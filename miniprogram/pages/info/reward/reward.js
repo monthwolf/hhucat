@@ -14,6 +14,7 @@ Page({
   data: {
     showAdBlock: false,
     text_cfg: text_cfg,
+    reward_img: reward_img
   },
 
   jsData: {
@@ -93,7 +94,8 @@ Page({
 
   // 打开大图
   async openImg(e) {
-    const src = await cloud.signCosUrl(reward_img);
+    const src = await cloud.signCosUrl(e.target.dataset.img);
+    // console.log(e)
     wx.previewImage({
       urls: [src],
       success: (res) => {

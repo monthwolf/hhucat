@@ -1,4 +1,5 @@
 name: getAccessToken
+desc: ""
 methods:
   - POST
 tags: []

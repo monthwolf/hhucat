@@ -1,0 +1,6 @@
+name: optPhoto
+desc: ""
+methods:
+  - GET
+  - POST
+tags: []

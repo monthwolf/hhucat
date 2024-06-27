@@ -9,6 +9,7 @@ import {
 import {
   checkCanUpload,
   checkCanComment,
+  checkShowFunc,
   isManagerAsync,
   getUser
 } from "../../../utils/user";
@@ -71,6 +72,7 @@ Page({
     canvas: {}, // 画布的宽高
     canUpload: false, // 是否可以上传照片
     showGallery: false,
+    showOpt: false,
     galleryPhotos: [],
     currentImg: 0, // 预览组件当前预览的图片
     photoOrderSelectorRange: photoOrder,
@@ -156,15 +158,18 @@ Page({
       photoPopWeight: this.jsData.page_settings['photoPopWeight'] || 10
     });
     // 加载猫猫，是否开启上传、便利贴留言功能
-    var [_, canUpload, canComment, _] = await Promise.all([
+    var [_, canUpload, canComment,showOpt, _] = await Promise.all([
       this.loadCat(),
       checkCanUpload(),
       checkCanComment(),
+      checkShowFunc(),
       this.reloadUserBadge(),
     ]);
+    console.log(showOpt)
     this.setData({
       canUpload: canUpload,
-      canComment: canComment
+      canComment: canComment,
+      showOpt:showOpt
     });
   },
 

@@ -1,4 +1,5 @@
 name: getTempCOS
+desc: ""
 methods:
   - POST
 tags: []

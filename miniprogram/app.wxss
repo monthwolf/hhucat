@@ -1,8 +1,8 @@
 /**app.wxss**/
 page {
   /* 定义一些颜色变量 */
-  --color-primary: #ffd101;
-  --color-primary-dark: #dfb600;
+  --color-primary: #a2d2ff;
+  --color-primary-dark: #73bbff;
   --color-primary-light: #fff7d4;
 
   --color-white-dark: #fafafa;

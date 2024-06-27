@@ -155,6 +155,7 @@ Page({
   },
 
   onShow: function () {
+    console.log(this.getTabBar())
     showTab(this);
   },
 
@@ -499,6 +500,11 @@ Page({
     this.setData({
       filters_show: !this.data.filters_show
     });
+  },
+  toNewCat:function(){
+      wx.navigateTo({
+        url: '/pages/info/feedback/addCat/addCat',
+      })
   },
   fShow: function () {
     // 这里只管显示和隐藏，类似取消键的功能

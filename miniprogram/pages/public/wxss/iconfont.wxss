@@ -6,6 +6,14 @@
   font-style: normal;
   font-display: swap;
 }
+/* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
+@font-face {
+    font-family: 'iconfont';  /* Project id 4597490 */
+    src: 
+         url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAOAAAsAAAAAB2AAAAMyAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHFQGYACCcAqCXII5ATYCJAMICwYABCAFhGcHLxt0BsgusG14k7MxCEGB7jDzN6EF8Sgent/ff2ufez6ARGeoQjMhQk2OYoNKmjQlOsF58hv0zz6vrwc4R2+gpjIpnOY4SSus9Tbqg9utfwNtdre1UFrLAmrp04u+/j7Gx4DqIUD0fw0QoyTd57kc310RfgBvjkUTD7M8oANsLxqL4gB7PQ+MG8YuaImnCFSbkYSznlVQASxPCKgauOIy24OkNE7IJAJgzP2yDFOVQnnXuTnFfcCkG5wrcC/4fPwjYUxSVjArtg9lisHJz2MNYFv+C8UXNV0d7J9QhgITGzPGfrN9ExvFJ7Cqq+xcfag6C36e/r/H3/YfjyDKmcW1oBfyr0ngCC/1lwlkVOAU4OagG1KxbmERVTVxcci+YsTU/KZj1VCffePAij3zMtOjF2bMa9zL7f2ay7xuyLRvwH7AYdCBeW7TexKOQOeXTx67leeVDlb960xz65C072Kv9i/7e/ftnFn03ezN4/QHGWkq7FtpWe1fb10ztYje3Xzh242yPbe5Y29l965nF5B4c2yFvwF8iOTxlSBTXey82LmSqbUsEn6FHMNjXKP55mWQ2fKqjPMb1feUexAfwnI8cClbMmBdbcV8O5UeGXhuPCU+ZaK3m4XPk2nzNJBe96vG1/O7e40/tRn1tbJtw5pv+Pb6ORycIQVQMpNXM7e4/j+O8yDPVp5Vwv9Kswy+vjC3QNzNCZUnbA/evndntmS2ylnLJWU0jBBITjG6oapq1SjB7mafh6pb7jIdKrXcq7NCT4JCpT4is8dQpsYcylVaQLVxmYtrtNBiRa7CkHaA0GgVSb23KDQ6JTL7Dcq0e0W5Rn9R7WBYrFdjKETpBAkoEkNhE5SJNGpsq2jAtAxJ6pQCUhapQkQvgyEYPTWTT2UjNSJjTNDXS2IoxRATjQpm0cOQUqmBWqKRIxGNkFKqjYucPlT1lAiRRgXSEYgAhYhBQk0gGRENNezR0+z3lUEk6igJkI5EVZzQk0HmULQIUR2IbLm6U9ONbKJXTyIGRWEQRkBSBcriVkSpxjUgbXUvOUSEiiAdENWKE2nR4a7yiOWVqlfbAdVMTQqrS6HspECjkgEAAAA=') format('woff2'),
+         url('//at.alicdn.com/t/c/font_4597490_nsauj2vnumg.woff?t=1719240091303') format('woff'),
+         url('//at.alicdn.com/t/c/font_4597490_nsauj2vnumg.ttf?t=1719240091303') format('truetype');
+  }
 
 [class^="icon-"], [class*=" icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
@@ -25,7 +33,9 @@
   .icon-chat-o:before {
     content: "\e614";
   }
-  
+  .icon-maomi::before{
+      content: "\e675";
+  }
   .icon-cross:before {
     content: "\e615";
   }

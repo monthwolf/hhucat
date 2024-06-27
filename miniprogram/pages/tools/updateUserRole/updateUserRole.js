@@ -72,7 +72,8 @@ Page({
       })
       .count('totalCount')
       .end();
-    totalCount = totalCount.list[0].totalCount;
+      console.log(totalCount);
+    totalCount = totalCount.data[0].totalCount;
     console.log(totalCount);
     this.setData({
       totalCount
@@ -86,8 +87,8 @@ Page({
         count: $.sum(1),
       })
       .skip(count)
-      .end()).list;
-      console.log(count, users)
+      .end()).data;
+    //   console.log(count, users)
       if (!users.length) {
         break;
       }
@@ -95,7 +96,6 @@ Page({
       count += users.length;
       var reqs = [];
       for (const u of users) {
-        console.log(u._id);
         reqs.push(api.userOp({
           "op": "updateRole",
           "user": {

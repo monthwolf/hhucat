@@ -10,7 +10,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    text_cfg: text_cfg,
+    text_cfg: text_cfg
   },
 
   toMyFeedback() {
@@ -25,20 +25,23 @@ Page({
     })
   },
 
-  async toNewCat() {
-    const src = await cloud.signCosUrl(feedback_wj_img);
-    wx.previewImage({
-      urls: [src],
-      success: (res) => {
-        console.log(res);
-      },
-      fail: (res) => {
-        console.log(res);
-      },
-      complete: (res) => {
-        console.log(res);
-      },
-    });
+ toNewCat() {
+      wx.navigateTo({
+        url: '/pages/info/feedback/addCat/addCat',
+      });
+    // const src = await cloud.signCosUrl(feedback_wj_img);
+    // wx.previewImage({
+    //   urls: [src],
+    //   success: (res) => {
+    //     console.log(res);
+    //   },
+    //   fail: (res) => {
+    //     console.log(res);
+    //   },
+    //   complete: (res) => {
+    //     console.log(res);
+    //   },
+    // });
   },
 
   /**

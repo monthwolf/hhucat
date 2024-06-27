@@ -16,10 +16,14 @@ export async function deleteFiles(fileIDs: Array<string>) {
     bucketName: OSS_BUCKET,
     endPoint: OSS_ENDPOINT,
     port: OSS_PORT,
+    pathStyle:false,
     useSSL: true,
     accessKey: OSS_SECRET_ID,
     secretKey: OSS_SECRET_KEY,
   });
+  if (OSS_ENDPOINT == "oss.laf.run"){
+    client.pathStyle = true;
+  }
   for (var idx in fileIDs) {
     const fileName = getFilePath(fileIDs[idx]);
     await client.removeObject(OSS_BUCKET, fileName, function (err) {

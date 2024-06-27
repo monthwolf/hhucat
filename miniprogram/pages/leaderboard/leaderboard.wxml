@@ -77,4 +77,4 @@
 </swiper>
 
 <!-- 底tab占位 -->
-<view style="height: {{tabBarHeight}}px;"></view>
+<view style="min-height: {{tabBarHeight+10}}px;width: 100%;"></view>

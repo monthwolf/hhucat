@@ -186,6 +186,9 @@ scroll-view {
   height: 90.3rpx;
   margin: 10rpx 292rpx;
 }
+.loadnomore{
+    height: 150rpx;
+}
 .loadnomore image {
   width: 750rpx;
   height: 100rpx;
@@ -426,8 +429,8 @@ scroll-view {
 /* 返回首页 */
 #back-to-firstpage {
   position: fixed;
-  bottom: 200rpx;
-  right: 30rpx;
+  bottom: 120rpx;
+  right: 10rpx;
 
   filter: drop-shadow(0 0 5rpx var(--color-gray-dark));
   transform: translateZ(0);

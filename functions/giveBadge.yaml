@@ -1,4 +1,5 @@
 name: giveBadge
+desc: ""
 methods:
   - POST
 tags: []

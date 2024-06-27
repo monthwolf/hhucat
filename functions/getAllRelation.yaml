@@ -1,4 +1,5 @@
 name: getAllRelation
+desc: ""
 methods:
   - POST
 tags: []

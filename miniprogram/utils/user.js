@@ -14,6 +14,7 @@ const UserTypes = {
 }
 
 const FuncTypes = {
+  showFunc:"showFunc",
   uploadPhoto: "uploadPhoto",
   comment: "comment",
   reward: "reward",
@@ -148,6 +149,10 @@ async function checkCanUpload() {
   return await _checkFuncEnable(FuncTypes.uploadPhoto);
 }
 
+async function checkShowFunc() {
+    return await _checkFuncEnable(FuncTypes.showFunc);
+  }
+
 // 能否评论
 async function checkCanComment() {
   return await _checkFuncEnable(FuncTypes.comment);
@@ -271,6 +276,7 @@ module.exports = {
   getUserInfoMulti,
   getPageUserInfo,
   checkCanUpload,
+  checkShowFunc,
   checkCanComment,
   checkCanReward,
   checkCanFeedback,

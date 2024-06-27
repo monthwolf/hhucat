@@ -1,4 +1,5 @@
 name: countPhoto
+desc: ""
 methods:
   - POST
 tags: []

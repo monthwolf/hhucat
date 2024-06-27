@@ -5,11 +5,11 @@
 
 module.exports = {
   // 版本号
-  app_version: "v1.13.3",
+  app_version: "v1.4.1",
   // laf后台服务地址
-  laf_url: 'https://fxkv6h.laf.run',
+  laf_url: 'https://n0002i.laf.run',
   // laf后台服务地址（微信开发工具中），一般和上面laf_url一致就好
-  laf_dev_url: 'https://fxkv6h.laf.run',
+  laf_dev_url: 'https://n0002i.laf.run',
   // 使用私有的腾讯云cos存储，需要url签名
   use_private_tencent_cos: true,
   // 私有的腾讯云cos签名过期时间（秒）
@@ -17,24 +17,24 @@ module.exports = {
 
   // 科普页图片
   science_imgs: [
-    "https://cos.ap-guangzhou.myqcloud.com/maopu-1251740905/系统/科普1.png",
-    "https://cos.ap-guangzhou.myqcloud.com/maopu-1251740905/系统/科普2.png",
-    "https://cos.ap-guangzhou.myqcloud.com/maopu-1251740905/系统/科普3.png",
-    "https://cos.ap-guangzhou.myqcloud.com/maopu-1251740905/系统/科普4.png",
-    "https://cos.ap-guangzhou.myqcloud.com/maopu-1251740905/系统/科普5.png"
+    "https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/科普1.png",
+    "https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/科普2.png",
+    "https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/科普3.png",
+    "https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/科普4.png",
+    "https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/科普5.png"
   ],
 
   // 赞赏码图片
-  reward_img: "https://cos.ap-guangzhou.myqcloud.com/maopu-1251740905/系统/赞赏码.jpg",
+  reward_img: ["https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/赞赏码.jpg","dddd","aaaa"],
   // 新猫问卷图片
-  feedback_wj_img: "https://cos.ap-guangzhou.myqcloud.com/maopu-1251740905/系统/新猫问卷.png",
+  feedback_wj_img: "https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/新猫问卷.png",
   // 小程序菊花码图片
-  mpcode_img: "https://cos.ap-guangzhou.myqcloud.com/maopu-1251740905/系统/菊花码.jpg",
+  mpcode_img: "https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/菊花码.jpg",
 
   // 徽章排行榜的数量榜logo
-  badge_rank_count_img: "https://cos.ap-guangzhou.myqcloud.com/maopu-1251740905/系统/badge_rank_count.png",
+  badge_rank_count_img: "https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/badge_rank_count.png",
   // 徽章排行榜的价值榜logo
-  badge_rank_score_img: "https://cos.ap-guangzhou.myqcloud.com/maopu-1251740905/系统/badge_rank_score.png",
+  badge_rank_score_img: "https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/badge_rank_score.png",
 
   // 猫猫领养状态字符串，对应数据库cat.adopt中的数字下标
   cat_status_adopt: ["未领养", "已领养", "寻找领养中"],
@@ -44,7 +44,7 @@ module.exports = {
   // 各种文字内容
   text: {
     // 小程序名
-    app_name: "中大猫谱",
+    app_name: "河海猫咪小站",
     // 首页，pages/genealogy/genealogy
     genealogy: {
       share_tip: "发现身边校园猫咪",
@@ -111,14 +111,14 @@ module.exports = {
     },
     // 赞赏页，pages/info/reward/reward
     reward: {
-      share_tip: "投喂罐头",
-      ad_success_tip: "多谢喵(ฅ'ω'ฅ)!",
-      ad_fail_tip: "没播完喵...",
-      reward_tip_title: "投喂罐头",
-      reward_tip: "您的投喂及广告收入将用作猫猫救助，每月的收支都会在“笃行志愿服务队”公众号进行公开，感谢您对中大流浪猫的帮助与支持！\n喵(^･ｪ･^)",
-      reward_count_tip: "* 每月统计一次，在公众号公示，多谢晒（鞠躬）",
-      reward_title: "爱心捐款",
-    },
+        share_tip: "投喂罐头",
+        ad_success_tip: "多谢喵(ฅ'ω'ฅ)!",
+        ad_fail_tip: "没播完喵...",
+        reward_tip_title: "投喂罐头",
+        reward_tip: "您的投喂及广告收入将用作猫猫救助，感谢您对河海流浪猫的帮助与支持！\n喵(^･ｪ･^)",
+        reward_count_tip: "* 每月统计一次，多谢晒（鞠躬）",
+        reward_title: "爱心捐款",
+      },
     // 排行页，pages/info/photoRank/photoRank
     photo_rank: {
       share_tip: "拍照月榜",
@@ -134,13 +134,13 @@ module.exports = {
       new_cat_tip_title: "新的猫猫",
       new_cat_tip: "提交猫谱中没有的猫猫信息，给猫猫上户口~",
       contract_tip_title: "更多联系",
-      contract_tip: "有关猫猫信息添加、小程序的建议、照片维权、猫猫领养咨询等事项，请关注笃行志愿服务队公众号后留言，或邮件：dxzyfwd@163.com",
+      contract_tip: "有关猫猫信息添加、小程序的建议、照片维权、猫猫领养咨询等事项，请邮件：1369755540@qq.com",
     },
     // 开发团队页，pages/info/devTeam/devTeam
     dev_team: {
-      share_tip: "开发团队",
-      team: "程序开发：渔政、蓝卷、XD、zJ、ArcherJo、yw、lauzeyu\n资料维护：Lo\n初期资料整理：hehe、玥琪、大米\n以及各校区猫群的小伙伴~\n非常欢迎新朋友加入设计开发哇~！",
-    },
+        share_tip: "开发团队",
+        team: "程序开发：渔政、蓝卷、XD、zJ、ArcherJo、yw、lauzeyu\n资料维护：汪汪汪汪队长、测试猫猫侠1\n初期资料整理：汪汪汪汪队长、测试猫猫侠1\n以及各校区猫群的小伙伴~\n非常欢迎新朋友加入设计开发哇~！",
+      },
     // 识猫页，pages/recognize/recognize
     recognize: {
       share_tip: "拍照识猫",

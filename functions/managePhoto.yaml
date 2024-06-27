@@ -1,4 +1,5 @@
 name: managePhoto
+desc: ""
 methods:
   - POST
 tags: []
