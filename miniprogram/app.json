@@ -5,7 +5,9 @@
     "pages/genealogy/detailCat/detailCat",
     "pages/info/info",
     "pages/info/reward/reward",
+    "pages/manage/checkNewCat/checkNewCat",
     "pages/info/feedback/feedback",
+    "pages/info/feedback/addCat/addCat",
     "pages/info/feedback/myFeedback/myFeedback",
     "pages/info/devTeam/devTeam",
     "pages/manage/addCat/addCat",
@@ -70,8 +72,8 @@
   "window": {
     "backgroundColor": "#fff",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#ffd101",
-    "navigationBarTitleText": "中大猫谱",
+    "navigationBarBackgroundColor": "#a2d2ff",
+    "navigationBarTitleText": "河海猫咪小站",
     "navigationBarTextStyle": "black"
   },
   "supportedMaterials": [

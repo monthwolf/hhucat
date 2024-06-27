@@ -279,7 +279,39 @@ function sendVerifyCommentNotice(notice_list) {
   }
 }
 
-
+// 发送审核便利贴留言消息
+function sendVerifyCatNotice(notice_list) {
+    const cfg = msgConfig.verify;  // 和照片审核通用
+    const openids = Object.keys(notice_list);
+    if (!openids.length) {
+      return false;
+    }
+    // 获取需要发送的list
+    for (const openid of openids) {
+      const content = '本次共收录' + notice_list[openid].accepted + '只猫猫' + (notice_list[openid].deleted ? ('，有' + notice_list[openid].deleted + '只未被收录。') : '。');
+      const note = notice_list[openid].deleted ? '未被收录可能因为与已有猫猫重复。' : '感谢你的支持！';
+  
+      const data = {
+        [cfg.title]: {
+          value: '你上传的新猫审核完成！'
+        },
+        [cfg.content]: {
+          value: content
+        },
+        [cfg.note]: {
+          value: note
+        },
+      }
+  
+      api.sendMsgV2({
+        touser: openid,
+        data: data,
+        templateId: cfg.ID,
+        page: 'pages/genealogy/genealogy',
+      });
+    }
+  }
+  
 
 // 发送提醒审核便利贴留言消息
 async function sendNotifyVertifyCommentNotice(numUnchkComment) {
@@ -342,5 +374,6 @@ module.exports = {
   sendNotifyChkFeeedback,
   getMsgTplId,
   sendVerifyCommentNotice,
+  sendVerifyCatNotice,
   sendNotifyVertifyCommentNotice,
 }

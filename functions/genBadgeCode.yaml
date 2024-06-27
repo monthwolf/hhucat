@@ -1,4 +1,5 @@
 name: genBadgeCode
+desc: ""
 methods:
   - POST
 tags: []

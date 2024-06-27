@@ -1,0 +1,5 @@
+name: upload
+desc: ""
+methods:
+  - GET
+tags: []

@@ -125,9 +125,10 @@
   </view>
   <view class='loadnomore' wx:else>
     <image src='/pages/public/images/system/nomore.png'></image>
+    <view style="text-align: center;">没有找到猫猫？去<p bind:tap="toNewCat" style="font-weight: bolder;color: cornflowerblue;">添加新猫</p></view>
   </view>
   <!-- 底tab占位 -->
-  <view style="height: {{tabBarHeight}}px;"></view>
+  <view style="min-height: {{tabBarHeight+10}}px;width: 100%;"></view>
 </scroll-view>
 
 <!-- 漂浮的领养logo -->
@@ -137,7 +138,7 @@
 </view>
 <!-- 返回首页 -->
 <view wx:if="{{!filters_empty}}" id="back-to-firstpage" bindtap="clickBackFirstPageBtn">
-  <image class="back-btn" src="/pages/public/images/button/back_to_first_page.png"></image>
+  <image class="back-btn" src="/pages/public/images/button/back_to_first_page.png" style="scale: 0.8;opacity: 0.7;"></image>
 </view>
 <!-- 点击漂浮后的提示 -->
 <view class="adopt-filter-tip {{show_filter_tip? '': 'hide'}}">

@@ -28,6 +28,7 @@ async function uploadImg(imgObj, imgName) {
 
   let ossPath = `https://${OSS_ENDPOINT}:${OSS_PORT}/${OSS_BUCKET}/`
   if (OSS_SECRET_ID) {
+    client.pathStyle = false;
     ossPath = `https://${OSS_BUCKET}.${OSS_ENDPOINT}:${OSS_PORT}/`
   }
 

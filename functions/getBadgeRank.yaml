@@ -1,4 +1,5 @@
 name: getBadgeRank
+desc: ""
 methods:
   - POST
 tags: []

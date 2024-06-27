@@ -219,7 +219,7 @@ module.exports = {
     "science_imgs[2]": config.science_imgs[2],
     "science_imgs[3]": config.science_imgs[3],
     "science_imgs[4]": config.science_imgs[4],
-    "reward_img": config.reward_img,
+    "reward_img": config.reward_img[0],
     "feedback_wj_img": config.feedback_wj_img,
     "mpcode_img": config.mpcode_img,
     "badge_rank_count_img": config.badge_rank_count_img,

@@ -88,6 +88,7 @@ Component({
   },
   attached() {
     var obj = this.createSelectorQuery();
+    // console.log(obj.select('.tab-bar'));
     obj.select('.tab-bar').boundingClientRect(function (rect) {
       console.log('获取tabBar元素的高度', rect.height);
       wx.setStorageSync('tabBarHeight', rect.height)     // 将获取到的高度设置缓存，以便之后使用

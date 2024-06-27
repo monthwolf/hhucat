@@ -30,6 +30,7 @@ export default async function (ctx: FunctionContext) {
   
   // 获取当前操作是干啥子的
   const op = body.op;
+  console.log(op)
   switch(op) {
     case 'get': {
       // 获取用户，如果没有就新建一个
@@ -42,6 +43,7 @@ export default async function (ctx: FunctionContext) {
       if (count === 0) {
         newUser['manager'] = 99;
       }
+      newUser
       await db.collection('user').add(newUser);
       return (await db.collection('user').where({ 'openid': openid }).get()).data[0];
     }
@@ -60,7 +62,9 @@ export default async function (ctx: FunctionContext) {
     }
     case 'updateRole': {
       var user = body.user;
-      await db.collection('user').where({ 'openid': openid }).update( user );
+      const _ = db.command;
+      await db.collection('user').where({'openid': user.openid }).update(user);
+      return "ok";
     }
     default: {
       return "unknown op: " + op;

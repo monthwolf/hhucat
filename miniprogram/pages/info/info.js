@@ -88,6 +88,12 @@ Page({
             icon: "icon-envelop-o"
           },
           {
+            name: "新猫反馈",
+            path: "/pages/manage/checkNewCat/checkNewCat",
+            num: "numNewCat",
+            icon: "icon-maomi"
+          },
+          {
             name: "猫抓板公告",
             path: "/pages/news/createNews/createNews",
             icon: "icon-edit"
@@ -199,7 +205,7 @@ Page({
       db.collection('cat').where(sterilizedQf).count(),
       db.collection('cat').where(adoptQf).count(),
     ]);
-
+    
     // 计算绝育率
     const adoptRate = (numAdoptQf.total / numAllCats.total * 100).toFixed(1);
     const sterilizationRate = (numSterilized.total / numAllCats.total * 100).toFixed(1);
@@ -218,17 +224,20 @@ Page({
 
     // 待处理照片
     const imProcessQf = { photo_compressed: _.in([undefined, '']), verified: true, photo_id: /^((?!\.heic$).)*$/i };
-    var [numChkPhotos, numChkComments, numFeedbacks, numImProcess] = await Promise.all([
+    var [numChkPhotos, numChkComments, numFeedbacks, numImProcess,numNewCat] = await Promise.all([
       db.collection('photo').where({ verified: false }).count(),
       db.collection('comment').where({ needVerify: true }).count(),
       db.collection('feedback').where({ dealed: false }).count(),
       db.collection('photo').where(imProcessQf).count(),
+      db.collection('new_cat_feedback').where({ needVerify: true }).count(),
     ]);
+    // console.log(numNewCat)
     this.setData({
       "nums.numChkPhotos": numChkPhotos.total,
       "nums.numChkComments": numChkComments.total,
       "nums.numFeedbacks": numFeedbacks.total,
       "nums.numImProcess": numImProcess.total,
+      "nums.numNewCat": numNewCat.total,
       "showCond.manager": true,
     });
   },

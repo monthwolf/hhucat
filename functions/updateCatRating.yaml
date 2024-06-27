@@ -1,4 +1,5 @@
 name: updateCatRating
+desc: ""
 methods:
   - POST
 tags: []

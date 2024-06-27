@@ -16,6 +16,9 @@ const userTypes = [{
 }];
 
 const funcTypes = [{
+    val: FuncTypes.showFunc,
+    name: "显示功能"
+  },{
   val: FuncTypes.uploadPhoto,
   name: "上传照片"
 }, {
@@ -61,7 +64,7 @@ module.exports = {
     limitedFunc: {
       type: "multi-select",
       tip: "受限功能（受限人群+版本时，无法使用）",
-      default: "uploadPhoto,comment,reward,feedback,fullTab",
+      default: "showFunc,uploadPhoto,comment,reward,feedback,fullTab",
       choices: funcTypes
     },
     disabledFunc: {

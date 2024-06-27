@@ -10,11 +10,14 @@ export async function countPhoto () {
   // 先取出 mphoto 更新时间为一小时前的猫猫（因为每小时自动执行一次）
   var frontOneHour = new Date(new Date().getTime() - 1 * 60 * 60 * 1000);
   var condition = _.or([{
+    photo_count_best:0
+  }, {
     photo_count_best: _.exists(false)
   }, {
     mphoto: _.gte(frontOneHour)
   }]);
   const countResult = await db.collection('cat').where(condition).count();
+  console.log(countResult)
   const total = countResult.total;
   if (!total) {
     return {};
