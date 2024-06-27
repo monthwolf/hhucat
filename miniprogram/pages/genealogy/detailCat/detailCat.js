@@ -166,7 +166,7 @@ Page({
       checkShowFunc(),
       this.reloadUserBadge(),
     ]);
-    console.log(showOpt)
+    // console.log(showOpt)
     this.setData({
       canUpload: canUpload,
       canComment: canComment,

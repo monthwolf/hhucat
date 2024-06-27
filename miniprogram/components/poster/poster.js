@@ -177,6 +177,7 @@ Component({
         async drawingConfig(cat) {
             // 海报配置
             const { text_cfg, coverImg } = this.properties;
+            // console.log(coverImg)
             if (coverImg && !coverImg.userInfo) {
                 coverImg.userInfo = (await getUserInfo(coverImg._openid)).userInfo;
             }
@@ -265,7 +266,7 @@ Component({
                         zIndex: 999
                     },{
                         type: Image,
-                        url: coverImg.photo_compressed || coverImg.photo_id,
+                        url: coverImg.photo_id,
                         x: 25,
                         y: 25,
                         width: coverWidth,

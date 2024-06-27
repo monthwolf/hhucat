@@ -212,7 +212,7 @@ Page({
     photoInfo.mdate = new Date(photoInfo.mdate).toJSON();
     // 获取原图
     this.setPhase(1);
-    if (photoInfo.userInfo === undefined) {
+    if (photoInfo.userInfo === undefined || photoInfo.userInfo === " ") {
       photoInfo.userInfo = { nickName: '猫友' }
     }
     try {
@@ -315,18 +315,20 @@ Page({
     const origin = oriPhotoObj;
 
     const draw_rate = Math.max(origin.width, origin.height) / canvasMax;
-    const draw_width = origin.width / draw_rate;
-    const draw_height = origin.height / draw_rate;
+    // const draw_width = origin.width / draw_rate;
+    const draw_width = origin.width;
+    // const draw_height = origin.height / draw_rate;
+    const draw_height = origin.height;
 
     // 写上水印
     const { gCtx, gCanvas } = this.jsData;
     const text = `${text_cfg.app_name}@${photoInfo.photographer || photoInfo.userInfo.nickName}`
     await drawUtils.writeWatermake(gCtx, gCanvas, {
-      fontSize: draw_height * 0.03,
+      fontSize: draw_height * 0.02,
       fillStyle: "white",
       text: text,
-      x: 30,
-      y: draw_height - (draw_height * 0.03)
+      x: draw_width * 0.02,
+      y: draw_height - (draw_height * 0.015)
     });
 
     // 变成图片显示
