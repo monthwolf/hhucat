@@ -5,7 +5,7 @@
 
 module.exports = {
   // 版本号
-  app_version: "v1.4.1",
+  app_version: "v1.14.2",
   // laf后台服务地址
   laf_url: 'https://n0002i.laf.run',
   // laf后台服务地址（微信开发工具中），一般和上面laf_url一致就好
@@ -83,6 +83,8 @@ module.exports = {
       label_comment_board: "便利贴墙",
       sterilized_true: "已绝育",
       sterilized_false: "待绝育",
+      slogan1: "它们的点点滴滴，由你来记录",
+      slogan2: "扫右方小程序码了解更多~",
     },
     // 提交反馈页，pages/genealogy/feedbackDetail/feedbackDetail
     feedback_detail: {

@@ -9,9 +9,8 @@ Page({
   data: {
     text_cfg: text_cfg,
     github_link: "https://github.com/sysucats/zhongdamaopu",
-    update_log: [
-        {
-            version: "v1.4.1",
+    update_log: [{
+            version: "v1.14.2",
             content: [
               "更新新猫审核通知内容",
               "猫猫列表底部添加直链跳转新猫表单",
@@ -20,13 +19,26 @@ Page({
             ],
             time: "2024/06/26"
           },{
-        version: "v1.4",
+        version: "v1.14.1",
         content: [
           "用户可使用内置表单反馈未收录的猫猫",
           "添加新猫审核项",
         ],
         time: "2024/06/25"
       },{
+      version: "v1.14.0",
+      content: [
+        "合入xuann大佬的PR",
+        "新增喵ID海报生成功能",
+      ],
+      time: "2024/06/14"
+    }, {
+      version: "v1.13.4",
+      content: [
+        "修复用户头像设置问题",
+      ],
+      time: "2024/06/03"
+    }, {
       version: "v1.13.3",
       content: [
         "修复猫猫部分UI问题",
