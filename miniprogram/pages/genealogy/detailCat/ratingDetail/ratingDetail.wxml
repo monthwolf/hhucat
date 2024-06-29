@@ -4,7 +4,7 @@
   <view class="one-rating">
     <view class="title">综合：</view>
     <view class="stars">
-      <view class="one-star {{cat.rating.avgScore >= j ? '' : 'gray'}}"  wx:for="*****" wx:key="*this" wx:for-index="j" style="clip-path: inset(0% {{(cat.rating.avgScore-(j+1))>1?0:(j+1-cat.rating.avgScore)*100%100}}% 0% 0%)">
+      <view class="one-star {{cat.rating.avgScore >= j && cat.rating.avgScore != 0? '' : 'gray'}}"  wx:for="*****" wx:key="*this" wx:for-index="j" style="clip-path: inset(0% {{cat.rating.avgScore != 0 && cat.rating.avgScore-j<1?(j+1-cat.rating.avgScore)*100:0}}% 0% 0%)">
         <image src="/pages/public/images/button/rating_star.svg" mode="aspectFill"/>
       </view>
     </view>
@@ -18,7 +18,7 @@
   <view class="one-rating" wx:for="{{catRatings}}" wx:key="name" wx:for-item="x"  wx:for-index="i">
     <view class="title">{{x.name}}：</view>
     <view class="stars">
-      <view class="one-star {{x.score >= j && x.score != 0? '' : 'gray'}}"  wx:for="*****" wx:key="*this" wx:for-index="j" style="clip-path: inset(0% {{(x.score-(j+1))>1?0:(j+1-x.score)*100%100}}% 0% 0%)">
+      <view class="one-star {{x.score >= j && x.score != 0? '' : 'gray'}}"  wx:for="*****" wx:key="*this" wx:for-index="j" style="clip-path: inset(0% {{x.score != 0 && x.score-j<1?(j+1-x.score)*100:0}}% 0% 0%)">
         <image src="/pages/public/images/button/rating_star.svg" mode="aspectFill"/>
       </view>
     </view>
