@@ -49,7 +49,7 @@ export default async function (ctx: FunctionContext) {
     count,
     scores: data[0],
     avgScore,
-    avgScoreDisp: avgScore.toFixed(1),
+    avgScoreDisp: avgScore.toFixed(2),
   }
 
   console.log(rating);
