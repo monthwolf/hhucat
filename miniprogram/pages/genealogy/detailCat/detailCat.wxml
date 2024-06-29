@@ -27,13 +27,17 @@
                 <image mode='aspectFill' class='gender' wx:if='{{cat.gender === "公"}}' src="/pages/public/images/card/card/male.png"></image>
                 <image mode='aspectFill' class='gender' wx:if='{{cat.gender === "母"}}' src="/pages/public/images/card/card/female.png"></image>
             </block>
-            <view class='popularity' bindtap="showPopularityTip" wx:if="{{cat.popularity != undefined}}">
+            <view class='count first' bindtap="showPopTip" wx:if="{{cat.popularity != undefined}}" data-tip="{{text_cfg.detail_cat.popularity_tip}}">
                 <image src='/pages/public/images/card/card/pop.png'></image>
                 <text> {{cat.popularity + (cat.photo_count_total? cat.photo_count_total * photoPopWeight: 0)}}</text>
             </view>
-            <view class='comment' bindtap="toComment" wx:if="{{cat.comment_count != undefined && showOpt}}">
-                <image src='/pages/public/images/card/card/comment.png'></image>
-                <text> {{cat.comment_count || 0}}</text>
+            <view class='count comment' bindtap="showPopTip" data-tip="便利贴数" wx:if="{{showOpt}}">
+        <image src='/pages/public/images/card/card/comment.png'></image>
+        <text> {{cat.comment_count || 0}}</text>
+      </view>
+      <view class='count comment' bindtap=" showPopTip" data-tip="被关注数">
+                <image src='/pages/public/images/card/card/follow.png'></image>
+                <text> {{cat.follow_count || 0}}</text>
             </view>
         </view>
 
@@ -43,7 +47,7 @@
             <text class='tag to_star' wx:if='{{cat.to_star}}'>{{text_cfg.genealogy.to_star_tip}}</text>
             <text class='tag to_star' wx:if='{{cat.missing}}'>{{text_cfg.genealogy.missing_tip}}</text>
 
-            <text class='fb-button' bindtap='bindTapFeedback'>{{text_cfg.detail_cat.button_feedback}}</text>
+            <!-- <text class='fb-button' bindtap='bindTapFeedback'>{{text_cfg.detail_cat.button_feedback}}</text> -->
             <view class="mpcode" bindtap="bingMpTap">
                 <image src="/pages/public/images/button/mpcode.png"></image>
             </view>
@@ -89,84 +93,83 @@
                     <view class="badge-all" bindtap="bindDetailRating">{{showDetailRating ? '折叠详情' : '展开详情'}}</view>
                     <view class="badge-all" bindtap="bindRating">我要评分</view>
                 </view>
-                
-                <view class="one-rating">
-                <view class="title" wx:if="{{showDetailRating}}">综合：</view>
-                <view class="stars" bind:tap="bindDetailRating">
-        
-                            <view class="one-star {{cat.rating.avgScore >= j ? '' : 'gray'}}" wx:for="*****" wx:key="*this" wx:for-index="j" style="clip-path: inset(0% {{(cat.rating.avgScore-(j+1))>1?0:(j+1-cat.rating.avgScore)*100}}% 0% 0%)">
-                                <image src="/pages/public/images/button/rating_star.svg" mode="aspectFill" />
-                            </view>
-                            <view class="score">{{cat.rating.avgScoreDisp || '0.0'}}</view>
-                    </view>
-                </view>
 
-        <block wx:if="{{showDetailRating}}">
-          <view class="one-rating" wx:for="{{cat.rating.catRatings}}" wx:key="name" wx:for-item="x" wx:for-index="i"  bind:tap="bindDetailRating">
-                        <view class="title">{{x.name}}：</view>
-                        <view class="stars">
-                            <view class="one-star {{x.score >= j ? '' : 'gray'}}" wx:for="*****" wx:key="*this" wx:for-index="j" style="clip-path: inset(0% {{(x.score-(j+1))>1?0:(j+1-x.score)*100}}% 0% 0%)">
-                                <image src="/pages/public/images/button/rating_star.svg" mode="aspectFill" />
-                            </view>
-                            <view class="score">{{x.scoreDisp}}</view>
+                <view class="one-rating {{showDetailRating ? 'detail': ''}}">
+                    <view class="title" wx:if="{{showDetailRating}}">综合：</view>
+                    <view class="stars" bind:tap="bindDetailRating">
+                        <view class="one-star {{cat.rating.avgScore >= j ? '' : 'gray'}}" wx:for="*****" wx:key="*this" wx:for-index="j" style="clip-path: inset(0% {{(cat.rating.avgScore-(j+1))>1?0:(j+1-cat.rating.avgScore)*100}}% 0% 0%)">
+                            <image src="/pages/public/images/button/rating_star.svg" mode="aspectFill" />
                         </view>
+                        <view class="score">{{cat.rating.avgScoreDisp || '0.0'}}</view>
                     </view>
-                </block>
-
-            </view>
-
-
-
-            <view class='item long'>
-                <view class='label'>
-                    <view class='label-block'></view>
-                    {{text_cfg.detail_cat.label_tutorial}}
                 </view>
-                <view class='value'>{{cat.tutorial || text_cfg.detail_cat.label_tutorial_empty}}</view>
             </view>
 
-            <view class='item long' wx:if="{{showBadge}}">
-                <view class='label'>
-                    <view class='label-block'></view>
-                    徽章口袋
-                    <view class="badge-all" bindtap="showGiveBadge" wx:if="{{detailBadges.length > 4}}">赠予徽章</view>
-                    <view class="badge-all" bindtap="toBadgeDetail" wx:if="{{detailBadges.length}}">查看详情</view>
+            <block wx:if="{{showDetailRating}}">
+                <view class="one-rating" wx:for="{{cat.rating.catRatings}}" wx:key="name" wx:for-item="x" wx:for-index="i" bind:tap="bindDetailRating">
+                    <view class="title">{{x.name}}：</view>
+                    <view class="stars">
+                        <view class="one-star {{x.score >= j ? '' : 'gray'}}" wx:for="*****" wx:key="*this" wx:for-index="j" style="clip-path: inset(0% {{(x.score-(j+1))>1?0:(j+1-x.score)*100}}% 0% 0%)">
+                            <image src="/pages/public/images/button/rating_star.svg" mode="aspectFill" />
+                        </view>
+                        <view class="score">{{x.scoreDisp}}</view>
+                    </view>
                 </view>
-                <scroll-view class="badge-list" scroll-x="1">
-                    <view class="badge-item badge-level-{{item.level}}" wx:for="{{catBadges}}" wx:key="_id" hover-class="tap" bindtap="showBadgeModal" data-index="{{index}}">
-                        <image class="badge-item-avatar" src="{{item.img}}" mode="aspectFill" />
-                        <view class="badge-item-count">x{{item.count}}</view>
-                        <view class="badge-item-name">{{item.name}}</view>
-                    </view>
+            </block>
 
-                    <view class="relation-block add" hover-class="tap" bindtap="showGiveBadge">
-                        <image class="badge-item-avatar" src="/pages/public/images/button/addBadge.png" mode="aspectFit"></image>
-                        <view class="badge-item-count hidden">+</view>
-                        <view class="badge-item-name">赠予徽章</view>
-                    </view>
-                </scroll-view>
-                <view class=""></view>
+        </view>
+
+
+
+        <view class='item long'>
+            <view class='label'>
+                <view class='label-block'></view>
+                {{text_cfg.detail_cat.label_tutorial}}
             </view>
+            <view class='value'>{{cat.tutorial || text_cfg.detail_cat.label_tutorial_empty}}</view>
+        </view>
 
-            <!-- 关系 -->
-            <view class="item long" wx:if="{{is_manager || (cat.relations && cat.relations.length)}}">
-                <view class="label">
-                    <view class='label-block'></view>
-                    猫际关系
+        <view class='item long' wx:if="{{showBadge}}">
+            <view class='label'>
+                <view class='label-block'></view>
+                徽章口袋
+                <view class="badge-all" bindtap="showGiveBadge" wx:if="{{detailBadges.length > 4}}">赠予徽章</view>
+                <view class="badge-all" bindtap="toBadgeDetail" wx:if="{{detailBadges.length}}">查看详情</view>
+            </view>
+            <scroll-view class="badge-list" scroll-x="1">
+                <view class="badge-item badge-level-{{item.level}}" wx:for="{{catBadges}}" wx:key="_id" hover-class="tap" bindtap="showBadgeModal" data-index="{{index}}">
+                    <image class="badge-item-avatar" src="{{item.img}}" mode="aspectFill" />
+                    <view class="badge-item-count">x{{item.count}}</view>
+                    <view class="badge-item-name">{{item.name}}</view>
                 </view>
-                <scroll-view scroll-x="1" class="relations">
-                    <view class="relation-block" wx:for="{{cat.relations}}" wx:key="_id" bindtap="toRelationCat" data-cat_id="{{item.cat._id}}" hover-class="tap">
-                        <image class="relation-cat-avatar" src='{{item.cat.avatar.photo_compressed || item.cat.avatar.photo_id}}' mode="aspectFill"></image>
-                        <view class="relation-name">{{item.type}}</view>
-                        <view class="relation-cat-name">{{item.cat.name}}</view>
-                    </view>
-                    <view class="relation-block add" hover-class="tap" wx:if="{{is_manager}}" bindtap="toAddRelation">
-                        <image class="relation-cat-avatar" src="../../public/images/info/default_avatar.png" mode="aspectFill"></image>
-                        <view class="relation-name">+</view>
-                        <view class="relation-cat-name">添加关系</view>
-                    </view>
-                </scroll-view>
+
+                <view class="relation-block add" hover-class="tap" bindtap="showGiveBadge">
+                    <image class="badge-item-avatar" src="/pages/public/images/button/plus2.svg" mode="aspectFit"></image>
+                    <view class="badge-item-count hidden">+</view>
+                    <view class="badge-item-name">赠予徽章</view>
+                </view>
+            </scroll-view>
+            <view class=""></view>
+        </view>
+
+        <!-- 关系 -->
+        <view class="item long" wx:if="{{is_manager || (cat.relations && cat.relations.length)}}">
+            <view class="label">
+                <view class='label-block'></view>
+                猫际关系
             </view>
+            <scroll-view scroll-x="1" class="relations">
+                <view class="relation-block" wx:for="{{cat.relations}}" wx:key="_id" bindtap="toRelationCat" data-cat_id="{{item.cat._id}}" hover-class="tap">
+                    <image class="relation-cat-avatar" src='{{item.cat.avatar.photo_compressed || item.cat.avatar.photo_id}}' mode="aspectFill"></image>
+                    <view class="relation-name">{{item.type}}</view>
+                    <view class="relation-cat-name">{{item.cat.name}}</view>
+                </view>
+                <view class="relation-block add" hover-class="tap" wx:if="{{is_manager}}" bindtap="toAddRelation">
+                    <image class="relation-cat-avatar" src="../../public/images/info/default_avatar.png" mode="aspectFill"></image>
+                    <view class="relation-name">+</view>
+                    <view class="relation-cat-name">添加关系</view>
+                </view>
+            </scroll-view>
         </view>
     </view>
     <!-- info end -->
@@ -214,20 +217,9 @@
     </view>
     <!-- album end -->
 
-    <!-- 点击上传图片 
-  <view class="addPhoto" bindtap='bindAddPhoto'>
-    <image class="icon" src='/pages/public/images/button/addPhoto.png'></image>
-  </view>-->
-
-    <!-- 进入便利贴墙 
-  <view id="comment-btn" bindtap="toComment">
-    <text>{{text_cfg.detail_cat.label_comment_board}}</text>
-    <image src="/pages/public/images/button/right_double_arrow.png" mode="aspectFit"></image>
-  </view>-->
-
     <!-- 把传照片留言按钮整到一个弹出框了 -->
-    <view class="plus" bindtap='showFunction' wx:if="{{showOpt}}" style="right: 10rpx;bottom:30rpx">
-        <image class="icon" src='/pages/public/images/button/plus.svg' style="scale: 0.9;"></image>
+    <view class="plus" bindtap='showFunction' wx:if="{{showOpt}}">
+        <image class="icon" src='/pages/public/images/button/plus.svg'></image>
     </view>
     <popup show="{{showFunc}}" bind:close="closeFunction">
         <view class="withdrawbtn" bindtap="closeFunction">
@@ -241,6 +233,18 @@
             <view class="button" bindtap='bindAddPhoto'>
                 <image class="icon" src='/pages/public/images/button/addPhoto.svg'></image>
                 <view class="button-text">上传喵照</view>
+            </view>
+            <view class="button" bindtap='bindRating'>
+                <image class="icon" src='/pages/public/images/button/score.svg'></image>
+                <view class="button-text">我要评分</view>
+            </view>
+            <view class="button" bindtap='followCat'>
+                <image class="icon {{followedCat ? 'gray' : ''}}" src='/pages/public/images/button/follow.svg'></image>
+                <view class="button-text">{{followedCat ? "取消关注" : "关注动态"}}</view>
+            </view>
+            <view class="button" bindtap='bindTapFeedback'>
+                <image class="icon" src='/pages/public/images/button/flag.svg'></image>
+                <view class="button-text">{{text_cfg.detail_cat.button_feedback}}</view>
             </view>
             <view class="button" bindtap='showPoster'>
                 <image class="icon" src='/pages/public/images/button/shareMeowId.svg'></image>
