@@ -13,7 +13,7 @@ const compressLength = 500; // 压缩图的最长边大小
 
 
 Page({
-  
+
   /**
    * 页面的初始数据
    */
@@ -131,7 +131,7 @@ Page({
   },
 
   clickProcessBtn: async function (e) {
-    const {test} = e.currentTarget.dataset;
+    const { test } = e.currentTarget.dataset;
     this.data.processing = !this.data.processing;
     this.setData({
       processing: this.data.processing
@@ -142,7 +142,7 @@ Page({
         this.setData({
           errMsg: "",
         })
-        await this.beginProcess(test);  
+        await this.beginProcess(test);
       } catch (error) {
         console.error(error);
         await wx.showModal({
@@ -175,7 +175,7 @@ Page({
         photo_compressed: _.in([undefined, '']),
         verified: true
       }).limit(1).get()).data;
-      
+
       await fillUserInfo(photos, "_openid", "userInfo");
       console.log("imProcess beginProcess", photos);
 
@@ -203,8 +203,8 @@ Page({
     wx.hideLoading();
   },
 
-  setPhase: function(phase) {
-    this.setData({phase: phase});
+  setPhase: function (phase) {
+    this.setData({ phase: phase });
   },
 
   // 处理一张图片
@@ -212,9 +212,11 @@ Page({
     photoInfo.mdate = new Date(photoInfo.mdate).toJSON();
     // 获取原图
     this.setPhase(1);
+
     if (photoInfo.userInfo === undefined || photoInfo.userInfo === " ") {
-      photoInfo.userInfo = { nickName: '猫友' }
+      photoInfo.userInfo = { nickName: text_cfg.genealogy.photo_by_unknow_tip }
     }
+    if (photoInfo.photographer == " ") photoInfo.photographer = text_cfg.genealogy.photo_by_unknow_tip
     try {
       var photoObj = await wx.getImageInfo({
         src: photoInfo.photo_id,
@@ -315,20 +317,21 @@ Page({
     const origin = oriPhotoObj;
 
     const draw_rate = Math.max(origin.width, origin.height) / canvasMax;
-    // const draw_width = origin.width / draw_rate;
-    const draw_width = origin.width;
-    // const draw_height = origin.height / draw_rate;
-    const draw_height = origin.height;
+    const draw_width = origin.width / draw_rate;
+    // const draw_width = origin.width;
+    const draw_height = origin.height / draw_rate;
+    // const draw_height = origin.height;
 
     // 写上水印
     const { gCtx, gCanvas } = this.jsData;
+    if (photoInfo.photographer == " ") photoInfo.photographer = text_cfg.genealogy.photo_by_unknow_tip
     const text = `${text_cfg.app_name}@${photoInfo.photographer || photoInfo.userInfo.nickName}`
     await drawUtils.writeWatermake(gCtx, gCanvas, {
-      fontSize: draw_height * 0.02,
+      fontSize: draw_height * 0.025,
       fillStyle: "white",
       text: text,
-      x: draw_width * 0.02,
-      y: draw_height - (draw_height * 0.015)
+      x: draw_width * 0.03,
+      y: draw_height - (draw_height * 0.02)
     });
 
     // 变成图片显示
@@ -377,7 +380,7 @@ Page({
   },
 
   copyText: function (e) {
-    const {text} = e.currentTarget.dataset;
+    const { text } = e.currentTarget.dataset;
     wx.setClipboardData({
       data: text,
     });

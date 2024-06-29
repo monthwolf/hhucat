@@ -64,7 +64,7 @@
       <view class='image {{item.to_star? "to_star": ""}}'>
         <image bindload="bindImageLoaded" mode='aspectFill' src='{{item.photo.photo_compressed || item.photo.photo_id}}' data-index="{{index}}"></image>
         <view class='image-title' wx:if='{{!item.photo_count_best || item.photo_count_best === 0}}'>{{text_cfg.genealogy.no_photo_tip}}</view>
-        <view class='image-title' wx:else>{{item.photo.photo_id? (text_cfg.genealogy.photo_by_tip + (item.photo.photographer ||(item.photo.userInfo? item.photo.userInfo.nickName: text_cfg.genealogy.photo_by_unknow))): text_cfg.genealogy.photo_loading_tip}}</view>
+        <view class='image-title' wx:else>{{item.photo.photo_id? (text_cfg.genealogy.photo_by_tip + (item.photo.photographer ||(item.photo.userInfo? item.photo.userInfo.nickName: text_cfg.genealogy.photo_by_unknow_tip))): text_cfg.genealogy.photo_loading_tip}}</view>
       </view>
       <view class='info' hover-class="hoverInfo">
         <view class='line'>
@@ -88,7 +88,7 @@
         <view class='line' wx:if="{{item.rating}}">
           <image mode='aspectFit' class='icon' src='/pages/public/images/card/card/star.png'></image>
           <view class="stars">
-            <view class="one-star {{item.rating.avgScore >= j+1 ? '' : 'gray'}}"  wx:for="*****" wx:key="*this" wx:for-item="y" wx:for-index="j">
+            <view class="one-star {{item.rating.avgScore >= j+1 ? '' : 'gray'}}"  wx:for="*****" wx:key="*this" wx:for-item="y" wx:for-index="j" style="clip-path: inset(0% {{item.rating.avgScore-j>1?0:(j+1-item.rating.avgScore)*100}}% 0% 0%);">
               <image src="/pages/public/images/button/rating_star.svg" mode="aspectFill"/>
             </view>
             <view class="score">{{item.rating.avgScoreDisp || '0.0'}}</view>
