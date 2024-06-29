@@ -10,6 +10,15 @@ Page({
     text_cfg: text_cfg,
     github_link: "https://github.com/sysucats/zhongdamaopu",
     update_log: [{
+        version: "v1.14.3",
+        content: [
+          "更新喵友圈UI",
+          "更新关注数",
+          "代码分包优化",
+          "更改猫咪评分显示"
+        ],
+        time: "2024/06/29"
+      },{
             version: "v1.14.2",
             content: [
               "更新新猫审核通知内容",
@@ -25,11 +34,12 @@ Page({
           "添加新猫审核项",
         ],
         time: "2024/06/25"
-      },{
+      }, {
       version: "v1.14.0",
       content: [
-        "合入xuann大佬的PR",
-        "新增喵ID海报生成功能",
+        "新增喵ID海报生成功能（xuann大佬提供）",
+        "新增关注猫猫功能",
+        "尝试解决缓存问题",
       ],
       time: "2024/06/14"
     }, {
