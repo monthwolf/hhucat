@@ -89,7 +89,7 @@
             <view class='item long'>
                 <view class='label'>
                     <view class='label-block'></view>
-                    {{text_cfg.detail_cat.label_rating}}
+                    {{text_cfg.detail_cat.label_rating}} <text class="small">[共{{cat.rating.count || 0}}条]</text>
                     <view class="badge-all" bindtap="bindDetailRating">{{showDetailRating ? '折叠详情' : '展开详情'}}</view>
                     <view class="badge-all" bindtap="bindRating">我要评分</view>
                 </view>
