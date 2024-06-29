@@ -2,7 +2,8 @@ import { cloud } from "../../utils/cloudAccess";
 import {
   randomInt,
   formatDate,
-  deepcopy
+  deepcopy,
+  getDateWithDiffHours
 } from "../../utils/utils";
 import {
   fillUserInfo,
@@ -18,6 +19,8 @@ import {
 
 // 每次触底加载的数量
 const loadCount = 13;
+// 最多加载几天前的照片
+const maxNDaysAgo = 30;
 
 // 正则表达式：不以 HEIC 为文件后缀的字符串
 const no_heic = /^((?!\.heic$).)*$/i;
@@ -36,6 +39,7 @@ Page({
   },
   data: {
     feed: [],
+    loadnomore: false,
   },
 
   /**
@@ -45,6 +49,9 @@ Page({
     await this.loadUser();
     await this.loadFollowCats();
     await this.loadMoreFeed();
+    this.setData({
+      refreshing: false
+    });
   },
 
   /**
@@ -79,8 +86,8 @@ Page({
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh() {
-
+  async onPullDownRefresh() {
+    await this.onLoad();
   },
 
   /**
@@ -120,7 +127,16 @@ Page({
     .get()).data[0].followCats;
 
     console.log(followCats);
-    this.setData({followCats});
+    // 重置一下，便于下拉刷新用
+    this.setData({followCats, feed: [], loadnomore: false});
+    this.jsData.waitingList = {
+      photo: [],
+      comment: [],
+    };
+    this.jsData.loadedCount = {
+      photo: 0,
+      comment: 0,
+    };
   },
 
   async _loadData(coll) {
@@ -132,17 +148,20 @@ Page({
 
     // let sortField = coll === 'photo' ? 'mdate' : 'create_date';
     let whereField = {};
+    let maxCreateDate = getDateWithDiffHours(-1 * maxNDaysAgo * 24);
     if (coll === 'photo') {
       whereField = {
         cat_id: _.in(followCats),
         verified: true,
-        photo_id: no_heic
+        photo_id: no_heic,
+        create_date: _.gt(maxCreateDate),
       }
     } else if (coll === 'comment') {
       whereField = {
         cat_id: _.in(followCats),
         deleted: _.neq(true),
         needVerify: false,
+        create_date: _.gt(maxCreateDate),
       }
     }
     let res = (await db.collection(coll)
@@ -161,7 +180,7 @@ Page({
       var p = res[i];
       p.cat = cat_res[i];
       p.cat.avatar = await getAvatar(p.cat._id, p.cat.photo_count_best)
-      p.datetime = formatDate(new Date(p.create_date), "yyyy-MM-dd hh:mm:ss")
+      p.datetime = formatDate(new Date(p.create_date), "yyyy-MM-dd hh:mm")
       if (coll == 'comment') {
         // 便签旋转
         p.rotate = randomInt(-5, 5);
@@ -193,7 +212,7 @@ Page({
     
     if (waitingList.photo.length <= loadCount) {
       let res = await this._loadData("photo");
-      if (res.length) {
+      if (res.length === loadCount + 1) {
         loadnomore = false;
       }
       // 推入waiting列表
@@ -202,13 +221,13 @@ Page({
     }
     if (waitingList.comment.length <= loadCount) {
       let res = await this._loadData("comment");
-      if (res.length) {
+      if (res.length === loadCount + 1) {
         loadnomore = false;
       }
       waitingList.comment.push(...res);
       loadedCount.comment += res.length;
     }
-    console.log(waitingList);
+    console.log(waitingList, loadnomore);
     this.setData({loadnomore});
 
     // 归并排序，waiting队列剩1条
@@ -219,28 +238,32 @@ Page({
 
   async _sortedMerge() {
     let { waitingList } = this.jsData;
+    let { loadnomore } = this.data;
 
     waitingList.photo.sort((a, b) => b.create_date - a.create_date);
     waitingList.comment.sort((a, b) => b.create_date - a.create_date);
 
     let res = [];
     
-    while (res.length < loadCount && (waitingList.photo.length > 1 || waitingList.comment.length > 1)) {
-      if (waitingList.photo.length <= 1) {
-        res.push( waitingList.comment.shift());
+    // 按时间归并排序
+    // 如果加载到底了，把最后一个守门员也排进去
+    let keepCount = loadnomore ? 0 : 1;
+    while ((res.length < loadCount || loadnomore) && (waitingList.photo.length > keepCount || waitingList.comment.length > keepCount)) {
+      if (waitingList.photo.length <= keepCount) {
+        res.push(waitingList.comment.shift());
         res[res.length-1].dtype = 'comment';
         continue;
       }
-      if (waitingList.comment.length <= 1) {
-        res.push( waitingList.photo.shift());
+      if (waitingList.comment.length <= keepCount) {
+        res.push(waitingList.photo.shift());
         res[res.length-1].dtype = 'photo';
         continue;
       }
       if (new Date(waitingList.photo[0].create_date) > new Date(waitingList.comment[0].create_date)) {
-        res.push( waitingList.photo.shift());
+        res.push(waitingList.photo.shift());
         res[res.length-1].dtype = 'photo';
       } else {
-        res.push( waitingList.comment.shift());
+        res.push(waitingList.comment.shift());
         res[res.length-1].dtype = 'comment';
       }
     }
@@ -248,7 +271,29 @@ Page({
     console.log(res);
 
     let { feed } = this.data;
-    feed.push(...res);
+    for (let i = 0; i < res.length; i++) {
+      const item = res[i];
+      let newBlock = {
+        dtype: item.dtype,
+        cat: item.cat,
+        items: [item]
+      };
+      // 几种情况会新增一个block：
+      // 1. feed流是空的；2. 上一个是不同类型；3. 上一组不是同一只猫；4. 上一个照片组已经有9张；5. 上一个留言组已经有3张
+      if (feed.length === 0) {
+        feed.push(newBlock);
+        continue;
+      }
+      let lastOne = feed[feed.length-1];
+      if (item.dtype != lastOne.dtype ||
+          item.cat._id != lastOne.cat._id ||
+          lastOne.items.length >= (lastOne.dtype === 'photo'? 6: 3)) {
+        feed.push(newBlock);
+      } else {
+        lastOne.items.push(item);
+      }
+    }
+    // feed.push(...res);
     this.setData({feed});
   },
 
