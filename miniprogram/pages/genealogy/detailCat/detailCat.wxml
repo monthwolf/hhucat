@@ -47,7 +47,7 @@
             <text class='tag to_star' wx:if='{{cat.to_star}}'>{{text_cfg.genealogy.to_star_tip}}</text>
             <text class='tag to_star' wx:if='{{cat.missing}}'>{{text_cfg.genealogy.missing_tip}}</text>
 
-            <!-- <text class='fb-button' bindtap='bindTapFeedback'>{{text_cfg.detail_cat.button_feedback}}</text> -->
+            <text class='fb-button' bindtap='bindTapFeedback'>{{text_cfg.detail_cat.button_feedback}}</text>
             <view class="mpcode" bindtap="bingMpTap">
                 <image src="/pages/public/images/button/mpcode.png"></image>
             </view>

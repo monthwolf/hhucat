@@ -15,6 +15,7 @@
 
 <view class='block'>
   <view class='title'>更新日志</view>
+  <view class='desc'>为与原作者更新内容区分，带*号的更新项和版本号由HHU猫猫团队更新</view>
   <view class='desc'>
     <block wx:for="{{update_log}}" wx:key="*this">
       <view class='sub-title hl'>{{item.version}}</view>
