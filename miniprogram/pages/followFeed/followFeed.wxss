@@ -2,6 +2,67 @@
 @import "/pages/public/wxss/hFilter.wxss";
 @import '../genealogy/commentBoard/commentBoard.wxss';
 
+.cat-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 5%;
+  }
+  .paw {
+    height: 30px;
+    width: 30px;
+    margin: 0px 10px;
+    background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iIzc0QzBGQyIgZD0iTTIyNi41IDkyLjljMTQuMyA0Mi45LS4zIDg2LjItMzIuNiA5Ni44cy03MC4xLTE1LjYtODQuNC01OC41cy4zLTg2LjIgMzIuNi05Ni44czcwLjEgMTUuNiA4NC40IDU4LjV6TTEwMC40IDE5OC42YzE4LjkgMzIuNCAxNC4zIDcwLjEtMTAuMiA4NC4xcy01OS43LS45LTc4LjUtMzMuM1MtMi43IDE3OS4zIDIxLjggMTY1LjNzNTkuNyAuOSA3OC41IDMzLjN6TTY5LjIgNDAxLjJDMTIxLjYgMjU5LjkgMjE0LjcgMjI0IDI1NiAyMjRzMTM0LjQgMzUuOSAxODYuOCAxNzcuMmMzLjYgOS43IDUuMiAyMC4xIDUuMiAzMC41djEuNmMwIDI1LjgtMjAuOSA0Ni43LTQ2LjcgNDYuN2MtMTEuNSAwLTIyLjktMS40LTM0LTQuMmwtODgtMjJjLTE1LjMtMy44LTMxLjMtMy44LTQ2LjYgMGwtODggMjJjLTExLjEgMi44LTIyLjUgNC4yLTM0IDQuMkM4NC45IDQ4MCA2NCA0NTkuMSA2NCA0MzMuM3YtMS42YzAtMTAuNCAxLjYtMjAuOCA1LjItMzAuNXpNNDIxLjggMjgyLjdjLTI0LjUtMTQtMjkuMS01MS43LTEwLjItODQuMXM1NC00Ny4zIDc4LjUtMzMuM3MyOS4xIDUxLjcgMTAuMiA4NC4xcy01NCA0Ny4zLTc4LjUgMzMuM3pNMzEwLjEgMTg5LjdjLTMyLjMtMTAuNi00Ni45LTUzLjktMzIuNi05Ni44czUyLjEtNjkuMSA4NC40LTU4LjVzNDYuOSA1My45IDMyLjYgOTYuOHMtNTIuMSA2OS4xLTg0LjQgNTguNXoiLz48L3N2Zz4=');
+  }
+  .cat-list .title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px 0px;
+    text-align: center;
+    display: flex;
+    align-items:flex-start;
+  }
+  .list-container {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+  }
+  
+  .list-column {
+    display: flex;
+    flex-direction: column;
+    width: 45%;
+  }
+  
+  .cat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .cat-item .icon {
+    border-radius: 20%;
+    width: 35px;
+    height: 35px;
+  }
+  
+  .cat-item .name {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    flex-grow: 1;
+    margin-left: 5%;
+    margin-bottom: 1%;
+    text-align: left;
+  }
+  
+  .cat-item .popularity {
+    width: 50px;
+    color: rgb(138, 138, 138);
+    text-align: right;
+    font-size: 15px;
+  }
 
 #comment-list {
   width: 750rpx;

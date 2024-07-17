@@ -16,6 +16,8 @@ import {
 import {
   showTab
 } from "../../utils/page";
+import{ text} from "../../config"
+import { async } from "../../packages/tencentcloud/cos";
 
 // 每次触底加载的数量
 const loadCount = 13;
@@ -40,6 +42,7 @@ Page({
   data: {
     feed: [],
     loadnomore: false,
+    catRank:[]
   },
 
   /**
@@ -49,6 +52,7 @@ Page({
     await this.loadUser();
     await this.loadFollowCats();
     await this.loadMoreFeed();
+    await this.loadCatRank();
     this.setData({
       refreshing: false
     });
@@ -103,7 +107,47 @@ Page({
   onShareAppMessage() {
 
   },
+  async loadCatRank() {
+      try {
+          // 获取所有猫的数据
+          const db = await cloud.databaseAsync();
+          const cats = (await db.collection('cat').get()).data.map((cat) =>{
+            return {
+            _id:cat._id,
+            name: cat.name,
+            picBest:cat.photo_count_best,
+            picCount:cat.photo_count_total,
+            popularity: cat.popularity,
+            followCount: cat.followCount,
+            catDiscuss: cat.catDiscuss
+          }
+        }
+          );
+          cats.sort((a, b) => b.catDiscuss - a.catDiscuss);
 
+          // 获取前 6 只猫的数据
+          const topCats = cats.slice(0, 6);
+          for (let cat of topCats){
+            let avatar = await getAvatar(cat._id, cat.picBest);
+            console.log(avatar)
+            cat.avatar= avatar.photo_compressed || avatar.photo_id;
+          }
+          const leftCats = topCats.slice(0, 3);
+      const rightCats = topCats.slice(3, 6);
+
+      this.setData({
+        leftCats,
+        rightCats
+      });
+          this.setData({
+              catRank: topCats,
+          });
+
+          console.log('喵友榜单加载成功');
+      } catch (error) {
+          console.error('更新 catDiscuss 属性时出错:', error);
+      }
+  },
   async loadUser() {
     var user = await getUser({
       nocache: true,
