@@ -52,6 +52,7 @@ image {
   justify-content: space-between;
   align-items: flex-end;
   padding: 10px;
+  padding-bottom: 0;
   border-bottom: 1px solid #ccc;
 }
 
@@ -65,12 +66,14 @@ image {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   flex-grow: 1;
   margin-left: 5%;
-  margin-bottom: 1%;
+  margin-bottom: 5%;
   text-align: left;
 }
 
 .cat-item .popularity {
   width: 50px;
+  margin-left: 5%;
+  margin-bottom: 5%;
   color: rgb(138, 138, 138);
   text-align: right;
   font-size: 15px;
@@ -390,11 +393,11 @@ image {
 }
 
 .follow-btn.unfollowed {
-  color: #ff0000;
+    color: var(--color-primary-dark);
 }
 
 .follow-btn.followed {
-  color: var(--color-gray-dark);
+    color: #ff3c00;
 }
 
 /* 动画 */

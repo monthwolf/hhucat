@@ -8,7 +8,7 @@
     <view class="list-container">
       <view class="list-column">
         <block wx:for="{{leftCats}}" wx:key="index">
-          <view class="cat-item" data-cat_id='{{item._id}}' bind:tap="toCat">
+          <view class="cat-item" data-cat_id='{{item._id}}'  data-cat="{{item}}" bind:tap="toCat" bind:longpress="onCatAvatarLongPress">
             <view class="cat-avatar">
               <image class="icon" src="{{item.avatar}}" mode='aspectFill' />
             </view>
@@ -19,7 +19,7 @@
       </view>
       <view class="list-column">
         <block wx:for="{{rightCats}}" wx:key="index">
-          <view class="cat-item" data-cat_id='{{item._id}}' bind:tap="toCat">
+          <view class="cat-item" data-cat_id='{{item._id}}'  data-cat="{{item}}" bind:tap="toCat" bind:longpress="onCatAvatarLongPress">
             <view class="cat-avatar">
               <image class="icon" src="{{item.avatar}}" mode='aspectFill' />
             </view>
@@ -146,14 +146,14 @@
     <view class="menu-item">
       <view class="cat-avatar-wrapper">
         <view class="cat-avatar">
-          <image class="avatar" src="{{selectedCat.avatar.photo_compressed || selectedCat.avatar.photo_id}}" mode="aspectFill" />
+          <image class="avatar" src="{{selectedCat.avatar.photo_compressed || selectedCat.avatar.photo_id ||selectedCat.avatar}}" mode="aspectFill" />
         </view>
       </view>
       <view class="cat-name">{{selectedCat.name || '-'}}</view>
     </view>
     <view class="menu-item" bind:tap="toCat" data-cat_id="{{selectedCat._id}}">查看主页</view>
     <view class="menu-item follow-btn {{selectedCat.unfollowed ? 'unfollowed' : 'followed'}}" bind:tap="toggleFollowCat" data-catid="{{selectedCat._id}}" data-unfollowed="{{selectedCat.unfollowed}}">
-      {{selectedCat.unfollowed ? "继续关注" : "取消关注"}}
+      {{selectedCat.unfollowed ? "关注猫咪" : "取消关注"}}
     </view>
     <view class="menu-item" bind:tap="closeMenu">关闭</view>
   </view>

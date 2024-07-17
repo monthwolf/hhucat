@@ -58,8 +58,8 @@ Page({
   async onLoad() {
     await this.loadUser();
     await this.loadFollowCats();
-    await this.loadCatRank();
     await this.loadFollowCatsDetail();
+    await this.loadCatRank();
     await this.loadMoreFeed();
     this.setData({
       refreshing: false
@@ -118,10 +118,16 @@ Page({
   async loadCatRank() {
     try {
       // 获取所有猫的数据
+    const { followCats } = this.data;
+    // 加载关注列表，用于顶部展示
+    const followCatsList = await getCatItemMulti(followCats);
+    const followCatsId = followCatsList.map(i => i._id);
+    console.log(followCatsId)
       const db = await cloud.databaseAsync();
       const cats = (await db.collection('cat').get()).data.map((cat) => {
         return {
           _id: cat._id,
+          unfollowed: followCatsId.indexOf(cat._id)!=-1?false:true,
           name: cat.name,
           picBest: cat.photo_count_best,
           picCount: cat.photo_count_total,
@@ -137,7 +143,7 @@ Page({
       const topCats = cats.slice(0, 6);
       for (let cat of topCats) {
         let avatar = await getAvatar(cat._id, cat.picBest);
-        console.log(avatar)
+        // console.log(avatar)
         cat.avatar = avatar.photo_compressed || avatar.photo_id;
       }
       const leftCats = topCats.slice(0, 3);
