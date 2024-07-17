@@ -5,7 +5,7 @@
 
 module.exports = {
   // 版本号
-  app_version: "v1.14.3",
+  app_version: "v1.14.4",
   // laf后台服务地址
   laf_url: 'https://n0002i.laf.run',
   // laf后台服务地址（微信开发工具中），一般和上面laf_url一致就好
@@ -25,7 +25,7 @@ module.exports = {
   ],
 
   // 赞赏码图片
-  reward_img: ["https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/赞赏码.jpg","dddd","aaaa"],
+  reward_img: ["https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/赞赏码.jpg", "dddd", "aaaa"],
   // 新猫问卷图片
   feedback_wj_img: "https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/新猫问卷.png",
   // 小程序菊花码图片
@@ -113,14 +113,14 @@ module.exports = {
     },
     // 赞赏页，pages/info/reward/reward
     reward: {
-        share_tip: "投喂罐头",
-        ad_success_tip: "多谢喵(ฅ'ω'ฅ)!",
-        ad_fail_tip: "没播完喵...",
-        reward_tip_title: "投喂罐头",
-        reward_tip: "您的投喂及广告收入将用作猫猫救助，感谢您对河海流浪猫的帮助与支持！\n喵(^･ｪ･^)",
-        reward_count_tip: "* 每月统计一次，多谢晒（鞠躬）",
-        reward_title: "爱心捐款",
-      },
+      share_tip: "投喂罐头",
+      ad_success_tip: "多谢喵(ฅ'ω'ฅ)!",
+      ad_fail_tip: "没播完喵...",
+      reward_tip_title: "投喂罐头",
+      reward_tip: "您的投喂及广告收入将用作猫猫救助，感谢您对河海流浪猫的帮助与支持！\n喵(^･ｪ･^)",
+      reward_count_tip: "* 每月统计一次，多谢晒（鞠躬）",
+      reward_title: "爱心捐款",
+    },
     // 排行页，pages/info/photoRank/photoRank
     photo_rank: {
       share_tip: "拍照月榜",
@@ -140,9 +140,9 @@ module.exports = {
     },
     // 开发团队页，pages/info/devTeam/devTeam
     dev_team: {
-        share_tip: "开发团队",
-        team: "程序开发：渔政、蓝卷、XD、zJ、ArcherJo、yw、lauzeyu\n资料维护：汪汪汪汪队长、测试猫猫侠1\n初期资料整理：汪汪汪汪队长、测试猫猫侠1\n以及各校区猫群的小伙伴~\n非常欢迎新朋友加入设计开发哇~！",
-      },
+      share_tip: "开发团队",
+      team: "程序开发：渔政、蓝卷、XD、zJ、ArcherJo、yw、lauzeyu\n资料维护：汪汪汪汪队长、测试猫猫侠1\n初期资料整理：汪汪汪汪队长、测试猫猫侠1\n以及各校区猫群的小伙伴~\n非常欢迎新朋友加入设计开发哇~！",
+    },
     // 识猫页，pages/recognize/recognize
     recognize: {
       share_tip: "拍照识猫",

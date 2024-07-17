@@ -20,16 +20,84 @@
         </swiper-item>
     </swiper>
 
-    <view class='info' id='info-box'>
-        <view class="identity">
-            <view class='name'>{{cat.name}}</view>
-            <block wx:if='{{cat.gender}}'>
-                <image mode='aspectFill' class='gender' wx:if='{{cat.gender === "公"}}' src="/pages/public/images/card/card/male.png"></image>
-                <image mode='aspectFill' class='gender' wx:if='{{cat.gender === "母"}}' src="/pages/public/images/card/card/female.png"></image>
-            </block>
-            <view class='count first' bindtap="showPopTip" wx:if="{{cat.popularity != undefined}}" data-tip="{{text_cfg.detail_cat.popularity_tip}}">
-                <image src='/pages/public/images/card/card/pop.png'></image>
-                <text> {{cat.popularity + (cat.photo_count_total? cat.photo_count_total * photoPopWeight: 0)}}</text>
+  <view class='info' id='info-box'>
+    <view class="identity">
+      <view class='name'>{{cat.name}}</view>
+      <block wx:if='{{cat.gender}}'>
+        <image mode='aspectFill' class='gender' wx:if='{{cat.gender === "公"}}' src="/pages/public/images/card/card/male.png"></image>
+        <image mode='aspectFill' class='gender' wx:if='{{cat.gender === "母"}}' src="/pages/public/images/card/card/female.png"></image>
+      </block>
+      <view class='count first' bindtap="showPopTip" wx:if="{{cat.popularity != undefined}}" data-tip="{{text_cfg.detail_cat.popularity_tip}}">
+        <image src='/pages/public/images/card/card/pop.png'></image>
+        <text> {{cat.popularity + (cat.photo_count_total? cat.photo_count_total * photoPopWeight: 0)}}</text>
+      </view>
+      <view class='count comment' bindtap="showPopTip"  data-tip="便利贴数">
+        <image src='/pages/public/images/card/card/comment.png'></image>
+        <text> {{cat.comment_count || 0}}</text>
+      </view>
+      <view class='count comment' bindtap="showPopTip" data-tip="被关注数">
+        <image src='/pages/public/images/card/card/follow.png'></image>
+        <text> {{cat.follow_count || 0}}</text>
+      </view>
+    </view>
+
+    <view class="tags">
+      <text class='tag' wx:if="{{cat.adopt != undefined}}">{{adopt_desc[cat.adopt]}}</text>
+      <text class='tag'>{{cat.sterilized? text_cfg.detail_cat.sterilized_true: text_cfg.detail_cat.sterilized_false}}</text>
+      <text class='tag to_star' wx:if='{{cat.to_star}}'>{{text_cfg.genealogy.to_star_tip}}</text>
+      <text class='tag to_star' wx:if='{{cat.missing}}'>{{text_cfg.genealogy.missing_tip}}</text>
+
+      <!-- <text class='fb-button' bindtap='bindTapFeedback'>{{text_cfg.detail_cat.button_feedback}}</text> -->
+      <view class="mpcode" bindtap="bingMpTap">
+        <image src="/pages/public/images/button/mpcode.png"></image>
+      </view>
+    </view>
+    <view class='details'>
+      <view class='item'>
+        <view class='label'>
+          <view class='label-block'></view>
+          {{text_cfg.detail_cat.label_nickname}}
+        </view>
+        <view class='value'>{{cat.nickname || '-'}}</view>
+      </view>
+      <view class='item'>
+        <view class='label'>
+          <view class='label-block'></view>
+          {{text_cfg.detail_cat.label_location}}
+        </view>
+        <view class='value'>{{(cat.campus + cat.area) || '-'}}</view>
+      </view>
+      <view class='item'>
+        <view class='label'>
+          <view class='label-block'></view>
+          {{text_cfg.detail_cat.label_birthday}}
+        </view>
+        <view class='value'>{{cat.birthday || '-'}}</view>
+      </view>
+
+      <view class='item long'>
+        <view class='label'>
+          <view class='label-block'></view>
+          {{text_cfg.detail_cat.label_character}}
+        </view>
+        <view class='value'>
+          <!-- 新猫特点Char是空的数组（以前的是空值），修改判定方式 -->
+          <text>{{cat.characteristics_string || '暂无记录'}}</text>
+        </view>
+      </view>
+
+      <view class='item long'>
+        <view class='label'>
+          <view class='label-block'></view>
+          {{text_cfg.detail_cat.label_rating}} <text class="small">[共{{cat.rating.count || 0}}条]</text>
+          <view class="badge-all" bindtap="bindDetailRating">{{showDetailRating ? '折叠详情' : '展开详情'}}</view>
+          <!-- <view class="badge-all" bindtap="bindRating">我要评分</view> -->
+        </view>
+        <view class="one-rating {{showDetailRating ? 'detail': ''}}">
+          <view class="title" wx:if="{{showDetailRating}}">综合：</view>
+          <view class="stars" bind:tap="bindDetailRating">
+            <view class="one-star {{cat.rating.avgScore >= j+1 ? '' : 'gray'}}" wx:for="*****" wx:key="*this" wx:for-index="j">
+              <image src="/pages/public/images/button/rating_star.svg" mode="aspectFill" />
             </view>
             <view class='count comment' bindtap="showPopTip" data-tip="便利贴数" wx:if="{{showOpt}}">
                 <image src='/pages/public/images/card/card/comment.png'></image>

@@ -62,7 +62,7 @@ Component({
     },
 
     lifetimes: {
-        async attached () {
+        async attached() {
             // 在组件实例进入页面节点树时执行
             canvas.debugger = true // open debugger
 
@@ -93,8 +93,8 @@ Component({
                 })
             }, 200)
         },
-       
-        detached () {
+
+        detached() {
             // 在组件实例被从页面节点树移除时执行
         }
     },
@@ -104,7 +104,7 @@ Component({
      */
     methods: {
         // 开始生成海报
-        async startDrawing () {
+        async startDrawing() {
             // 先检查平台, 似乎只支持安卓和ios，开发者工具也可以，其余平台未能正常绘制，没定位到原因
             const { platform } = await wx.getSystemInfo();
             if (!['ios', 'devtools', 'android'].includes(platform)) {
@@ -117,7 +117,7 @@ Component({
                 });
                 return false;
             }
-            
+
             if (!this.properties.cat) return;
 
             wx.showLoading({ title: '生成ing...', mask: true });
@@ -161,15 +161,15 @@ Component({
             }
             return false;
         },
-        
+
         // 测量文本宽度
         measureTextWidth(text, fontSize, fontWeight = '', fontFamily = canvas.fontFamily) {
             const originalFont = canvas.ctx.font; // 保存原始字体样式
             canvas.ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`; // 设置新的字体样式
-            
+
             const width = canvas.ctx.measureText(text).width; // 测量文本宽度
             canvas.ctx.font = originalFont; // 恢复原始字体样式
-            
+
             return width;
         },
 
@@ -189,8 +189,8 @@ Component({
             // photoPopWeight如何获取？
             const photoPopWeight = 10;
             const popularityScore = cat.popularity + (cat.photo_count_total ? cat.photo_count_total * photoPopWeight : 0);
-            const photographer = text_cfg.genealogy.photo_by_tip + ((coverImg.photographer ==" "?text_cfg.genealogy.photo_by_unknow_tip:coverImg.photographer) || (coverImg.userInfo ? coverImg.userInfo.nickName : text_cfg.genealogy.photo_by_unknow_tip));
-            
+            const photographer = text_cfg.genealogy.photo_by_tip + ((coverImg.photographer == " " ? text_cfg.genealogy.photo_by_unknow_tip : coverImg.photographer) || (coverImg.userInfo ? coverImg.userInfo.nickName : text_cfg.genealogy.photo_by_unknow_tip));
+
             // 有关尺寸
             const coverHeight = 600;    // 封面高度
             const coverWidth = 600;     // 封面宽度
@@ -204,10 +204,10 @@ Component({
             const lineHeight_n = 8;     // 行间距
 
             // 测量文字宽度
-            const adoptDescWidth = this.measureTextWidth(adopt_desc,tag);
-            const sterilizedWidth = this.measureTextWidth(sterilized,tag);
-            const popularityScoreWidth = this.measureTextWidth(popularityScore,desc);
-            const to_starWidth = this.measureTextWidth(to_star,tag);
+            const adoptDescWidth = this.measureTextWidth(adopt_desc, tag);
+            const sterilizedWidth = this.measureTextWidth(sterilized, tag);
+            const popularityScoreWidth = this.measureTextWidth(popularityScore, desc);
+            const to_starWidth = this.measureTextWidth(to_star, tag);
             // 标签padding
             const tagPadding = 7.5;
 
@@ -247,7 +247,7 @@ Component({
 
             // 如果有性别，调整标签的位置
             if (cat.gender) {
-                tagX += 50; 
+                tagX += 50;
             }
 
             // 绘制海报
@@ -263,7 +263,7 @@ Component({
                         height: 1000,
                         mode: 'aspectFill',
                         zIndex: 999
-                    },{
+                    }, {
                         type: Image,
                         url: coverImg.photo_id,
                         x: 25,
@@ -280,7 +280,7 @@ Component({
                         width: coverWidth,
                         height: 30,
                         bgColor: 'rgba(34, 34, 34, 0.4)'
-                    },{
+                    }, {
                         type: Text,
                         text: photographer,
                         x: 25,
@@ -305,7 +305,7 @@ Component({
                         ellipsis: 1,    // 超出部分显示省略号
                         color: '#222',
                         fontWeight: 'bold'
-                    },{
+                    }, {
                         type: Image,
                         url: '/pages/public/images/card/card/pop.png',
                         x: this.data.posterWidth - tagPadding * 2 - popularityScoreWidth - 85,
@@ -313,7 +313,7 @@ Component({
                         height: 20,
                         width: 35,
                         mode: 'aspectFit'
-                    },{
+                    }, {
                         type: Text,
                         text: popularityScore,
                         x: 0 - tagPadding,
@@ -345,7 +345,7 @@ Component({
                         height: tagBgHeight,
                         bgColor: this.data.primaryColor,
                         radius: tagBgHeight / 2
-                    },{
+                    }, {
                         type: Text,
                         text: adopt_desc,
                         x: tagX,
@@ -356,7 +356,7 @@ Component({
                         align: 'center',
                         fontWeight: 'bold',
                         color: this.data.fontColor
-                    },{
+                    }, {
                         type: Rect,
                         x: tagX + 10 + adoptDescWidth + tagPadding * 2,
                         y: 705,
@@ -364,7 +364,7 @@ Component({
                         height: tagBgHeight,
                         bgColor: this.data.primaryColor,
                         radius: tagBgHeight / 2
-                    },{
+                    }, {
                         type: Text,
                         text: sterilized,
                         x: tagX + 10 + adoptDescWidth + tagPadding * 2,
@@ -406,7 +406,7 @@ Component({
                         fontSize: title,
                         lineHeight: title * 1.8,
                         color: '#222'
-                    },{
+                    }, {
                         type: Text,
                         text: text_cfg.detail_cat.slogan1,
                         x: 50,
@@ -414,7 +414,7 @@ Component({
                         fontSize: desc,
                         lineHeight: desc + lineHeight_n,
                         color: '#777'
-                    },{
+                    }, {
                         type: Text,
                         text: text_cfg.detail_cat.slogan2,
                         x: 50,
@@ -422,7 +422,7 @@ Component({
                         fontSize: desc,
                         lineHeight: desc + lineHeight_n,
                         color: '#777'
-                    },{
+                    }, {
                         type: Image,
                         url: cat.mpcode,
                         x: 480,
@@ -432,7 +432,7 @@ Component({
                         radius: 20
                     }
                 ]
-                
+
             }).then(() => {
                 wx.hideLoading();
             });
