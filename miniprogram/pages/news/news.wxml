@@ -25,7 +25,8 @@
     <view class='news title'>{{item.title}}</view>
     <view class="news content-wrapper">
       <!-- 兼容flex-grow和多行省略 -->
-      <view class="news content">{{item.mainContent}}</view>
+      {{item.mainContent}}
+      <!-- <mp-html container-style="" content="{{item.mainContent}}" domain="https://cat-1327294719.cos.ap-nanjing.myqcloud.com"></mp-html> -->
     </view>
     <view class="news row-container">
       <view wx:if="{{item.class}}" class='news tag'>{{item.class}}</view>

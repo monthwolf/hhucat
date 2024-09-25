@@ -167,6 +167,14 @@ async function updateFollowCats(options) {
   });
 }
 
+// 删除文件
+async function deleteFiles(options) {
+    return await cloud.callFunction({
+      name: "deleteFiles",
+      data: options
+    });
+  }
+
 module.exports = {
   curdOp,
   userOp,
@@ -185,4 +193,5 @@ module.exports = {
   getUserStats,
   updateCatRating,
   updateFollowCats,
+  deleteFiles
 };

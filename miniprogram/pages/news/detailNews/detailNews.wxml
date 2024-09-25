@@ -15,7 +15,7 @@
             <view class='news time'>{{news.ddate}} </view>
         </view>
 
-        <view class='news content'>{{news.mainContent}}</view>
+        <view class='news content'><mp-html container-style="padding:20rpx" content="{{news.mainContent}}" domain="https://cat-1327294719.cos.ap-nanjing.myqcloud.com" selectable="true"></mp-html></view>
 
         <!-- 文字结束，单图/多图部分 -->
         <view wx:if='{{photos_path.length == 1}}'>

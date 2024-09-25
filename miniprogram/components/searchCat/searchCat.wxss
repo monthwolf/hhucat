@@ -28,7 +28,7 @@
   box-sizing: border-box;
   transition: height 200ms ease, bottom 200ms ease;
 
-  z-index: 99;
+  z-index: 1000;
 
   background-color: var(--color-gray-light);
 

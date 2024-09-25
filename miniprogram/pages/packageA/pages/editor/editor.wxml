@@ -1,0 +1,101 @@
+<!--pages/editor/editor.wxml-->
+<view style="width: 100%;height: 100%;position: fixed;">
+    <view class="editor_toolbox">
+        <view style="display: flex;">
+            <i class="iconfont icon-undo" data-method="undo" bindtap="edit" />
+            <i class="iconfont icon-redo" data-method="redo" bindtap="edit" />
+            <i class="iconfont icon-img" data-method="insertImg" bindtap="edit" />
+            <i class="iconfont icon-video" data-method="insertVideo" bindtap="edit" />
+            <i class="iconfont icon-link" data-method="insertLink" bindtap="edit" />
+            <i class="iconfont icon-text" bindtap="insertText" />
+            <i class="iconfont icon-line" data-method="insertHtml" data-param="<hr style='margin:10px 0'/>" bindtap="edit" />
+            <i class="iconfont icon-heading" bindtap="insertHead" />
+        </view>
+        <view style="display: flex;">
+            <i class="iconfont icon-quote" data-method="insertHtml" data-param="<blockquote style='padding:0 1em;color:#6a737d;border-left:.25em solid #dfe2e5'>引用</blockquote>" bindtap="edit" />
+            <i class="iconfont icon-table" bindtap="insertTable" />
+            <i class="iconfont icon-code" bindtap="insertCode" />
+            <i class="iconfont icon-emoji" data-type="emoji" bindtap="openDialog" />
+            <i class="iconfont icon-template" data-type="template" bindtap="openDialog" />     
+            <i class="iconfont icon-daoru" bindtap="load" />
+            <i class="iconfont icon-p" bindtap="insertP" />
+            <i class="iconfont icon-md" bindtap="insertMd" />
+        </view>
+        <view style="display: flex;">
+            <i class="iconfont icon-html" bindtap="insertHtml" />
+            <i class="iconfont icon-idcard" bindtap="insertCard" />
+            <i class="iconfont icon-clear" bindtap="clear" />
+            <i class="iconfont icon-{{editable?'save':'edit'}}" bindtap="save" />
+
+            <i class="iconfont" />
+            <i class="iconfont" />
+            <i class="iconfont" />
+            <i class="iconfont" />
+        </view>
+    </view>
+
+
+
+    <!-- 编辑框 -->
+    <scroll-view scroll-y="true" style="margin-top: 30%;padding-top: 20rpx;z-index:999;position: relative;height: 70%;width: 100%;">
+        <mp-html id="article" markdown="true" container-style="padding:20rpx" content="{{content}}" domain="https://cat-1327294719.cos.ap-nanjing.myqcloud.com" editable="{{editable}}" bindremove="remove"></mp-html>
+    </scroll-view>
+</view>
+<!-- 模态框 -->
+<view class="fadeIn" wx:if="{{modal}}">
+    <view class="mask" />
+    <view class="modal">
+        <view class="modal_title">{{modal.title}}</view>
+        <view class="modal_body">
+            <block wx:if="{{modal.title=='插入表格'}}">
+                <picker class="modal_picker" range="{{[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]}}" data-type="rows" bindchange="pickerChange">{{rows}}</picker>行
+                <picker class="modal_picker" range="{{[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]}}" data-type="cols" bindchange="pickerChange">{{cols}}</picker>列
+            </block>
+            <view class="" wx:if="{{modal.title=='插入markdown'}}">
+                <textarea class="text-container modal_input" maxlength="-1" placeholder="请输入" value="{{mdcontent}}" bindinput="modalInput">
+        </textarea>
+            </view>
+            <view class="" wx:if="{{modal.title=='插入html'}}">
+                <textarea class="text-container modal_input" maxlength="-1" placeholder="请输入" value="{{htmlcontent}}" bindinput="modalInput">
+        </textarea>
+            </view>
+            <input wx:if="{{modal.title=='链接地址'}}" class="modal_input" value="{{modal.value}}" maxlength="-1" auto-focus bindinput="modalInput" />
+        </view>
+        <view class="modal_foot">
+            <view class="modal_button" bindtap="modalCancel">取消</view>
+            <view class="modal_button" style="color:#576b95;border-left:1px solid rgba(0,0,0,.1)" bindtap="modalConfirm">确定</view>
+        </view>
+    </view>
+</view>
+<!-- 猫咪选择框 -->
+<view class="fadeIn" wx:if="{{showSelectCat}}">
+    <!--<view class="mask" bindtap="closeDialog"></view> -->
+        <searchCat show="{{showSelectCat}}" bind:select="selectCat">
+        
+            <strong class="weui-half-screen-dialog__title" style="text-align: center;font-weight: bolder;font-size: 40rpx;">插入猫咪卡片</strong>
+    
+        </searchCat>
+</view>
+<!-- 底部弹窗 -->
+<view class="fadeIn" wx:if="{{dialog}}">
+    <view class="mask" bindtap="closeDialog"></view>
+    <view class="weui-half-screen-dialog">
+        <view class="weui-half-screen-dialog__hd">
+            <view class="weui-half-screen-dialog__hd__side" bindtap="closeDialog">
+                <view class="weui-icon-btn"><i class="weui-icon-close-thin"></i></view>
+            </view>
+            <view class="weui-half-screen-dialog__hd__main">
+                <strong class="weui-half-screen-dialog__title">插入{{dialog=='emoji'?'表情':'模板'}}</strong>
+            </view>
+        </view>
+        <view class="weui-half-screen-dialog__bd" style="height:{{dialog=='emoji'?'105':'150'}}px; padding-bottom: 30px;">
+            <view wx:if="{{dialog=='emoji'}}" wx:for="{{emojis}}" wx:for-item="line" wx:key="index" style="display: flex; font-size: 20px; line-height: 35px">
+                <view style="flex:1" wx:for="{{line}}" wx:key="index" data-emoji="{{item}}" bindtap="insertEmoji">{{item}}</view>
+            </view>
+            <view wx:if="{{dialog=='template'}}" wx:for="{{templates}}" wx:key="index" bindtap="closeDialog">
+                <rich-text nodes="{{item}}" data-method="insertHtml" data-param="{{item}}" bindtap="edit" />
+                <view style="border-top:1px dashed gray; width: 80%; height: 0; margin: 20px auto" />
+            </view>
+        </view>
+    </view>
+</view>

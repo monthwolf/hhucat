@@ -1,4 +1,10 @@
 // components/newsModal/newsModal.js
+
+import {
+    decodeUrls,getSignContent
+  } from "../../utils/utils";
+import { cloud } from "../../utils/cloudAccess"
+
 Component({
     options: {
       multipleSlots: true // 在组件定义时的选项中启用多slot支持
@@ -54,7 +60,6 @@ Component({
       // 弹窗显示控制
       isShow:false
     },
-  
     /**
      * 组件的方法列表
      * 更新属性和数据的方法与更新页面数据的方法类似
@@ -71,7 +76,11 @@ Component({
         })
       },
       //展示弹框
-      showNewsModal(){
+      async showNewsModal(){
+        this.setData({
+            content:await getSignContent(cloud,decodeUrls(this.data.content))
+        })
+        // console.log(`新闻${this.data.content}`)
         this.setData({
           isShow: true
         })

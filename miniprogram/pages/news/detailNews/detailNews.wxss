@@ -56,11 +56,15 @@ button+button {
 
 .news.content {
   font-size: 32rpx;
-  margin-bottom: 20rpx;
+  margin-bottom: 30rpx;
   white-space: pre-wrap;
   font-weight: 400;
   color: var(--color-gray-max);
-
+  /* .preview-container { */
+    border-radius: 8px; /* 圆角边框 */
+    overflow: hidden; /* 隐藏scroll-view滚动条外的部分 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0.2, 0.2); /* 添加阴影 */
+  /* } */
 }
 
 .news.editTime {

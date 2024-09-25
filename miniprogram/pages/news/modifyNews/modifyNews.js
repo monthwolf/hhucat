@@ -3,6 +3,9 @@ import {
   checkAuth
 } from "../../../utils/user";
 import {
+    encodeUrls,decodeUrls,getSignContent
+  } from "../../../utils/utils";
+import {
   cloud
 } from "../../../utils/cloudAccess";
 import api from "../../../utils/cloudApi";
@@ -23,7 +26,6 @@ Page({
     titlelength: 0,
     titlemaxlength: 30,
     length: 0,
-    maxlength: 800,
     photos_path: [],
     buttons: [{
       id: 0,
@@ -51,6 +53,7 @@ Page({
       name: '是',
       checked: false,
     }],
+    content:''
   },
 
   /**
@@ -64,10 +67,13 @@ Page({
       this.loadNews(),
       checkAuth(this, 2)
     ])
+    
   },
 
   onShow: async function () {
     await getPageUserInfo(this);
+    this.setData({['news.mainContent']:wx.getStorageSync('content')})
+
   },
   
   async loadNews() {
@@ -110,6 +116,10 @@ Page({
       buttons: that.data.buttons,
       modalButtons: modalButtons,
     })
+    that.setData({
+        ['news.mainContent']:await getSignContent(cloud,decodeUrls(that.data.news.mainContent))
+    })
+    wx.setStorageSync('content', that.data.news.mainContent)
   },
 
   previewImg: function (event) {
@@ -120,7 +130,15 @@ Page({
       urls: that.data.photos_path
     })
   },
-
+  enterEditorMode: function() {
+    this.toEditor();
+  },
+  toEditor() {
+    // wx.setStorageSync('content', this.data.news.mainContent)
+    wx.navigateTo({
+      url: '/pages/packageA/pages/editor/editor',
+    })
+  },
   previewCover: function (event) {
     console.log("[previewCover] -", event);
     wx.previewImage({
@@ -211,7 +229,7 @@ Page({
       userNicknameLastModify: submitData.name,
       dateLastModify: api.getDate(),
       title: submitData.title,
-      mainContent: submitData.mainContent,
+      mainContent: encodeUrls(wx.getStorageSync('content')),
       class: classBelongto,
       setNewsModal: setNewsModal,
     }

@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "searchCat": "/components/searchCat/searchCat"
+  },
+  "navigationBarTitleText": "内容编辑器",
+  "backgroundColor": "#F7F7FA"
+}

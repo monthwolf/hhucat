@@ -10,6 +10,14 @@ Page({
     text_cfg: text_cfg,
     github_link: "https://github.com/sysucats/zhongdamaopu",
     update_log: [{
+        version: "v1.14.5*",
+        content: [
+          "公告使用mphtml富文本渲染",
+          "添加了猫抓板公告独立编辑器",
+          "支持图片、视频、猫咪卡片插入公告"
+        ],
+        time: "2024/09/20"
+      },{
       version: "v1.14.4",
       content: [
         "更新喵友圈UI（xuann大佬提供）",

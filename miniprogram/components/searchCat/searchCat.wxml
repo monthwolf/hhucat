@@ -1,6 +1,8 @@
 <!--components/searchCat/searchCat.wxml-->
 <view class="mask" bindtap="hide" hidden="{{!show}}"></view>
+
 <view class='search {{show? "": "hidden"}}'>
+    <slot></slot>
   <view class='input-block'>
     <view class='input-icon'>
       <image class="search-logo" mode='aspectFit' src="/pages/public/images/filter/search.png"></image>

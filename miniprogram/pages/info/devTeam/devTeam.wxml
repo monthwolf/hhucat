@@ -17,11 +17,11 @@
   <view class='title'>更新日志</view>
   <view class='desc'>为与原作者更新内容区分，带*号的更新项和版本号由HHU猫猫团队更新</view>
   <view class='desc'>
-    <block wx:for="{{update_log}}" wx:key="*this">
-      <view class='sub-title hl'>{{item.version}}</view>
-      <view class='sub-detail' wx:for="{{item.content}}" wx:key="*this">- {{item}}</view>
-      <view class='sub-detail'>- {{item.time}}</view>
-    </block>
+    <view wx:for="{{update_log}}" wx:key="*this" style="margin-bottom: 5%;">
+      <view class='sub-title hl' style="font-weight: bolder;color: cornflowerblue;font-size: larger;">{{item.version}}</view>
+      <view class='sub-detail' style="text-align: center;color:rgb(255, 195, 116);font-weight: bolder;">更新日期 - {{item.time}}</view>
+      <view class='sub-detail' style="font-weight: bold;" wx:for="{{item.content}}" wx:key="*this">- {{item}}</view>
+    </view>
     </view>
 </view>
 

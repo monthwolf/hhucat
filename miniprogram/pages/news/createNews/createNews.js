@@ -1,5 +1,5 @@
 import {
-  generateUUID
+  generateUUID,encodeUrls,decodeUrls
 } from "../../../utils/utils";
 import {
   getPageUserInfo,
@@ -23,7 +23,6 @@ Page({
     titlelength: 0,
     titlemaxlength: 30,
     length: 0,
-    maxlength: 800,
     photos: [],
     photos_path: [],
     cover: 0,
@@ -55,19 +54,25 @@ Page({
       name: '是',
       checked: false,
     }],
+    content:''
   },
-
+  
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: async function (options) {
+    wx.setStorageSync('content', '')
     await checkAuth(this, 2);
+    
   },
 
   onShow: async function () {
     await getPageUserInfo(this);
+    this.setData({content:wx.getStorageSync('content')})
   },
-
+  enterEditorMode: function() {
+    this.toEditor();
+  },
   bindInputName(e) {
     var inputData = e.detail.value;
     this.setData({
@@ -88,7 +93,11 @@ Page({
       length: inputData.length
     })
   },
-
+  toEditor() {
+    wx.navigateTo({
+      url: '/pages/packageA/pages/editor/editor',
+    })
+  },
   getUInfo: function() {
     this.setData({
     showEdit: true
@@ -333,7 +342,7 @@ Page({
       userNickname: submitData.name,
       date: api.getDate(),
       title: submitData.title,
-      mainContent: submitData.mainContent,
+      mainContent: encodeUrls(wx.getStorageSync('content')),
       coverPath: that.data.cover_path,
       photosPath: that.data.photos_path,
       class: classBelongto,

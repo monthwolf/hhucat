@@ -16,9 +16,15 @@
         </block>
     </view>
 
-    <view class='label'>正文：（选填）</view>
-    <textarea placeholder="喵喵 喵喵喵" name='mainContent' maxlength='{{maxlength}}' bindinput='bindInput'></textarea>
-    <view class='lengthTips'>字数：{{length}}/{{maxlength}}</view>
+    <view class='label'>正文预览：</view>
+    <view class="preview-container">
+        <scroll-view scroll-y="true" class="scroll-view">
+            <mp-html name='mainContent' container-style="padding:20rpx;" content="{{content}}" domain="https://cat-1327294719.cos.ap-nanjing.myqcloud.com"></mp-html>
+        </scroll-view>
+    </view>
+    <view class='button_container'>
+        <button class='edit' bindtap='enterEditorMode'>进入编辑器模式</button>
+    </view>
 
     <view class='label'>封面图：封面图会在公告栏界面显示（长按删除）</view>
     <view class='album'>

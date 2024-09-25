@@ -130,12 +130,14 @@
   <view class='loadnomore' wx:else>
     <image src='/pages/public/images/system/nomore.png'></image>
     <view style="text-align: center;">
-      没有找到猫猫？去
-      <p bind:tap="toNewCat" style="font-weight: bolder;color: cornflowerblue;">添加新猫</p>
+    <text>
+      没有找到猫猫？
+      </text>
+      去 <p bind:tap="toNewCat" style="font-weight: bolder;color: cornflowerblue;">添加新猫</p> or <p bind:tap="toFeedback" style="font-weight: bolder;color: cornflowerblue;">提供反馈</p>
     </view>
   </view>
   <!-- 底tab占位 -->
-  <view style="min-height: {{tabBarHeight+10}}px;width: 100%;"></view>
+  <view style="min-height: {{tabBarHeight+20}}px;width: 100%;"></view>
 </scroll-view>
 <!-- 漂浮的领养logo -->
 <view wx:if="{{adopt_count}}" id="find-adopt" bindtap="clickAdoptBtn">

@@ -25,14 +25,20 @@
                 </block>
             </view>
 
-            <view class='label'>正文：</view>
-            <textarea name='mainContent' maxlength='{{maxlength}}' bindinput='bindInput' value='{{news.mainContent}}'></textarea>
-            <view class='lengthTips'>字数：{{length}}/{{maxlength}}</view>
-
+            <view class='label'>正文预览：</view>
+            <view class="preview-container">
+                <scroll-view scroll-y="true" class="scroll-view">
+                    <mp-html name='mainContent' container-style="padding:20rpx" content="{{news.mainContent}}" domain="https://cat-1327294719.cos.ap-nanjing.myqcloud.com"></mp-html>
+                </scroll-view>
+            </view>
+            <view class='button_container'>
+                <button class='edit' bindtap='enterEditorMode'>进入编辑器模式</button>
+            </view>
+            <!-- <textarea name='mainContent' maxlength='-1' bindinput='bindInput' value='{{news.mainContent}}'></textarea> -->
             <view class='label'>封面图：（目前不支持修改图片）</view>
             <view class='album'>
                 <view class='album-block' wx:if="{{cover != 0}}">
-                    <image mode='aspectFill' class='alb-image' src='{{news.coverPath}}' bindtap='previewCover'  data-url='{{news.coverPath}}'></image>
+                    <image mode='aspectFill' class='alb-image' src='{{news.coverPath}}' bindtap='previewCover' data-url='{{news.coverPath}}'></image>
                 </view>
             </view>
 

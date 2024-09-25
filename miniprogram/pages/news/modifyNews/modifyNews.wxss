@@ -11,6 +11,19 @@ page {
   margin: 25rpx 0 5rpx 0;
 }
 
+.preview-container {
+    border-radius: 8px; /* 圆角边框 */
+    overflow: hidden; /* 隐藏scroll-view滚动条外的部分 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0.2, 0.4); /* 添加阴影 */
+    margin-bottom: 20rpx;
+  }
+  
+  .scroll-view {
+    width: 100%;
+    height: 800rpx;
+    background-color: rgb(241, 241, 241); /* 设置背景颜色 */
+    overflow: hidden; /* 隐藏scroll-view滚动条外的部分 */
+  }
 .label.light {
   font-weight: 400;
   margin: 5rpx 0;

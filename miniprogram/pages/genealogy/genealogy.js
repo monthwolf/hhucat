@@ -533,6 +533,11 @@ Page({
         url: '/pages/info/feedback/addCat/addCat',
       })
   },
+  toFeedback:function(){
+    wx.navigateTo({
+      url: '/pages/genealogy/feedbackDetail/feedbackDetail',
+    })
+  },
   fShow: function () {
     // 这里只管显示和隐藏，类似取消键的功能
     this.setData({
@@ -928,7 +933,7 @@ Page({
     var newsList = (await db.collection('news').orderBy('date', 'desc').where({
       setNewsModal: true
     }).get()).data
-
+    
     this.setData({
       newsList: newsList,
     });
