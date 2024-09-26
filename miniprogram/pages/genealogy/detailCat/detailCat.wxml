@@ -121,13 +121,6 @@
 
 
 
-            <view class='item long'>
-                <view class='label'>
-                    <view class='label-block'></view>
-                    {{text_cfg.detail_cat.label_tutorial}}
-                </view>
-                <view class='value'>{{cat.tutorial || text_cfg.detail_cat.label_tutorial_empty}}</view>
-            </view>
 
             <view class='item long' wx:if="{{showBadge}}">
                 <view class='label'>
@@ -170,6 +163,24 @@
                         <view class="relation-cat-name">添加关系</view>
                     </view>
                 </scroll-view>
+                <view class='item long' style="margin-top: 2%;">
+                    <van-tabs class="label" type="card" title-inactive-color="#000000" active="{{ active }}" bind:change="onChange" color="var(--color-primary)" animated swipeable>
+                        <van-tab title="{{text_cfg.detail_cat.label_tutorial}}">
+                            <view class='value tab-value' hover-class="tab-hover">{{cat.tutorial || text_cfg.detail_cat.label_tutorial_empty}}</view>
+                        </van-tab>
+                        <van-tab title="{{text_cfg.detail_cat.label_feed}}">
+                            <view class='value tab-value' hover-class="tab-hover">{{cat.feed || text_cfg.detail_cat.label_tutorial_empty}}</view>
+                        </van-tab>
+                    </van-tabs>
+
+                    <!-- 
+                <view class='label'>
+                    <view class='label-block'></view>
+                    {{text_cfg.detail_cat.label_tutorial}}
+                </view>
+                <view class='value'>{{cat.tutorial || text_cfg.detail_cat.label_tutorial_empty}}</view> -->
+                </view>
+
             </view>
         </view>
     </view>

@@ -2,6 +2,7 @@
   "name": "laf-app",
   "description": "the app engine service of lat",
   "dependencies": {
+    "@miniprogram-component-plus/tabs": "^1.0.0",
     "laf-cli": "^1.0.0"
   },
   "devDependencies": {

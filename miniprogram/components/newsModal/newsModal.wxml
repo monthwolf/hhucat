@@ -15,7 +15,7 @@
 
 
     <scroll-view class='wx-modal-scroll' enable-flex='true' scroll-y='true' enable-back-to-top='true' lower-threshold='50'>
-      <view class='wx-modal-content' wx:if="{{content.length != 0}}"><mp-html container-style="padding:20rpx;overflow: hidden;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;" content="{{content}}" domain="https://cat-1327294719.cos.ap-nanjing.myqcloud.com"></mp-html></view>
+      <view class='wx-modal-content' wx:if="{{content.length != 0}}"><mp-html container-style="padding:0 20rpx;overflow: hidden;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;" content="{{content}}" domain="https://cat-1327294719.cos.ap-nanjing.myqcloud.com"></mp-html></view>
       <view wx:if="{{ imagePath != '' }}">
         <image class="wx-modal-image" mode='widthFix' src='{{ imagePath }}'></image>
       </view>

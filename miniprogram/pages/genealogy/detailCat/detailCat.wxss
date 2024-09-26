@@ -314,11 +314,11 @@ swiper-item image {
 
 /*弹出层*/
 .plus {
-  width: 100rpx;
-  height: 100rpx;
+  width: 80rpx;
+  height: 80rpx;
   position: fixed;
-  bottom: 150rpx;
-  right: 50rpx;
+  bottom: 100rpx;
+  right: 30rpx;
   filter: drop-shadow(0px 12rpx 12rpx rgba(0, 0, 0, 0.15));
   display: block;
   justify-content: center;
@@ -737,3 +737,37 @@ one-rating-title {
   color: var(--color-primary);
   font-weight: bold;
 }
+
+/* tab组件样式 */
+.van-tabs--card {
+    justify-content: center;
+    display: flex;
+    border-color: var(--color-primary);
+}
+.van-tabs__scroll--card{
+    margin: 0 !important;
+    width: 60% !important;
+}
+.van-tabs{
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+.tab-value{
+    letter-spacing: 1rpx !important;
+width: auto !important;
+background-image: 
+    linear-gradient(#e7e7e7 1rpx, transparent 1rpx);
+  background-size: 100rpx 50rpx;
+    background-color: #ffffff;
+  border-radius: 2rpx;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+  margin: 10rpx;
+  padding:5px 8rpx;
+  color: #333333;
+  line-height: 50rpx !important;
+  transition: box-shadow 0.3s ease;
+}
+.tab-value:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
