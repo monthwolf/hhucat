@@ -22,6 +22,9 @@
     <view class='label tutorial'>{{text_cfg.detail_cat.label_tutorial}}：</view>
     <textarea type='text' value='{{cat.tutorial}}' bindinput="inputText" data-key='tutorial'></textarea>
 
+    <view class='label tutorial'>{{text_cfg.detail_cat.label_feed}}：</view>
+    <textarea type='text' value='{{cat.feed}}' bindinput="inputText" data-key='feed'></textarea>
+
     <view class='label habit'>性格：</view>
     <input type='text' value='{{cat.habit}}' bindinput="inputText" data-key='habit'></input>
 
