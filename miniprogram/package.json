@@ -1,8 +1,9 @@
 {
   "dependencies": {
+    "@lspriv/wx-calendar": "^1.7.3-alpha.8",
     "@vant/weapp": "^1.11.6",
     "crypto": "^1.0.1",
-    "crypto-js": "^4.1.1",
+    "crypto-js": "^4.2.0",
     "laf-client-sdk": "^0.8.13",
     "mp-html": "^2.5.0",
     "wx-canvas-2d": "^2.5.1"

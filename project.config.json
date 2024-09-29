@@ -38,7 +38,9 @@
     "useCompilerPlugins": false,
     "ignoreDevUnusedFiles": false,
     "ignoreUploadUnusedFiles": true,
-    "condition": true
+    "condition": true,
+    "compileWorklet": false,
+    "swc": false
   },
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},

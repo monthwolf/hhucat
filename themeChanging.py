@@ -118,7 +118,7 @@ if __name__ == "__main__":
 
     colour_aim = sys.argv[2]
     colour_origin = sys.argv[1]
-    folder_path = 'miniprogram/pages/public/images'
+    folder_path = 'miniprogram/pages/packageA/public/images'
     exception = ['zdmp.png', 'male.png', 'female.png']
 
     # 文件读取

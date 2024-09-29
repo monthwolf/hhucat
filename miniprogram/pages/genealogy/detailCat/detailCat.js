@@ -90,6 +90,9 @@ Page({
 
     // 是否展开评分详情
     showDetailRating: false,
+
+    isOpen: false,
+    startY: 0,
   },
 
   jsData: {
@@ -266,7 +269,30 @@ Page({
       this.jsData.infoHeight = res[0].height;
     })
   },
-
+  handleTouchStart(e) {
+    this.setData({
+      startY: e.changedTouches[0].clientY,
+    });
+  },
+  handleTouchEnd(e) {
+      console.log(e)
+    const currentY = e.changedTouches[0].clientY;
+    const difference = this.data.startY - currentY;
+    if (difference < -50 && !this.data.isOpen) {
+      this.setData({
+        isOpen: true,
+      });
+    } else if (difference > 50 && this.data.isOpen) {
+      this.setData({
+        isOpen: false,
+      });
+    }
+  },
+  closePop(){
+    this.setData({
+        isOpen: false,
+      });
+  },
   // 更新关系列表
   async loadRelations() {
     var cat = this.data.cat;

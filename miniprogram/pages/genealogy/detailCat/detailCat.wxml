@@ -1,6 +1,8 @@
 <!-- 这是一张画布 -->
 <canvas style="width: 2000px; height: 2000px; border: 3rpx solid red; left: 1000000px; position: fixed;" canvas-id="bigPhoto"></canvas>
-
+<l-arc-popup show="{{isOpen}}" max-height="1000"  direction="top" bind:linclose="closePop">
+    <catDiary style="height: 100%;width: 100%;" cat="{{cat}}"></catDiary>
+</l-arc-popup>
 <!-- 背景下拉看到黄色块 -->
 <view id='bg-yellow' style='{{hideBgBlock? "background-color: transparent;": ""}}'></view>
 <!-- 整个页面容器 -->
@@ -21,6 +23,7 @@
     </swiper>
 
     <view class='info' id='info-box'>
+        <view class="down hu__hu__" style="position:relative;bottom: 20rpx;" bind:touchstart="handleTouchStart" capture-bind:touchend="handleTouchEnd"><text>下拉查看咪日记</text><l-icon name="down" l-class="down-icon" size="30"/></view>
         <view class="identity">
             <view class='name'>{{cat.name}}</view>
             <block wx:if='{{cat.gender}}'>

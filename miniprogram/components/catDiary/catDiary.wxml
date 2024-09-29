@@ -1,0 +1,15 @@
+<view style="height: 100%;width: 100%;">
+    <view class="header">
+        <view class="header-content">
+            <slot name="header"></slot>
+        </view>
+        <span class="header-default">{{cat.name}}的日记<span class="sub-header" bind:tap="changeOpen">{{currentDate}}
+                <image src="/images/rili.svg" style="height: 30rpx;width: 30rpx;padding: 0 10rpx;"></image>
+            </span>
+        </span>
+    </view>
+    <view></view>
+</view>
+<block wx:if="{{isOpenDate}}">
+    <calendar style="width: 100%;" id="calendar" bindload="handleLoad" bindchange="changeDate" vibrate="{{false}}" />
+</block>

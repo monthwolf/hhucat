@@ -5,8 +5,10 @@
         "popup": "/components/popup/popup",
         "poster": "/components/poster/poster",
         "van-tab": "@vant/weapp/tab/index",
-        "van-tabs": "@vant/weapp/tabs/index"
-
+        "van-tabs": "@vant/weapp/tabs/index",
+        "l-arc-popup":"/packages/linui/arc-popup",
+        "l-icon":"/packages/linui/icon",
+        "catDiary":"/components/catDiary/catDiary"
     },
     "navigationBarTitleText": "猫猫详情",
     "disableScroll": true

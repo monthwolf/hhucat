@@ -1,0 +1,73 @@
+
+.header-content {
+    text-align: center;
+    font-family: 'sans-serif';
+    font-style: normal;
+    font-weight: bold;
+    font-size: 39rpx;
+    letter-spacing: 4rpx;
+    text-shadow: 2rpx 4rpx 6rpx #dbdbdb;
+}
+
+.header-default {
+    text-align: center;
+    font-family: 'sans-serif';
+    font-style: normal;
+    font-weight: bold;
+    font-size: 39rpx;
+    letter-spacing: 4rpx;
+    text-shadow: 2rpx 4rpx 6rpx #dbdbdb;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    display: none;
+}
+.sub-header{
+
+    font-size: 25rpx;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+/* 当插槽内为空时 通过相邻选择器将默认值显示 */
+.header-content:empty + .header-default {
+    display: flex;
+    
+}
+
+.pop {
+    position: relative;
+    width: 200px;
+    height: 100px;
+    background-color: white;
+    border-radius: 5px;
+    filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.5));
+  }
+  
+  .pop::before {
+    content: '';
+    position: absolute;
+    right: 50%;
+    top: -20px;
+    transform: translateY(-0%) rotate(270deg);
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-left: 15px solid #ddd;
+    border-bottom: 15px solid transparent;
+  }
+  
+  .pop::after {
+    content: '';
+    position: absolute;
+    right: 50%;
+    top: -20px;
+    transform: translateY(-0%) rotate(270deg);
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-left: 15px solid white;
+    border-bottom: 15px solid transparent;
+  }
+  
+  
