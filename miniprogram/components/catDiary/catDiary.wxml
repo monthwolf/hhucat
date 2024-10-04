@@ -118,9 +118,9 @@
                 <text class="popup-title">喵日记详细</text>
                 <l-icon name="close" size="32" color="#5B8FF9" bindtap="hidePopup" />
             </view>
-            <swiper style="width: 100%;" autoplay class="media-swiper" wx:if="{{mediaList.length>0}}">
+            <swiper style="width: 100%;" autoplay indicator-dots indicator-active-color="#5B8FF9" class="media-swiper" wx:if="{{mediaList.length>0}}">
                 <!-- 循环显示图片或视频 -->
-                <swiper-item wx:for="{{mediaList}}" wx:key="url" style="position:absolute;height: auto;">
+                <swiper-item wx:for="{{mediaList}}"  wx:key="url" style="position:absolute;height: auto;">
                     <scroll-view bind:tap="preview" data-link="{{item.url}}">
                         <image wx:if="{{item.type === 'image'}}" src="{{item.url}}" class="media-image" />
                         <video wx:if="{{item.type === 'video'}}" src="{{item.url}}" controls class="media-video"></video>
