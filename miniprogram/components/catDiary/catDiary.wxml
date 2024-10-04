@@ -1,15 +1,133 @@
-<view style="height: 100%;width: 100%;">
+<view style="height: 100%;width: 100%;background-color: aliceblue;">
+<view>
     <view class="header">
         <view class="header-content">
             <slot name="header"></slot>
         </view>
-        <span class="header-default">{{cat.name}}的日记<span class="sub-header" bind:tap="changeOpen">{{currentDate}}
-                <image src="/images/rili.svg" style="height: 30rpx;width: 30rpx;padding: 0 10rpx;"></image>
+        <span class="header-default">{{cat.name}}的日记
+            <span class="sub-header">
+                <l-icon name="left" l-class="icon-left" bind:tap="goYesterday" />
+                <span style="align-items: center;justify-content: center;display: flex;" bind:tap="changeOpen">{{currentDate}}
+                    <image src="/images/rili.svg" style="height: 30rpx;width: 30rpx;padding: 0 10rpx;"></image>
+                </span>
+                <l-icon name="right" l-class="icon-right" bind:tap="goNextDay" />
             </span>
         </span>
     </view>
     <view></view>
 </view>
-<block wx:if="{{isOpenDate}}">
-    <calendar style="width: 100%;" id="calendar" bindload="handleLoad" bindchange="changeDate" vibrate="{{false}}" />
+
+<scroll-view style="height: 750rpx;margin:10rpx 20rpx;width: auto;padding-bottom: 20rpx; " scroll-y="true">
+    <block wx:if="{{isOpenDate}}">
+    <calendar style="width: 100%;--wc-bg-light: aliceblue;" id="calendar" bindload="handleLoad" bindchange="changeDate" darkmode="false" vibrate="{{false}}" date="{{currentDate}}" />
 </block>
+<view class="content {{animation?'flip-'+direction:''}}">
+    <view wx:for="{{diary}}" wx:key="index" style="width: 100%;">
+        <view>
+            <text style="font-weight: bold;"> {{item.time}} </text>
+            <span class="{{item.link.length > 0 ? 'text-with-media' : ''}}"  bindtap="showDetails" data-index="{{index}}">{{item.content}}</span>
+            <text>\n\n</text>
+        </view>
+    </view>
+
+    <view class="edit" hidden="{{animation}}">
+        <l-icon name="edit" color="#a2d2ff" class="edit-icon" /><text class="edit-text" bind:tap="openEdit">添加一条</text>
+    </view>
+</view>
+</scroll-view>
+
+<l-popup show="{{popShow}}" l-class="popup-container" content-align="center">
+    <scroll-view class="popup-content" scroll-y="true" style="height: 500rpx;">
+        <view class="popup-header">
+            <text class="popup-title">添加喵日记</text>
+            <l-icon name="close" size="32" color="#5B8FF9" bindtap="closePopup" />
+        </view>
+
+        <view class="form-item">
+            <text class="label">日期 <text class="cat-emoji">🐱</text></text>
+            <view class="date-display uneditable">
+                <text>{{currentDate}}</text>
+            </view>
+        </view>
+
+        <view class="form-item animation-fade-in" style="animation-delay: 0.1s;">
+            <text class="label">留影时间 <text class="cat-emoji">⏰</text></text>
+            <picker mode="time" value="{{currentTime}}" bindchange="bindTimeChange">
+                <view class="picker">
+                    {{currentTime}}
+                    <view class="cat-tail"></view>
+                </view>
+            </picker>
+        </view>
+
+        <view class="form-item animation-fade-in" style="animation-delay: 0.2s;">
+            <text class="label">喵的心情 <text class="cat-emoji">📝</text></text>
+            <view class="textarea-container">
+                <textarea placeholder="今天发生了什么好玩的事喵？" value="{{content}}" placeholder-class="placeholder" maxlength="500" bindinput="onContentChange" auto-height cursor-spacing="20"></textarea>
+                <view class="paw-print"></view>
+            </view>
+        </view>
+
+        <view class="form-item animation-fade-in" style="animation-delay: 0.3s;">
+            <view class="label-container">
+                <text class="label">喵的照片/视频 <text class="cat-emoji">📸</text></text>
+                <view class="note-container">
+                    <text class="note-text"> 该项并非必填项，按需上传即可</text>
+                    <text class="note-text"> 照片和视频加起来不能超过5个</text>
+                    <text class="note-text"> 上传的视频最长5分钟，请注意时间</text>
+                </view>
+            </view>
+            <van-uploader file-list="{{ fileList }}" deletable="{{ true }}" max-count="5" bind:after-read="afterRead" accept="media" multiple="{{ true }}" max-duration="300" bind:delete="delete" />
+            <view class="checkbox-container animation-fade-in" style="animation-delay: 0.4s;">
+                <checkbox-group bindchange="onSyncAlbumChange">
+                    <label class="checkbox-label">
+                        <checkbox value="sync" checked="{{syncToAlbum}}" color="#5B8FF9" />
+                        <text>同步上传照片到猫咪相册吗？</text>
+                    </label>
+                </checkbox-group>
+            </view>
+        </view>
+
+        <view class="validation-error" wx:if="{{validationError}}">
+            {{validationError}}
+        </view>
+
+        <view class="submit-btn" bind:tap="submitForm">
+            <button class="custom-button">提交喵日记
+            </button>
+        </view>
+    </scroll-view>
+</l-popup>
+<!-- 提交成功弹窗 -->
+<l-popup show="{{submitPopShow}}"  l-class="popup-container" content-align="center">
+    <view class="success-popup">
+        <view class="success-icon">✨</view>
+        <text class="success-title">喵记提交成功啦！</text>
+        <text class="success-desc">审核后就能在日记本里看到啦~</text>
+        <view class="success-cats">
+            <text class="cat-emoji">🐱</text>
+            <text class="cat-emoji">🐱</text>
+            <text class="cat-emoji">🐱</text>
+        </view>
+    </view>
+</l-popup>
+
+<l-popup show="{{showMedia}}"  l-class="popup-container" bind:lintap="hidePopup">
+    <view class="popup-content">
+        <view class="popup-header">
+            <text class="popup-title">喵日记详细</text>
+            <l-icon name="close" size="32" color="#5B8FF9" bindtap="hidePopup" />
+        </view>
+        <swiper style="width: 100%;" indicator-dots autoplay class="media-swiper">
+            <!-- 循环显示图片或视频 -->
+            <swiper-item wx:for="{{mediaList}}" wx:key="url" style="position:absolute">
+                <scroll-view bind:tap="preview" data-link="{{item.url}}">
+                    <image wx:if="{{item.type === 'image'}}" src="{{item.url}}" class="media-image" />
+                    <video wx:if="{{item.type === 'video'}}" src="{{item.url}}" controls class="media-video"></video>
+                </scroll-view>
+            </swiper-item>
+        </swiper>
+
+    </view>
+</l-popup>
+</view>

@@ -62,14 +62,26 @@ Page({
       needVerify: _.eq(true),
       deleted: _.neq(true)
     };
+    
     var res = await db.collection('comment').where(qf).orderBy("create_date", "desc").get();
     console.log(res);
-
+    qf = {
+        verified: false,
+        deleted: _.neq(true)
+    };
+    var res2 = await db.collection('diary').where(qf).orderBy("mdate","desc").orderBy("time","desc").get()
+    console.log(res2)
     // 填充userInfo
     await fillUserInfo(res.data, "user_openid", "userInfo");
+    await fillUserInfo(res2.data,"_openid","userInfo")
     for (var item of res.data) {
       item.datetime = formatDate(new Date(item.create_date), "yyyy-MM-dd hh:mm:ss")
       comments.push(item);
+    }
+    for (var item of res2.data) {
+        item.isDiary = true
+        item.datetime = item.date + " " + item.time
+        comments.push(item)
     }
 
     // 填充猫猫信息
@@ -134,9 +146,12 @@ Page({
 
   openBigPhoto(e) {
     const pid = e.currentTarget.dataset.pid;
-    wx.previewImage({
-      urls: [pid]
-    });
+    wx.previewMedia({
+      sources: [{
+          url:pid,
+    type:pid.includes('.mp4')?'video':'image'
+    }],
+    })
   },
 
   // 点击所属猫猫名称，可以跳转到猫猫详情
@@ -210,8 +225,11 @@ Page({
       }
 
       // 准备数据
-      var data = {
+      var data1 = {
         needVerify: false,
+      }
+      var data2 = {
+          verified: true,
       }
       if (comment.mark == 'delete') {
         data.deleted = true;
@@ -220,9 +238,9 @@ Page({
       all_queries.push(
         api.curdOp({
           operation: "update",
-          collection: "comment",
+          collection: comment.isDiary?"diary":"comment",
           item_id: comment._id,
-          data: data
+          data: comment.isDiary?data2:data1
         }))
       this.addNotice(comment, (comment.mark != "delete"));
     }
@@ -243,17 +261,25 @@ Page({
     let {notice_list} = this.jsData;
     if (!notice_list[openid]) {
       notice_list[openid] = {
-        accepted: 0,
-        deleted: 0,
+        c_accepted: 0,
+        c_deleted: 0,
+        d_accepted: 0,
+        d_deleted: 0
       }
     }
-    if (accepted) {
-      notice_list[openid].accepted++;
-    } else {
-      notice_list[openid].deleted++;
+    if (accepted && !comment.isDiary) {
+      notice_list[openid].c_accepted++;
+    } else if(!accepted && !comment.isDiary){
+      notice_list[openid].c_deleted++;
+    } 
+    else if (accepted && comment.isDiary) {
+        notice_list[openid].d_accepted++;
+    }
+    else {
+        notice_list[openid].d_deleted++;
     }
   },
-
+  // 获取链接类型
   // 管理员点击订阅
   async requestSubscribeMessage() {
     const notifyVerifyTplId = getMsgTplId("notifyVerify");

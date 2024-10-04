@@ -6,7 +6,7 @@ import { cloud } from "../../utils/cloudAccess";
 
 const share_text = text_cfg.app_name + ' - ' + text_cfg.info.share_tip;
 
-const logo_img = "/pages/public/images/app_logo.png";
+const logo_img = "https://oss.laf.run/n0002i-cloud-bin/app_logo.png";
 
 Page({
   data: {
@@ -76,7 +76,7 @@ Page({
             icon: "icon-photo-o"
           },
           {
-            name: "便利贴审核",
+            name: "便利贴/喵日记",
             path: "/pages/manage/checkComment/checkComment",
             num: "numChkComments",
             icon: "icon-smile-comment-o"
@@ -224,17 +224,18 @@ Page({
 
     // 待处理照片
     const imProcessQf = { photo_compressed: _.in([undefined, '']), verified: true, photo_id: /^((?!\.heic$).)*$/i };
-    var [numChkPhotos, numChkComments, numFeedbacks, numImProcess,numNewCat] = await Promise.all([
+    var [numChkPhotos, numChkComments, numFeedbacks, numImProcess,numNewCat,numDiary] = await Promise.all([
       db.collection('photo').where({ verified: false }).count(),
       db.collection('comment').where({ needVerify: true }).count(),
       db.collection('feedback').where({ dealed: false }).count(),
       db.collection('photo').where(imProcessQf).count(),
       db.collection('new_cat_feedback').where({ needVerify: true }).count(),
+      db.collection('diary').where({ verified: false }).count()
     ]);
     // console.log(numNewCat)
     this.setData({
       "nums.numChkPhotos": numChkPhotos.total,
-      "nums.numChkComments": numChkComments.total,
+      "nums.numChkComments": numChkComments.total + numDiary.total,
       "nums.numFeedbacks": numFeedbacks.total,
       "nums.numImProcess": numImProcess.total,
       "nums.numNewCat": numNewCat.total,

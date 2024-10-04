@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@lspriv/wc-plugin-disabled": "^1.0.1",
     "@lspriv/wx-calendar": "^1.7.3-alpha.8",
     "@vant/weapp": "^1.11.6",
     "crypto": "^1.0.1",
@@ -15,7 +16,8 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+        "vant": "vant-tree-shaking"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +26,7 @@
   "devDependencies": {
     "eslint": "^8.28.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.26.0"
+    "eslint-plugin-import": "^2.26.0",
+    "vant-tree-shaking": "^1.0.4"
   }
 }

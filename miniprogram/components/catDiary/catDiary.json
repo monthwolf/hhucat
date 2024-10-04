@@ -1,6 +1,10 @@
 {
     "component": true,
     "usingComponents": {
-        "calendar": "@lspriv/wx-calendar"
+        "calendar": "@lspriv/wx-calendar",
+        "l-icon":"/packages/linui/icon/index",
+        "l-popup":"/packages/linui/popup/index",
+        "l-button":"/packages/linui/button/index",
+        "van-uploader": "@vant/weapp/uploader/index"
     }
 }

@@ -45,7 +45,6 @@
         "pages/followFeed/followFeed",
         "pages/info/myFollowCats/myFollowCats"
     ],
-
     "subPackages": [{
         "root": "pages/packageA",
         "pages": [

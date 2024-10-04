@@ -3,7 +3,7 @@
 <scroll-view id="comment-list" scroll-y="true" bindscrolltolower='loadMoreComment' enable-back-to-top="true" bindscroll="bindCommentScroll" enable-flex="1">
   <!-- 猫猫名称 -->
   <view class='big-header'>
-    <image class='avatar' mode='aspectFill' src='{{cat.avatar.photo_compressed || cat.avatar.photo_id || "/pages/public/images/app_logo.png"}}'></image>
+    <image class='avatar' mode='aspectFill' src='{{cat.avatar.photo_compressed || cat.avatar.photo_id || "/pages/public/images/info/default_avatar.png"}}'></image>
     <view class='name-and-count'>
       <view class='name'>{{cat.name}}的便利贴墙</view>
       <view class='count'>共{{comment_count}}张便利贴</view>
@@ -18,7 +18,7 @@
       <view class="user-info">
         <view class="user-avatar">
           <image wx:if="{{!item.needVerify && item.userInfo}}" class="avatar" src="{{item.userInfo.avatarUrl}}" mode='aspectFit'></image>
-          <image wx:else class="avatar" src="/pages/public/images/app_logo.png" mode='aspectFit'></image>
+          <image wx:else class="avatar" src="/pages/public/images/info/default_avatar.png" mode='aspectFit'></image>
         </view>
         <view class="username">
           <text wx:if="{{item.needVerify}}">喵友</text>
