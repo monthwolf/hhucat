@@ -51,12 +51,13 @@ Component({
         syncToAlbum: true, // 默认选中同步到相册
         showMedia: false, // 控制弹窗显示
         mediaList: [], // 存储媒体列表
+        isExpanded: false
     },
     lifetimes: {
         attached: function () {
             var time = new Date();
             var year = time.getFullYear().toString().padStart(4, '0');
-            var month = (time.getMonth()+1).toString().padStart(2, '0');
+            var month = (time.getMonth() + 1).toString().padStart(2, '0');
             var date = time.getDate().toString().padStart(2, '0');
             this.setData({
                 currentDate: year + "-" + month + "-" + date
@@ -82,7 +83,7 @@ Component({
         },
         timeToString(time) {
             var year = time.getFullYear().toString().padStart(4, '0');
-            var month = (time.getMonth()+1).toString().padStart(2, '0');
+            var month = (time.getMonth() + 1).toString().padStart(2, '0');
             var date = time.getDate().toString().padStart(2, '0');
             return year + "-" + month + "-" + date;
         },
@@ -308,8 +309,14 @@ Component({
         // 显示弹窗逻辑
         async showDetails(e) {
             const links = this.data.diary[e.currentTarget.dataset.index].link; // 获取当前点击的媒体链接
+            const content = this.data.diary[e.currentTarget.dataset.index].content;
+            const time = this.data.diary[e.currentTarget.dataset.index].time
             this.setData({
                 mediaList: links,
+                diaryDetails: {
+                    content: content,
+                    time: time
+                },
                 showMedia: true // 显示弹窗
             });
         },
@@ -317,7 +324,8 @@ Component({
         hidePopup() {
             this.setData({
                 showMedia: false,
-                mediaList: []
+                mediaList: [],
+                diaryDetails:{}
             });
         },
         preview(e) {
@@ -326,6 +334,11 @@ Component({
                     urls: [e.currentTarget.dataset.link],
                 });
             }
+        },
+        toggleExpand() {
+            this.setData({
+                isExpanded: !this.data.isExpanded
+            });
         }
     }
 });
