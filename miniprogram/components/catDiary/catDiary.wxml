@@ -24,9 +24,9 @@
         <view class="content {{animation?'flip-'+direction:''}}">
             <view wx:for="{{diary}}" wx:key="index" style="width: 100%;">
                 <view>
-                    <text style="font-weight: bold;"> {{item.time}} </text>
-                    <span class="{{item.link.length > 0 ? 'text-with-media' : ''}}" bindtap="{{item.link.length > 0 ? 'showDetails' : ''}}" data-index="{{index}}">{{item.content}}</span>
-                    <text>\n\n</text>
+                    <text style="font-weight: bold"> {{item.time}} </text>
+                    <span class="text {{item.link.length > 0 ? 'text-with-media' : ''}}" bindtap="showDetails" data-index="{{index}}">{{item.content}}</span>
+                    <text>\n</text>
                 </view>
             </view>
 
@@ -63,7 +63,7 @@
             <view class="form-item animation-fade-in" style="animation-delay: 0.2s;">
                 <text class="label">喵的心情 <text class="cat-emoji">📝</text></text>
                 <view class="textarea-container">
-                    <textarea placeholder="今天发生了什么好玩的事喵？" value="{{content}}" placeholder-class="placeholder" maxlength="500" bindinput="onContentChange" auto-height cursor-spacing="20"></textarea>
+                    <textarea placeholder="今天发生了什么好玩的事喵？100字以内" value="{{content}}" placeholder-class="placeholder" maxlength="100" bindinput="onContentChange" auto-height cursor-spacing="20"></textarea>
                     <view class="paw-print"></view>
                 </view>
             </view>

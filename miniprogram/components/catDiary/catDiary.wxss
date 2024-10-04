@@ -23,7 +23,7 @@
 }
 
 .sub-header {
-width: 100%;
+    width: 100%;
     font-size: 25rpx;
     align-items: center;
     justify-content: space-between;
@@ -143,11 +143,11 @@ width: 100%;
     transition: 1s;
 }
 
-.edit-text{
+.edit-text {
     position: relative;
     width: 100vw;
     right: -28%;
-    top:-90%;
+    top: -90%;
     font-family: "黑体";
     font-size: medium;
     display: none;
@@ -158,11 +158,24 @@ width: 100%;
     border-top-left-radius: 30rpx;
     border-bottom-left-radius: 30rpx;
 }
-.edit:hover .edit-text{
+
+.edit:hover .edit-text {
     display: block;
 }
 
-
+.text {
+    /*设置为弹性盒子*/
+    display: -webkit-box;
+    /* 表示几行后超出隐藏 */
+    -webkit-line-clamp: 2;
+    /* 超出隐藏 */
+    overflow: hidden;
+    /*超出显示为省略号*/
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    /*强制英文单词自动换行*/
+    word-break: break-all;
+}
 
 @keyframes left {
     0% {
@@ -176,6 +189,7 @@ width: 100%;
         transform: rotateY(0deg);
     }
 }
+
 @keyframes right {
     0% {
         transform: rotateY(0deg);
@@ -194,10 +208,12 @@ width: 100%;
         transform: rotateY(0deg);
     }
 }
-.flip-right{
+
+.flip-right {
     animation: right 1s 1;
 }
-.flip-left{
+
+.flip-left {
     animation: left 1s 1;
 }
 
@@ -246,7 +262,8 @@ width: 100%;
     font-size: 32rpx;
 }
 
-.date-display, .picker {
+.date-display,
+.picker {
     height: 80rpx;
     line-height: 80rpx;
     background: #FFFFFF;
@@ -312,7 +329,8 @@ width: 100%;
     transform: translateX(-50%);
 }
 
-.cat-ears:before, .cat-ears:after {
+.cat-ears:before,
+.cat-ears:after {
     content: '';
     position: absolute;
     width: 20rpx;
@@ -333,8 +351,15 @@ width: 100%;
 
 /* 动画 */
 @keyframes tail-wave {
-    0%, 100% { transform: rotate(0deg); }
-    50% { transform: rotate(15deg); }
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(15deg);
+    }
 }
 
 .animation-fade-in {
@@ -343,8 +368,15 @@ width: 100%;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20rpx); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20rpx);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .animation-bounce {
@@ -352,8 +384,15 @@ width: 100%;
 }
 
 @keyframes bounce {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
 }
 
 .van-uploader {
@@ -394,10 +433,10 @@ width: 100%;
     width: 40rpx;
     height: 40rpx;
     background-image: radial-gradient(circle at 50% 50%, #5B8FF9 0%, #5B8FF9 30%, transparent 30%),
-                      radial-gradient(circle at 30% 30%, #5B8FF9 0%, #5B8FF9 20%, transparent 20%),
-                      radial-gradient(circle at 70% 30%, #5B8FF9 0%, #5B8FF9 20%, transparent 20%),
-                      radial-gradient(circle at 30% 70%, #5B8FF9 0%, #5B8FF9 20%, transparent 20%),
-                      radial-gradient(circle at 70% 70%, #5B8FF9 0%, #5B8FF9 20%, transparent 20%);
+        radial-gradient(circle at 30% 30%, #5B8FF9 0%, #5B8FF9 20%, transparent 20%),
+        radial-gradient(circle at 70% 30%, #5B8FF9 0%, #5B8FF9 20%, transparent 20%),
+        radial-gradient(circle at 30% 70%, #5B8FF9 0%, #5B8FF9 20%, transparent 20%),
+        radial-gradient(circle at 70% 70%, #5B8FF9 0%, #5B8FF9 20%, transparent 20%);
     opacity: 0.2;
     transform: rotate(10deg);
 }
@@ -412,9 +451,17 @@ width: 100%;
 }
 
 @keyframes pawPrint {
-    0% { transform: scale(1) rotate(10deg); }
-    50% { transform: scale(1.2) rotate(10deg); }
-    100% { transform: scale(1) rotate(10deg); }
+    0% {
+        transform: scale(1) rotate(10deg);
+    }
+
+    50% {
+        transform: scale(1.2) rotate(10deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(10deg);
+    }
 }
 
 /* 备注样式 */
@@ -458,9 +505,19 @@ width: 100%;
 }
 
 @keyframes noteWiggle {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(3rpx) rotate(0.5deg); }
-    75% { transform: translateX(-3rpx) rotate(-0.5deg); }
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(3rpx) rotate(0.5deg);
+    }
+
+    75% {
+        transform: translateX(-3rpx) rotate(-0.5deg);
+    }
 }
 
 /* 调整上传组件的样式以配合新的备注 */
@@ -549,19 +606,43 @@ width: 100%;
 }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5rpx); }
-    75% { transform: translateX(5rpx); }
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5rpx);
+    }
+
+    75% {
+        transform: translateX(5rpx);
+    }
 }
 
 @keyframes popIn {
-    0% { transform: scale(0.8); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10rpx); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10rpx);
+    }
 }
 
 /* 单选框相关样式 */
@@ -595,39 +676,42 @@ width: 100%;
 .checkbox-label:active {
     transform: scale(0.98);
 }
-  
-  /* 带有媒体的文本，添加虚线下划线 */
-  .text-with-media {
-    text-decoration: underline dashed #7fc3ff; /* 与标题栏的蓝色主题相符 */
+
+/* 带有媒体的文本，添加虚线下划线 */
+.text-with-media {
+    text-decoration: underline dashed #7fc3ff;
+    /* 与标题栏的蓝色主题相符 */
     /* flex: 1;  占据剩余空间 */
     font-size: 32rpx;
     color: #333;
     animation: bounce 2s infinite;
-  }
-  
+}
 
-  /* 图片样式 */
-  .media-image {
+
+/* 图片样式 */
+.media-image {
     width: 100%;
-  }
-  
-  /* 视频样式 */
-  .media-video {
+}
+
+/* 视频样式 */
+.media-video {
     width: 100%;
     height: 400rpx;
-  }
-  
-  /* 弹窗内的轮播图样式 */
-  .media-swiper {
+}
+
+/* 弹窗内的轮播图样式 */
+.media-swiper {
     /* height: 500rpx; */
     background-color: rgba(255, 255, 255, 0.37);
     position: relative;
-  }
-  .popup-container{
-      width: 100%;
-      height: 100%;
-  }
-  .diary-content-container {
+}
+
+.popup-container {
+    width: 100%;
+    height: 100%;
+}
+
+.diary-content-container {
     padding: 20rpx 30rpx;
     margin-top: 20rpx;
     position: relative;
@@ -688,20 +772,33 @@ width: 100%;
     margin-bottom: 12rpx;
 }
 
+.diary-content-wrapper {
+    position: relative;
+}
+
 .diary-content {
     font-size: 28rpx;
     color: #333333;
-    line-height: 1.6;
-    max-height: 120rpx;
+    line-height: 50rpx;
+    max-height: 100rpx;
+    width: 100%;
     overflow: hidden;
-    transition: max-height 0.3s ease-out;
+    transition: max-height 1s ease-out;
 }
+
+.content-text {
+    width: 100%;
+    word-break: break-all
+}
+
 
 .diary-content.expanded {
     max-height: 2000rpx;
+    transition: max-height 1s ease-in;
 }
 
-.content-prefix, .content-suffix {
+.content-prefix,
+.content-suffix {
     color: #5B8FF9;
     font-weight: bold;
 }
@@ -734,27 +831,53 @@ width: 100%;
 }
 
 @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5rpx); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5rpx);
+    }
 }
 
 @keyframes tailWag {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(15deg); }
-    75% { transform: rotate(-15deg); }
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(15deg);
+    }
+
+    75% {
+        transform: rotate(-15deg);
+    }
 }
 
 @keyframes swim {
-    0% { transform: translateX(100%) rotate(0deg); }
-    50% { transform: translateX(-100%) rotate(180deg); }
-    100% { transform: translateX(100%) rotate(360deg); }
+    0% {
+        transform: translateX(50%) rotate(0deg);
+    }
+
+    50% {
+        transform: translateX(-50%) rotate(180deg);
+    }
+
+    100% {
+        transform: translateX(50%) rotate(360deg);
+    }
 }
 
 @keyframes fadeIn {
-    from { 
+    from {
         opacity: 0;
         transform: translateY(20rpx);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);

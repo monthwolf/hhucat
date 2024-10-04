@@ -336,9 +336,9 @@ Component({
             }
         },
         toggleExpand() {
-            this.setData({
-                isExpanded: !this.data.isExpanded
-            });
-        }
+        this.setData({
+            isExpanded: !this.data.isExpanded
+        });
+    }
     }
 });
