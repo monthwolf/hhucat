@@ -17,7 +17,7 @@
         <view></view>
     </view>
 
-    <scroll-view style="height: 750rpx;margin:10rpx 20rpx;width: auto;padding-bottom: 20rpx; " scroll-y="true">
+    <scroll-view style="height: 900rpx;margin:10rpx 20rpx;width: auto;padding-bottom: 20rpx; " scroll-y="true">
         <block wx:if="{{isOpenDate}}">
             <calendar style="width: 100%;--wc-bg-light: aliceblue;" id="calendar" bindload="handleLoad" bindchange="changeDate" darkmode="false" vibrate="{{false}}" date="{{currentDate}}" />
         </block>
@@ -37,12 +37,12 @@
     </scroll-view>
 
     <l-popup show="{{popShow}}" l-class="popup-container" content-align="center">
-        <scroll-view class="popup-content" scroll-y="true" style="height: 500rpx;">
+        <view class="popup-content" >
             <view class="popup-header">
                 <text class="popup-title">添加喵日记</text>
                 <l-icon name="close" size="32" color="#5B8FF9" bindtap="closePopup" />
             </view>
-
+            <scroll-view scroll-y="true" style="height: 500rpx;">
             <view class="form-item">
                 <text class="label">日期 <text class="cat-emoji">🐱</text></text>
                 <view class="date-display uneditable">
@@ -78,7 +78,12 @@
                     </view>
                 </view>
                 <van-uploader file-list="{{ fileList }}" deletable="{{ true }}" max-count="5" bind:after-read="afterRead" accept="media" multiple="{{ true }}" max-duration="300" bind:delete="delete" />
-                <view class="checkbox-container animation-fade-in" style="animation-delay: 0.4s;">
+                
+            </view>
+
+            
+        </scroll-view>
+        <view class="checkbox-container animation-fade-in" style="animation-delay: 0.4s;">
                     <checkbox-group bindchange="onSyncAlbumChange">
                         <label class="checkbox-label">
                             <checkbox value="sync" checked="{{syncToAlbum}}" color="#5B8FF9" />
@@ -86,17 +91,16 @@
                         </label>
                     </checkbox-group>
                 </view>
-            </view>
-
-            <view class="validation-error" wx:if="{{validationError}}">
-                {{validationError}}
-            </view>
-
+                
             <view class="submit-btn" bind:tap="submitForm">
                 <button class="custom-button">提交喵日记
                 </button>
             </view>
-        </scroll-view>
+            <view class="validation-error" wx:if="{{validationError}}">
+                {{validationError}}
+            </view>
+        
+    </view>
     </l-popup>
     <!-- 提交成功弹窗 -->
     <l-popup show="{{submitPopShow}}" l-class="popup-container" content-align="center">

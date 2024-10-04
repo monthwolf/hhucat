@@ -647,6 +647,8 @@
 
 /* 单选框相关样式 */
 .checkbox-container {
+    display: flex;
+    justify-content: center;
     margin-top: 20rpx;
     padding-left: 10rpx;
 }
