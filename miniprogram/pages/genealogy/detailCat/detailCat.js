@@ -90,6 +90,10 @@ Page({
 
     // 是否展开评分详情
     showDetailRating: false,
+
+    isOpen: false,
+    startY: 0,
+    refresh:true
   },
 
   jsData: {
@@ -197,7 +201,9 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
+    this.setData({
+        isOpen: true,
+      });
   },
 
   /**
@@ -266,7 +272,39 @@ Page({
       this.jsData.infoHeight = res[0].height;
     })
   },
-
+  handleTouchStart(e) {
+    console.log(e)
+    // this.setData({
+    //         isOpen: false,
+    //       });
+    this.setData({
+      startY: e.touches[0].pageY,
+    });
+  },
+  handleTouchCancel(e){
+    this.setData({
+        startY:0,
+    })
+  },
+  handleTouchEnd(e) {
+    const currentY = e.changedTouches[0].pageY;
+    const difference = this.data.startY - currentY;
+    console.log(difference)
+    if (difference < -50 && !this.data.isOpen) {
+        this.setData({
+        isOpen: true,
+      });
+    } else if (difference > 50 && this.data.isOpen) {
+      this.setData({
+        isOpen: false,
+      });
+    }
+  },
+  closePop(){
+    this.setData({
+        isOpen: false,
+      });
+  },
   // 更新关系列表
   async loadRelations() {
     var cat = this.data.cat;

@@ -27,7 +27,7 @@ export default async function (ctx: FunctionContext) {
   console.log(param);
     
   try {
-    // POST https://.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=ACCESS_TOKEN
+    // POST https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=ACCESS_TOKEN
     const result = await axios.post('https://api.weixin.qq.com/cgi-bin/message/subscribe/send',
       param, { params: { access_token: access_token } }
     );

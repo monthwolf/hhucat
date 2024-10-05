@@ -1,10 +1,12 @@
 <!-- 这是一张画布 -->
 <canvas style="width: 2000px; height: 2000px; border: 3rpx solid red; left: 1000000px; position: fixed;" canvas-id="bigPhoto"></canvas>
-
+<l-popup wx:if="{{isOpen}}" id="pop-diary" show="true" bind:lintap="closePop"   content-align="top">
+    <catDiary style="height: 100%;width: 100%;" cat="{{cat}}" user="{{user}}"></catDiary>
+</l-popup>
 <!-- 背景下拉看到黄色块 -->
 <view id='bg-yellow' style='{{hideBgBlock? "background-color: transparent;": ""}}'></view>
 <!-- 整个页面容器 -->
-<scroll-view id='container' scroll-y="1" bindscrolltolower='loadMoreAlbum' enable-back-to-top="true" bindscroll="bindContainerScroll">
+<scroll-view id='container' scroll-y="1" bindscrolltolower='loadMoreAlbum' enable-back-to-top="true">
     <!-- 半圆形下面的白底块 -->
     <view id='bg-big-circle'></view>
     <!-- 这是黄色的半圆形 -->
@@ -21,6 +23,7 @@
     </swiper>
 
     <view class='info' id='info-box'>
+        <view  wx:if="{{showOpt}}" bind:touchend="handleTouchEnd" bind:touchstart="handleTouchStart" bind:touchcancel="handleTouchCancel" class="down hu__hu__"  ><text>下拉查看喵日记</text><l-icon name="down" l-class="down-icon" size="30"/></view>
         <view class="identity">
             <view class='name'>{{cat.name}}</view>
             <block wx:if='{{cat.gender}}'>

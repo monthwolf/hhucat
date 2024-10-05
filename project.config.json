@@ -30,7 +30,16 @@
     "useIsolateContext": true,
     "userConfirmedBundleSwitch": true,
     "packNpmManually": false,
-    "packNpmRelationList": [],
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "./"
+      },
+      {
+        "packageJsonPath": "./pages/packageA/package.json",
+        "miniprogramNpmDistDir": "./pages/packageA/"
+      }
+    ],
     "minifyWXSS": true,
     "disableUseStrict": false,
     "minifyWXML": true,
@@ -38,7 +47,9 @@
     "useCompilerPlugins": false,
     "ignoreDevUnusedFiles": false,
     "ignoreUploadUnusedFiles": true,
-    "condition": true
+    "condition": true,
+    "compileWorklet": true,
+    "swc": true
   },
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},

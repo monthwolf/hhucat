@@ -76,7 +76,7 @@
         <view class="user-info">
           <view class="user-avatar">
             <image wx:if="{{feedItem.items[0].userInfo}}" src="{{feedItem.items[0].userInfo.avatarUrl}}" mode="aspectFit"></image>
-            <image wx:else class="avatar" src="/pages/public/images/app_logo.png" mode="aspectFit"></image>
+            <image wx:else class="avatar" src="/pages/public/images/info/default_avatar.png" mode="aspectFit"></image>
           </view>
           <view class="username">
             {{feedItem.items[0].userInfo ? feedItem.items[0].userInfo.nickName : '-'}}
@@ -106,7 +106,7 @@
           <view class="user-info">
             <view class="user-avatar">
               <image wx:if="{{ item.userInfo}}" class="avatar" src="{{item.userInfo.avatarUrl}}" mode='aspectFit'></image>
-              <image wx:else class="avatar" src="/pages/public/images/app_logo.png" mode='aspectFit'></image>
+              <image wx:else class="avatar" src="/pages/public/images/info/default_avatar.png" mode='aspectFit'></image>
             </view>
             <view class="username">{{item.userInfo.nickName || '-'}}</view>
           </view>

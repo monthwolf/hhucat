@@ -59,4 +59,3 @@ page {
 }
 
 @import '/packages/weui/weui-wxss/dist/style/weui.wxss';
-@import "./pages/public/wxss/iconfont.wxss"

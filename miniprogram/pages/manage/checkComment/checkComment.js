@@ -50,6 +50,7 @@ Page({
     console.log('[onUnload] - 页面退出');
 
     // 发送审核消息
+    console.log(this.jsData.notice_list)
     sendVerifyCommentNotice(this.jsData.notice_list);
   },
 
@@ -62,14 +63,26 @@ Page({
       needVerify: _.eq(true),
       deleted: _.neq(true)
     };
+    
     var res = await db.collection('comment').where(qf).orderBy("create_date", "desc").get();
     console.log(res);
-
+    qf = {
+        verified: false,
+        deleted: _.neq(true)
+    };
+    var res2 = await db.collection('diary').where(qf).orderBy("mdate","desc").orderBy("time","desc").get()
+    console.log(res2)
     // 填充userInfo
     await fillUserInfo(res.data, "user_openid", "userInfo");
+    await fillUserInfo(res2.data,"_openid","userInfo")
     for (var item of res.data) {
       item.datetime = formatDate(new Date(item.create_date), "yyyy-MM-dd hh:mm:ss")
       comments.push(item);
+    }
+    for (var item of res2.data) {
+        item.isDiary = true
+        item.datetime = item.date + " " + item.time
+        comments.push(item)
     }
 
     // 填充猫猫信息
@@ -134,9 +147,12 @@ Page({
 
   openBigPhoto(e) {
     const pid = e.currentTarget.dataset.pid;
-    wx.previewImage({
-      urls: [pid]
-    });
+    wx.previewMedia({
+      sources: [{
+          url:pid,
+    type:pid.includes('.mp4')?'video':'image'
+    }],
+    })
   },
 
   // 点击所属猫猫名称，可以跳转到猫猫详情
@@ -211,16 +227,19 @@ Page({
 
       // 准备数据
       var data = {
-        needVerify: false,
       }
+      comment.isDiary?data.verified=true:data.needVerify=false
       if (comment.mark == 'delete') {
         data.deleted = true;
       }
-
+      const mark2type = {
+        "delete": "remove",
+        "pass": "update",
+      }
       all_queries.push(
         api.curdOp({
-          operation: "update",
-          collection: "comment",
+          operation: mark2type[comment.mark],
+          collection: comment.isDiary?"diary":"comment",
           item_id: comment._id,
           data: data
         }))
@@ -239,21 +258,29 @@ Page({
 
   // 添加一条通知记录，等页面退出的时候统一发送通知
   addNotice(comment, accepted) {
-    const openid = comment.user_openid;
+    const openid = comment.isDiary?comment._openid:comment.user_openid;
     let {notice_list} = this.jsData;
     if (!notice_list[openid]) {
       notice_list[openid] = {
-        accepted: 0,
-        deleted: 0,
+        c_accepted: 0,
+        c_deleted: 0,
+        d_accepted: 0,
+        d_deleted: 0
       }
     }
-    if (accepted) {
-      notice_list[openid].accepted++;
-    } else {
-      notice_list[openid].deleted++;
+    if (accepted && !comment.isDiary) {
+      notice_list[openid].c_accepted++;
+    } else if(!accepted && !comment.isDiary){
+      notice_list[openid].c_deleted++;
+    } 
+    else if (accepted && comment.isDiary) {
+        notice_list[openid].d_accepted++;
+    }
+    else {
+        notice_list[openid].d_deleted++;
     }
   },
-
+  // 获取链接类型
   // 管理员点击订阅
   async requestSubscribeMessage() {
     const notifyVerifyTplId = getMsgTplId("notifyVerify");

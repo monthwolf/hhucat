@@ -3,6 +3,30 @@ page {
   overflow: hidden;
   background-color: var(--color-gray-light);
 }
+
+.hu__hu__ { animation: hu__hu__ infinite 2s ease-in-out }
+@keyframes hu__hu__ {
+    50% { transform: translateY(10rpx) }
+}
+
+.down{
+    position: relative;
+    bottom: 20px;
+    height: 30rpx;
+    font-family: '黑体';
+    font-style: normal;
+    font-weight: lighter;
+    font-size: 18px;
+    text-decoration: none;
+    text-align: center;
+    text-shadow: 0px 0px 5px #c6d9f0;
+    text-fill-color: #adadad;
+    -webkit-text-fill-color: #adadad;
+}
+
+.down-icon{
+    margin-top: -15rpx;
+}
 #bg-yellow {
   width: 750rpx;
   height: 1000rpx;
@@ -317,7 +341,7 @@ swiper-item image {
   width: 80rpx;
   height: 80rpx;
   position: fixed;
-  bottom: 100rpx;
+  bottom: 10%;
   right: 30rpx;
   filter: drop-shadow(0px 12rpx 12rpx rgba(0, 0, 0, 0.15));
   display: block;

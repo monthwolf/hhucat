@@ -1,4 +1,5 @@
 name: updateFollowCats
+desc: ""
 methods:
   - POST
 tags: []
