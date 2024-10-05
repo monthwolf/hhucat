@@ -19,7 +19,7 @@
 
     <scroll-view style="height: 900rpx;margin:10rpx 20rpx;width: auto;padding-bottom: 20rpx; " scroll-y="true">
         <block wx:if="{{isOpenDate}}">
-            <calendar marks="{{marks}}" style="width: 100%;--wc-bg-light: aliceblue;" id="calendar" bindload="handleLoad" bindchange="changeDate" darkmode="false" vibrate="{{false}}" date="{{currentDate}}" />
+            <calendar marks="{{marks}}" style="width: 100%;--wc-bg-light: aliceblue;--wc-corner-size: 17.5rpx;" id="calendar" bindload="handleLoad" bindchange="changeDate" darkmode="false" vibrate="{{false}}" date="{{currentDate}}" />
         </block>
         <view class="content {{animation?'flip-'+direction:''}}">
             <view wx:for="{{diary}}" wx:key="index" style="width: 100%;">
@@ -31,7 +31,7 @@
                 </view>
             </view>
 
-            <view class="edit" hidden="{{animation}}">
+            <view class="edit" hidden="{{animation || !canEdit}}">
                 <l-icon name="edit" color="#a2d2ff" class="edit-icon" /><text class="edit-text" bind:tap="openEdit">添加一条</text>
             </view>
         </view>

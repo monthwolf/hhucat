@@ -1,7 +1,7 @@
 <!-- 这是一张画布 -->
 <canvas style="width: 2000px; height: 2000px; border: 3rpx solid red; left: 1000000px; position: fixed;" canvas-id="bigPhoto"></canvas>
 <l-popup wx:if="{{isOpen}}" id="pop-diary" show="true" bind:lintap="closePop"   content-align="top">
-    <catDiary style="height: 100%;width: 100%;" cat="{{cat}}" user="{{user}}"></catDiary>
+    <catDiary style="height: 100%;width: 100%;" cat="{{cat}}" user="{{user}}" canEdit="{{showOpt}}"></catDiary>
 </l-popup>
 <!-- 背景下拉看到黄色块 -->
 <view id='bg-yellow' style='{{hideBgBlock? "background-color: transparent;": ""}}'></view>
@@ -23,7 +23,7 @@
     </swiper>
 
     <view class='info' id='info-box'>
-        <view  wx:if="{{showOpt}}" bind:touchend="handleTouchEnd" bind:touchstart="handleTouchStart" bind:touchcancel="handleTouchCancel" class="down hu__hu__"  ><text>下拉查看喵日记</text><l-icon name="down" l-class="down-icon" size="30"/></view>
+        <view  bind:touchend="handleTouchEnd" bind:touchstart="handleTouchStart" bind:touchcancel="handleTouchCancel" class="down hu__hu__"  ><text>下拉查看喵日记</text><l-icon name="down" l-class="down-icon" size="30"/></view>
         <view class="identity">
             <view class='name'>{{cat.name}}</view>
             <block wx:if='{{cat.gender}}'>

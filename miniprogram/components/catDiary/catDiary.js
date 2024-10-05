@@ -31,10 +31,11 @@ Component({
             type: Object,
             value: ''
         },
-        isOpen: {
-            type: Boolean,
-            value: false
+        canEdit: {
+            type:Boolean,
+            value: true
         }
+
     },
     data: {
         isOpenDate: false,
@@ -76,32 +77,11 @@ Component({
                 date: this.data.currentDate
             };
             const diary = (await db.collection('diary').where(qf).orderBy('time', 'asc').get()).data;
-            const marks = await db.collection('diary').aggregate([
-                {
-                  $group: {
-                    _id: "$date",          // 以 date 字段进行分组
-                    count: { $sum: 1 }     // 统计每个 date 出现的次数
-                  }
-                },
-                {
-                  $match: {
-                    count: { $gt: 0 }      // 排除没有出现过的日期（通常不存在这种情况，因为只会统计实际存在的日期）
-                  }
-                },
-                {
-                  $project: {
-                    _id: 0,                // 不显示 _id 字段
-                    date: "$_id",          // 将 _id 字段重命名为 date
-                    type: { $literal: "corner" },
-                    color: { $literal: "#ff6868" },
-                    text: { $toString: "$count" }      // 将出现的次数存储为 content 字段
-                  }
-                }
-              ]).end()
-            console.log(marks)
+
+            
             this.setData({
                 diary: diary,
-                marks: marks.data
+                
             })
         },
         timeToString(time) {
@@ -124,11 +104,53 @@ Component({
             })
             this.loadDiary();
         },
-        changeOpen() {
+        async changeOpen() {
             this.setData({
                 isOpenDate: !this.data.isOpenDate
             })
-            //   console.log(this.data.isOpenDate)
+            if (this.data.isOpenDate){
+                const db = await cloud.databaseAsync();
+            const _ = db.command;
+                const marks = await db.collection('diary').aggregate([{
+                    $match: {
+                        cat_id: this.data.cat._id,
+                    }
+                }, {
+                    $group: {
+                        _id: "$date", // 以 date 字段进行分组
+                        count: {
+                            $sum: 1
+                        } // 统计每个 date 出现的次数
+                    }
+                },
+                {
+                    $match: {
+                        count: {
+                            $gt: 0
+                        } // 排除没有出现过的日期（通常不存在这种情况，因为只会统计实际存在的日期）
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0, // 不显示 _id 字段
+                        date: "$_id", // 将 _id 字段重命名为 date
+                        type: {
+                            $literal: "corner"
+                        },
+                        color: {
+                            $literal: "#ff6868"
+                        },
+                        text: {
+                            $toString: "$count"
+                        } // 将出现的次数存储为 content 字段
+                    }
+                }
+            ]).end()
+            // console.log(marks)
+            this.setData({
+                marks: marks.data
+            })
+            }
         },
         //切换日期到前一天
         goYesterday() {
@@ -272,7 +294,7 @@ Component({
                                 photo_id: i.url,
                                 user_id: this.properties.user._id,
                                 verified: false,
-                                shooting_date:new Date(Date.parse(this.data.currentDate + "T" + this.data.currentTime)),
+                                shooting_date: new Date(Date.parse(this.data.currentDate + "T" + this.data.currentTime)),
                                 photographer: getUserInfo(this.properties.user.openid).nickName
                             };
                             dbAddRes = (await api.curdOp({
@@ -299,26 +321,26 @@ Component({
                 this.closePopup()
             }, 2000);
         },
-        openAction(e){
+        openAction(e) {
             var diary = this.data.diary[e.currentTarget.dataset.index]
-            if (this.data.user.manager < 1 && this.data.user.openid != diary._openid){
+            if (this.data.user.manager < 1 && this.data.user.openid != diary._openid) {
                 return
             }
-            var that =this
+            var that = this
             wx.showActionSheet({
                 itemList: ['删除'],
                 success(res) {
-                  if (res.tapIndex == 0) {
-                      console.log(diary)
-                      api.curdOp({
-                        operation: 'remove',
-                        collection: "diary",
-                        item_id: diary._id,
-                        data: diary
-                      })
-                      setTimeout(()=>{
-                        that.loadDiary()
-                      },1000)
+                    if (res.tapIndex == 0) {
+                        console.log(diary)
+                        api.curdOp({
+                            operation: 'remove',
+                            collection: "diary",
+                            item_id: diary._id,
+                            data: diary
+                        })
+                        setTimeout(() => {
+                            that.loadDiary()
+                        }, 1000)
                     }
                 }
             })
@@ -372,7 +394,7 @@ Component({
             this.setData({
                 showMedia: false,
                 mediaList: [],
-                diaryDetails:{}
+                diaryDetails: {}
             });
         },
         preview(e) {
@@ -383,9 +405,9 @@ Component({
             }
         },
         toggleExpand() {
-        this.setData({
-            isExpanded: !this.data.isExpanded
-        });
-    }
+            this.setData({
+                isExpanded: !this.data.isExpanded
+            });
+        }
     }
 });
