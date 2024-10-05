@@ -279,7 +279,7 @@ function sendVerifyCommentNotice(notice_list) {
   }
 }
 
-// 发送审核便利贴留言消息
+// 发送审核新猫留言消息
 function sendVerifyCatNotice(notice_list) {
     const cfg = msgConfig.verify;  // 和照片审核通用
     const openids = Object.keys(notice_list);

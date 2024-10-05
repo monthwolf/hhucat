@@ -421,9 +421,9 @@
     box-sizing: border-box;
 }
 
-.placeholder {
-    color: #A1B4D4;
-    font-size: 28rpx;
+.placeholder-class {
+    color: #A1B4D4 !important;
+    font-size: 28rpx !important;
 }
 
 .paw-print {

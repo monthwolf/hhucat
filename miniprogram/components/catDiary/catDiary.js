@@ -208,7 +208,7 @@ Component({
             var link = []
             if (fileList != []) {
                 for (var e of fileList) {
-                    console.log(e)
+                    // console.log(e)
                     const tempFilePath = e.url;
                     console.log(tempFilePath)
                     //获取后缀
@@ -231,7 +231,7 @@ Component({
                     time: this.data.currentTime,
                     verified: false,
                 };
-                // 在实际应用中，这里会有提交到服务器的逻辑
+
                 let dbAddRes = (await api.curdOp({
                     operation: "add",
                     collection: "diary",
@@ -241,15 +241,15 @@ Component({
 
                 if (this.data.syncToAlbum) {
                     for (var i of link) {
-                        const index = tempFilePath.lastIndexOf(".");
-                        const ext = tempFilePath.substr(index + 1);
+                        const index = i.url.lastIndexOf(".");
+                        const ext = i.url.substr(index + 1);
                         if (ext == "jpg" || ext == "png" || ext == "jpeg") {
                             const params2 = {
                                 cat_id: this.properties.cat._id,
-                                photo_id: i,
+                                photo_id: i.url,
                                 user_id: this.properties.user._id,
                                 verified: false,
-                                shooting_date: this.data.currentDate,
+                                shooting_date:new Date(Date.parse(this.data.currentDate + "T" + this.data.currentTime)),
                                 photographer: getUserInfo(this.properties.user.openid).nickName
                             };
                             dbAddRes = (await api.curdOp({
@@ -276,7 +276,30 @@ Component({
                 this.closePopup()
             }, 2000);
         },
-
+        openAction(e){
+            var diary = this.data.diary[e.currentTarget.dataset.index]
+            if (this.data.user.manager < 1 && this.data.user.openid != diary._openid){
+                return
+            }
+            var that =this
+            wx.showActionSheet({
+                itemList: ['删除'],
+                success(res) {
+                  if (res.tapIndex == 0) {
+                      console.log(diary)
+                      api.curdOp({
+                        operation: 'remove',
+                        collection: "diary",
+                        item_id: diary._id,
+                        data: diary
+                      })
+                      setTimeout(()=>{
+                        that.loadDiary()
+                      },1000)
+                    }
+                }
+            })
+        },
         showError(message) {
             this.setData({
                 validationError: message

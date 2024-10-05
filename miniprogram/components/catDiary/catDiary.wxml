@@ -25,7 +25,8 @@
             <view wx:for="{{diary}}" wx:key="index" style="width: 100%;">
                 <view>
                     <text style="font-weight: bold"> {{item.time}} </text>
-                    <span class="text {{item.link.length > 0 ? 'text-with-media' : ''}}" bindtap="showDetails" data-index="{{index}}">{{item.content}}</span>
+                    <span class="text {{item.link.length > 0 ? 'text-with-media' : ''}}" bindtap="showDetails" bind:longtap="openAction" data-index="{{index}}">{{item.content}}</span>
+
                     <text>\n</text>
                 </view>
             </view>
@@ -37,61 +38,61 @@
     </scroll-view>
 
     <l-popup show="{{popShow}}" l-class="popup-container" content-align="center">
-        <view class="popup-content" >
+        <view class="popup-content">
             <view class="popup-header">
                 <text class="popup-title">添加喵日记</text>
                 <l-icon name="close" size="32" color="#5B8FF9" bindtap="closePopup" />
             </view>
             <scroll-view scroll-y="true" style="height: 500rpx;">
-            <view class="form-item">
-                <text class="label">日期 <text class="cat-emoji">🐱</text></text>
-                <view class="date-display uneditable">
-                    <text>{{currentDate}}</text>
-                </view>
-            </view>
-
-            <view class="form-item animation-fade-in" style="animation-delay: 0.1s;">
-                <text class="label">留影时间 <text class="cat-emoji">⏰</text></text>
-                <picker mode="time" value="{{currentTime}}" bindchange="bindTimeChange">
-                    <view class="picker">
-                        {{currentTime}}
-                        <view class="cat-tail"></view>
-                    </view>
-                </picker>
-            </view>
-
-            <view class="form-item animation-fade-in" style="animation-delay: 0.2s;">
-                <text class="label">喵的心情 <text class="cat-emoji">📝</text></text>
-                <view class="textarea-container">
-                    <textarea placeholder="今天发生了什么好玩的事喵？100字以内" value="{{content}}" placeholder-class="placeholder" maxlength="100" bindinput="onContentChange" auto-height cursor-spacing="20"></textarea>
-                    <view class="paw-print"></view>
-                </view>
-            </view>
-
-            <view class="form-item animation-fade-in" style="animation-delay: 0.3s;">
-                <view class="label-container">
-                    <text class="label">喵的照片/视频 <text class="cat-emoji">📸</text></text>
-                    <view class="note-container">
-                        <text class="note-text"> 该项并非必填项，按需上传即可</text>
-                        <text class="note-text"> 照片和视频加起来不能超过5个</text>
-                        <text class="note-text"> 上传的视频最长5分钟，请注意时间</text>
+                <view class="form-item">
+                    <text class="label">日期 <text class="cat-emoji">🐱</text></text>
+                    <view class="date-display uneditable">
+                        <text>{{currentDate}}</text>
                     </view>
                 </view>
-                <van-uploader file-list="{{ fileList }}" deletable="{{ true }}" max-count="5" bind:after-read="afterRead" accept="media" multiple="{{ true }}" max-duration="300" bind:delete="delete" />
-                
+
+                <view class="form-item animation-fade-in" style="animation-delay: 0.1s;">
+                    <text class="label">留影时间 <text class="cat-emoji">⏰</text></text>
+                    <picker mode="time" value="{{currentTime}}" bindchange="bindTimeChange">
+                        <view class="picker">
+                            {{currentTime}}
+                            <view class="cat-tail"></view>
+                        </view>
+                    </picker>
+                </view>
+
+                <view class="form-item animation-fade-in" style="animation-delay: 0.2s;">
+                    <text class="label">喵的心情 <text class="cat-emoji">📝</text></text>
+                    <view class="textarea-container">
+                        <textarea placeholder="今天发生了什么好玩的事喵？100字以内" value="{{content}}" placeholder-class="placeholder-class" maxlength="100" bindinput="onContentChange" auto-height cursor-spacing="20"></textarea>
+                        <view class="paw-print"></view>
+                    </view>
+                </view>
+
+                <view class="form-item animation-fade-in" style="animation-delay: 0.3s;">
+                    <view class="label-container">
+                        <text class="label">喵的照片/视频 <text class="cat-emoji">📸</text></text>
+                        <view class="note-container">
+                            <text class="note-text"> 该项并非必填项，按需上传即可</text>
+                            <text class="note-text"> 照片和视频加起来不能超过5个</text>
+                            <text class="note-text"> 上传的视频最长5分钟，请注意时间</text>
+                        </view>
+                    </view>
+                    <van-uploader file-list="{{ fileList }}" deletable="{{ true }}" max-count="5" bind:after-read="afterRead" accept="media" multiple="{{ true }}" max-duration="300" bind:delete="delete" />
+
+                </view>
+
+
+            </scroll-view>
+            <view class="checkbox-container animation-fade-in" style="animation-delay: 0.4s;">
+                <checkbox-group bindchange="onSyncAlbumChange">
+                    <label class="checkbox-label">
+                        <checkbox value="sync" checked="{{syncToAlbum}}" color="#5B8FF9" />
+                        <text>同步上传照片到猫咪相册吗？</text>
+                    </label>
+                </checkbox-group>
             </view>
 
-            
-        </scroll-view>
-        <view class="checkbox-container animation-fade-in" style="animation-delay: 0.4s;">
-                    <checkbox-group bindchange="onSyncAlbumChange">
-                        <label class="checkbox-label">
-                            <checkbox value="sync" checked="{{syncToAlbum}}" color="#5B8FF9" />
-                            <text>同步上传照片到猫咪相册吗？</text>
-                        </label>
-                    </checkbox-group>
-                </view>
-                
             <view class="submit-btn" bind:tap="submitForm">
                 <button class="custom-button">提交喵日记
                 </button>
@@ -99,8 +100,8 @@
             <view class="validation-error" wx:if="{{validationError}}">
                 {{validationError}}
             </view>
-        
-    </view>
+
+        </view>
     </l-popup>
     <!-- 提交成功弹窗 -->
     <l-popup show="{{submitPopShow}}" l-class="popup-container" content-align="center">
@@ -124,9 +125,9 @@
             </view>
             <swiper style="width: 100%;" autoplay indicator-dots indicator-active-color="#5B8FF9" class="media-swiper" wx:if="{{mediaList.length>0}}">
                 <!-- 循环显示图片或视频 -->
-                <swiper-item wx:for="{{mediaList}}"  wx:key="url" style="position:absolute;height: auto;">
+                <swiper-item wx:for="{{mediaList}}" wx:key="url" style="position:absolute;height: auto;">
                     <scroll-view bind:tap="preview" data-link="{{item.url}}">
-                        <image wx:if="{{item.type === 'image'}}" src="{{item.url}}" class="media-image" />
+                        <image wx:if="{{item.type === 'image'}}" src="{{item.url}}" class="media-image" mode="aspectFit" />
                         <video wx:if="{{item.type === 'video'}}" src="{{item.url}}" controls class="media-video"></video>
                     </scroll-view>
                 </swiper-item>
@@ -136,7 +137,7 @@
                     <view class="cat-thought-bubble">
                         <view class="cat-name">
                             <view class="cat-emoji">🐱</view>
-                            {{cat.name}}的踪迹
+                            {{cat.name}}
                             <view class="cat-tail"></view>
                         </view>
                         <view class="diary-time">{{diaryDetails.time}}</view>

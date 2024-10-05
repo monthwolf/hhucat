@@ -50,6 +50,7 @@ Page({
     console.log('[onUnload] - 页面退出');
 
     // 发送审核消息
+    console.log(this.jsData.notice_list)
     sendVerifyCommentNotice(this.jsData.notice_list);
   },
 
@@ -225,22 +226,22 @@ Page({
       }
 
       // 准备数据
-      var data1 = {
-        needVerify: false,
+      var data = {
       }
-      var data2 = {
-          verified: true,
-      }
+      comment.isDiary?data.verified=true:data.needVerify=false
       if (comment.mark == 'delete') {
         data.deleted = true;
       }
-
+      const mark2type = {
+        "delete": "remove",
+        "pass": "update",
+      }
       all_queries.push(
         api.curdOp({
-          operation: "update",
+          operation: mark2type[comment.mark],
           collection: comment.isDiary?"diary":"comment",
           item_id: comment._id,
-          data: comment.isDiary?data2:data1
+          data: data
         }))
       this.addNotice(comment, (comment.mark != "delete"));
     }
@@ -257,7 +258,7 @@ Page({
 
   // 添加一条通知记录，等页面退出的时候统一发送通知
   addNotice(comment, accepted) {
-    const openid = comment.user_openid;
+    const openid = comment.isDiary?comment._openid:comment.user_openid;
     let {notice_list} = this.jsData;
     if (!notice_list[openid]) {
       notice_list[openid] = {
