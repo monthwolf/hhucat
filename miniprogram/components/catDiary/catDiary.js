@@ -76,9 +76,32 @@ Component({
                 date: this.data.currentDate
             };
             const diary = (await db.collection('diary').where(qf).orderBy('time', 'asc').get()).data;
-            console.log(diary)
+            const marks = await db.collection('diary').aggregate([
+                {
+                  $group: {
+                    _id: "$date",          // 以 date 字段进行分组
+                    count: { $sum: 1 }     // 统计每个 date 出现的次数
+                  }
+                },
+                {
+                  $match: {
+                    count: { $gt: 0 }      // 排除没有出现过的日期（通常不存在这种情况，因为只会统计实际存在的日期）
+                  }
+                },
+                {
+                  $project: {
+                    _id: 0,                // 不显示 _id 字段
+                    date: "$_id",          // 将 _id 字段重命名为 date
+                    type: { $literal: "corner" },
+                    color: { $literal: "#ff6868" },
+                    text: { $toString: "$count" }      // 将出现的次数存储为 content 字段
+                  }
+                }
+              ]).end()
+            console.log(marks)
             this.setData({
-                diary: diary
+                diary: diary,
+                marks: marks.data
             })
         },
         timeToString(time) {
@@ -340,6 +363,7 @@ Component({
                     content: content,
                     time: time
                 },
+                isOpenDate: false,
                 showMedia: true // 显示弹窗
             });
         },

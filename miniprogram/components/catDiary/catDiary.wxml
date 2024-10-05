@@ -19,7 +19,7 @@
 
     <scroll-view style="height: 900rpx;margin:10rpx 20rpx;width: auto;padding-bottom: 20rpx; " scroll-y="true">
         <block wx:if="{{isOpenDate}}">
-            <calendar style="width: 100%;--wc-bg-light: aliceblue;" id="calendar" bindload="handleLoad" bindchange="changeDate" darkmode="false" vibrate="{{false}}" date="{{currentDate}}" />
+            <calendar marks="{{marks}}" style="width: 100%;--wc-bg-light: aliceblue;" id="calendar" bindload="handleLoad" bindchange="changeDate" darkmode="false" vibrate="{{false}}" date="{{currentDate}}" />
         </block>
         <view class="content {{animation?'flip-'+direction:''}}">
             <view wx:for="{{diary}}" wx:key="index" style="width: 100%;">
