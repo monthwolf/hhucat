@@ -16,6 +16,7 @@ const permissionNeed = {
     "inter": 0,
     "news": 3,
     "photo": 0,
+    "diary": 0,
     "new_cat_feedback":0,
     "photo_rank": 3,
     "badge_code": 99,
@@ -34,6 +35,7 @@ const permissionNeed = {
     "inter": 1,
     "news": 1,
     "photo": 1,
+    "diary": 1,
     "photo_rank": 1,
     "badge_code": 3,
     "rating": 1,
@@ -43,52 +45,11 @@ const permissionNeed = {
     "user": 1,
   },
   "remove": {
-    "badge_def": 2,
-    "cat": 99,
-    "comment": 1,
-    "feedback": 1,
-    "new_cat_feedback":1,
-    "inter": 1,
-    "news": 1,
-    "photo": 1,
-    "photo_rank": 1,
-    "badge_code": 99,
-    "rating": 99,
-    "reward": 99,
-    "science": 99,
-    "setting": 99,
-    "user": 1,
-  },
-  "set": {
-    "badge_def": 2,
-    "cat": 2,
-    "comment": 1,
-    "feedback": 1,
-    "new_cat_feedback":1,
-    "inter": 1,
-    "news": 1,
-    "photo": 1,
     "photo_rank": 1,
     "badge_code": 99,
     "rating": 99,
     "reward": 1,
-    "science": 1,
-    "setting": 1,
-    "user": 1,
-  },
-  "inc": {
-    "badge_def": 2,
-    "cat": 0,
-    "comment": 1,
-    "feedback": 1,
-    "new_cat_feedback":1,
-    "inter": 1,
-    "news": 1,
-    "photo": 0,
-    "photo_rank": 1,
-    "badge_code": 99,
-    "rating": 99,
-    "reward": 1,
+    "diary": 1,
     "science": 1,
     "setting": 99,
     "user": 1,
@@ -106,7 +67,8 @@ const permissionAuthor = {
     "rating": true,
   },
   "remove": {
-    "comment": true
+    "comment": true,
+    "diary": true
   },
   "set": {},
   "inc": {},
@@ -176,6 +138,9 @@ export default async function (ctx: FunctionContext) {
   else if (operation == "remove") {  // 移除记录
     if (collection == "news") {  // 删除公告关联的图片和封面
       await delete_photo_for_news(item_id);
+    }
+    if (collection == "diary") {  // 删除喵日记媒体
+      await delete_media_for_diary(item_id);
     }
     return await db.collection(collection).doc(item_id).remove();
   }
@@ -251,5 +216,18 @@ async function delete_photo_for_news(item_id) {
   if (item.coverPath) {
     await deleteFiles([item.coverPath]);
     console.log("删除公告封面", item.coverPath);
+  }
+}
+
+// 删除喵日记媒体
+async function delete_media_for_diary(item_id) {
+  let item = (await db.collection('diary').doc(item_id).get()).data;
+
+  // 删除云储存的媒体文件
+  console.log("Media path:", item.link);
+  let fileIDs = item.link.map(item => item.url);
+  if (item.link && item.link.length > 0) {
+    await deleteFiles(fileIDs);
+    console.log("删除媒体", fileIDs);
   }
 }

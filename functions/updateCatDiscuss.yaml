@@ -1,5 +1,6 @@
-name: updateFollowCats
+name: updateCatDiscuss
 desc: ""
 methods:
+  - GET
   - POST
 tags: []

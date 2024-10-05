@@ -4,6 +4,7 @@ const funcs = [
   "getPhotoRank",
   "getBadgeRank",
   "countPhoto",
+  "updateCatDiscuss"
 ]
 
 export async function main(ctx: FunctionContext) {
