@@ -193,17 +193,19 @@ Page({
     const allPhotoQf = { verified: true, photo_id: /^((?!\.heic$).)*$/i };
     // 所有便利贴数量
     const allCommentQf = { deleted: _.neq(true), needVerify: _.neq(true) };
+    const allDiaryQf = { verified: true }
     // 所有领养
     const adoptQf = { adopt: 1 };
     // 所有绝育量
     const sterilizedQf = { sterilized: true };
 
-    let [numAllCats, numAllPhotos, numAllComments, numSterilized, numAdoptQf] = await Promise.all([
+    let [numAllCats, numAllPhotos, numAllComments, numSterilized, numAdoptQf,numAllDiary] = await Promise.all([
       db.collection('cat').where(allCatQf).count(),
       db.collection('photo').where(allPhotoQf).count(),
       db.collection('comment').where(allCommentQf).count(),
       db.collection('cat').where(sterilizedQf).count(),
       db.collection('cat').where(adoptQf).count(),
+      db.collection('diary').where(allDiaryQf).count()
     ]);
     
     // 计算绝育率
@@ -214,6 +216,7 @@ Page({
       numAllCats: numAllCats.total,
       numAllPhotos: numAllPhotos.total,
       numAllComments: numAllComments.total,
+      numAllDiary: numAllDiary.total,
       sterilizationRate: sterilizationRate + '%',
       adoptRate: adoptRate + '%',
     });

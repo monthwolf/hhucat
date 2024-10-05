@@ -123,7 +123,8 @@ Page({
     this.setData({
       numUserComments: result.numUserComments,
       numUserLiked: result.numUserLiked,
-      numUserPhotos: result.numUserPhotos
+      numUserPhotos: result.numUserPhotos,
+      numUserDiary: result.numUserDiary
     });
   },
 

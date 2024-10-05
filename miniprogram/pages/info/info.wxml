@@ -18,6 +18,10 @@
       <view class="num-title">{{numAllComments || '-'}}</view>
       <text class='small-title'>张便利贴</text>
     </view>
+    <view class="num">
+      <view class="num-title">{{numAllDiary || '-'}}</view>
+      <text class='small-title'>条喵日记</text>
+    </view>
   </view>
   <view class="num-info">
     <view class="num">

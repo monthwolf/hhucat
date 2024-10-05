@@ -20,6 +20,10 @@
         <view class="num-title">{{numUserComments !== null && numUserComments !== undefined ? numUserComments : '-'}}</view>
         <text class='small-title'>便利贴</text>
       </view>
+      <view class="num">
+        <view class="num-title">{{numUserDiary !== null && numUserDiary !== undefined ? numUserDiary : '-'}}</view>
+        <text class='small-title'>喵日记</text>
+      </view>
   </view>
 </view>
 
