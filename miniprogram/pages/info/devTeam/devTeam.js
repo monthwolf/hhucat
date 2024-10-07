@@ -10,6 +10,14 @@ Page({
     text_cfg: text_cfg,
     github_link: "https://github.com/sysucats/zhongdamaopu",
     update_log: [{
+        version: "v1.14.6*",
+        content: [
+          "添加喵日记功能",
+          "喵日记上传、审核、删除",
+          ""
+        ],
+        time: "2024/09/20"
+      },{
         version: "v1.14.5*",
         content: [
           "公告使用mphtml富文本渲染",

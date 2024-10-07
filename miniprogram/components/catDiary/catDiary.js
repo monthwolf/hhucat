@@ -2,21 +2,17 @@ import {
     getUserInfo,
 } from "../../utils/user"
 import {
+    requestNotice
+} from "../../utils/msg"
+import {
     generateUUID
 } from "../../utils/utils"
 import api from "../../utils/cloudApi";
 import {
     cloud
 } from "../../utils/cloudAccess";
-const {
-    WxCalendar
-} = require('@lspriv/wx-calendar/lib');
-const {
-    DisabledPlugin,
-    DISABLED_PLUGIN_KEY
-} = require('@lspriv/wc-plugin-disabled');
 
-WxCalendar.use(DisabledPlugin);
+
 
 Component({
     options: {
@@ -249,6 +245,7 @@ Component({
                 this.showError('喵喵喵？日记内容不能为空哦~');
                 return;
             }
+            
             var fileList = this.data.fileList
             var link = []
             if (fileList != []) {
@@ -307,7 +304,7 @@ Component({
                     }
                 }
             }
-
+            
             // 关闭表单弹窗，显示提交成功弹窗
             this.setData({
                 submitPopShow: true
@@ -320,6 +317,7 @@ Component({
                 });
                 this.closePopup()
             }, 2000);
+            await requestNotice('verify');
         },
         openAction(e) {
             var diary = this.data.diary[e.currentTarget.dataset.index]
