@@ -304,20 +304,23 @@ Component({
                     }
                 }
             }
+            await requestNotice('verify');
             
-            // 关闭表单弹窗，显示提交成功弹窗
-            this.setData({
-                submitPopShow: true
-            });
-
-            // 3秒后关闭提交成功弹窗
+            setTimeout(() => {
+                this.setData({
+                    submitPopShow: true
+                });
+            }, 1000);
+            
+            //三秒后关闭提交成功弹窗
             setTimeout(() => {
                 this.setData({
                     submitPopShow: false
                 });
                 this.closePopup()
-            }, 2000);
-            await requestNotice('verify');
+                
+            }, 3000);
+            
         },
         openAction(e) {
             var diary = this.data.diary[e.currentTarget.dataset.index]

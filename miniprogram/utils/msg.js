@@ -255,7 +255,7 @@ function sendVerifyCommentNotice(notice_list) {
   }
   // 获取需要发送的list
   for (const openid of openids) {
-    const content = '本次共收录 ' + (notice_list[openid].c_accepted ? (notice_list[openid].c_accepted + '张便利贴 '):'') + (notice_list[openid].d_accepted ? (notice_list[openid].d_accepted + '条喵日记 '):'') + '。' + (notice_list[openid].c_deleted ? (notice_list[openid].c_deleted + '张便利贴未被收录 '):'') + (notice_list[openid].d_deleted ? (notice_list[openid].d_deleted + '条喵日记未被收录 '):'');
+    const content = (notice_list[openid].c_accepted + notice_list[openid].d_accepted ?'本次共收录':'') + (notice_list[openid].c_accepted ? (notice_list[openid].c_accepted + '张便利贴 '):'') + (notice_list[openid].d_accepted ? (notice_list[openid].d_accepted + '条喵日记 '):'')  + (notice_list[openid].c_deleted ? (notice_list[openid].c_deleted + '张便利贴未被收录 '):'') + (notice_list[openid].d_deleted ? (notice_list[openid].d_deleted + '条喵日记未被收录 '):'');
     const note = notice_list[openid].c_deleted + notice_list[openid].d_deleted ? '未被收录可能因为与猫猫无关。' : '感谢你的支持！';
     console.log(content)
     const data = {
