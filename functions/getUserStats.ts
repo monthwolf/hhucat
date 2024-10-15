@@ -21,7 +21,6 @@ export default async function (ctx: FunctionContext) {
   const [numUserPhotos, numUserComments, numUserLiked,numUserDiary] = await Promise.all([
     db.collection('photo').where(userPhotoQf).count(), // 用户上传的照片数量
     db.collection('comment').where(userCommentQf).count(), // 用户的评论数量
-    
     // 用户所有照片的被点赞数
     db.collection('photo')
       .aggregate()
@@ -32,7 +31,7 @@ export default async function (ctx: FunctionContext) {
       })
       .end()
       .then(aggregationResult => aggregationResult.data.length > 0 ? aggregationResult.data[0].totalLikes : 0), // 直接处理聚合结果
-    db.collection('diary').where(userDiaryQf).count() // 用户的喵日记数量
+    db.collection('diary').where(userDiaryQf).count() // 用户的数量
   ]);
 
   // 所有结果

@@ -23,7 +23,7 @@
     </swiper>
 
     <view class='info' id='info-box'>
-        <view  bind:touchend="handleTouchEnd" bind:touchstart="handleTouchStart" bind:touchcancel="handleTouchCancel" class="down hu__hu__"  ><text>下拉查看喵日记</text><l-icon name="down" l-class="down-icon" size="30"/></view>
+        <view wx:if="{{canComment}}" bind:touchend="handleTouchEnd" bind:touchstart="handleTouchStart" bind:touchcancel="handleTouchCancel" class="down hu__hu__"  ><text>下拉查看喵日记</text><l-icon name="down" l-class="down-icon" size="30"/></view>
         <view class="identity">
             <view class='name'>{{cat.name}}</view>
             <block wx:if='{{cat.gender}}'>
