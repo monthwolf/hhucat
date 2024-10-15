@@ -15,6 +15,11 @@
       为猫抓板公告添加搜索栏
 - [ ] 公告投票功能  
       为公告编辑器增加投票插入的功能
+# 可每猫咪演示视频
+
+["可每猫咪"](https://github.com/user-attachments/assets/84ecf924-d281-488e-80de-1b7b2eb1e32e)
+
+
  ----- 
 # :pencil:中大猫谱（笃行猫谱）
 
