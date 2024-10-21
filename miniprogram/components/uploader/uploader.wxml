@@ -1,0 +1,20 @@
+<view class="upload-component">
+    <view class="file-list">
+        <block wx:for="{{fileList}}" wx:key="index">
+            <view class="file-item" style="width: {{previewSize}}; height: {{previewSize}};">
+                <image wx:if="{{item.isImage && previewImage}}" src="{{item.thumb || item.url}}" mode="{{imageFit}}" bindtap="onPreview" data-index="{{index}}" />
+                <video wx:if="{{item.isVideo && previewImage}}" src="{{item.url}}" object-fit="{{videoFit}}" bindtap="onPreview" data-index="{{index}}" />
+                <view wx:if="{{!item.isImage && !item.isVideo && previewFile}}" class="file-icon" bindtap="onPreview" data-index="{{index}}">
+                    {{item.name}}
+                </view>
+                <view class="delete-icon" bindtap="onDelete" data-index="{{index}}" wx:if="{{deletable}}">
+                    <view class="delete-icon-inner">×</view>
+                </view>
+            </view>
+        </block>
+        <view class="upload-button" bindtap="onChooseFile" wx:if="{{showUpload && fileList.length < maxCount && !disabled}}" style="width: {{previewSize}}; height: {{previewSize}};">
+            <view class="upload-icon">+</view>
+            <view class="upload-text">{{uploadText}}</view>
+        </view>
+    </view>
+</view>

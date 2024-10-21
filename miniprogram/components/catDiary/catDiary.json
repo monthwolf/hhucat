@@ -5,6 +5,6 @@
         "l-icon":"/packages/linui/icon/index",
         "l-popup":"/packages/linui/popup/index",
         "l-button":"/packages/linui/button/index",
-        "van-uploader": "@vant/weapp/uploader/index"
+        "uploader": "/components/uploader/uploader"
     }
 }

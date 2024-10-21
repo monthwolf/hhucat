@@ -360,7 +360,14 @@ Page({
 
     this.unlockBtn();
   },
-
+  agree(e){
+    console.log("用户同意隐私授权, 接下来可以调用隐私协议中声明的隐私接口")
+    //这里写入同意后需要执行的代码，一般不用写也行
+},
+disagree(e){
+    console.log("用户拒绝隐私授权, 未同意过的隐私协议中的接口将不能调用")
+    //这里写入拒绝后的代码，推荐直接使用退出小程序api，如：wx.exitMiniProgram()
+},
   // 加载更多的猫猫
   async loadMoreCats() {
     // 加载lock

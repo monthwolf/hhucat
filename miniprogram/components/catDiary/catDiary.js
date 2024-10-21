@@ -28,7 +28,7 @@ Component({
             value: ''
         },
         canEdit: {
-            type:Boolean,
+            type: Boolean,
             value: true
         }
 
@@ -48,7 +48,8 @@ Component({
         syncToAlbum: true, // 默认选中同步到相册
         showMedia: false, // 控制弹窗显示
         mediaList: [], // 存储媒体列表
-        isExpanded: false
+        isExpanded: false,
+        getMsg: false
     },
     lifetimes: {
         attached: function () {
@@ -74,10 +75,10 @@ Component({
             };
             const diary = (await db.collection('diary').where(qf).orderBy('time', 'asc').get()).data;
 
-            
+
             this.setData({
                 diary: diary,
-                
+
             })
         },
         timeToString(time) {
@@ -104,48 +105,49 @@ Component({
             this.setData({
                 isOpenDate: !this.data.isOpenDate
             })
-            if (this.data.isOpenDate){
+            if (this.data.isOpenDate) {
                 const db = await cloud.databaseAsync();
-            const _ = db.command;
+                const _ = db.command;
                 const marks = await db.collection('diary').aggregate([{
-                    $match: {
-                        cat_id: this.data.cat._id,
+                        $match: {
+                            cat_id: this.data.cat._id,
+                            verified: true
+                        }
+                    }, {
+                        $group: {
+                            _id: "$date", // 以 date 字段进行分组
+                            count: {
+                                $sum: 1
+                            } // 统计每个 date 出现的次数
+                        }
+                    },
+                    {
+                        $match: {
+                            count: {
+                                $gt: 0
+                            } // 排除没有出现过的日期（通常不存在这种情况，因为只会统计实际存在的日期）
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: 0, // 不显示 _id 字段
+                            date: "$_id", // 将 _id 字段重命名为 date
+                            type: {
+                                $literal: "corner"
+                            },
+                            color: {
+                                $literal: "#ff6868"
+                            },
+                            text: {
+                                $toString: "$count"
+                            } // 将出现的次数存储为 content 字段
+                        }
                     }
-                }, {
-                    $group: {
-                        _id: "$date", // 以 date 字段进行分组
-                        count: {
-                            $sum: 1
-                        } // 统计每个 date 出现的次数
-                    }
-                },
-                {
-                    $match: {
-                        count: {
-                            $gt: 0
-                        } // 排除没有出现过的日期（通常不存在这种情况，因为只会统计实际存在的日期）
-                    }
-                },
-                {
-                    $project: {
-                        _id: 0, // 不显示 _id 字段
-                        date: "$_id", // 将 _id 字段重命名为 date
-                        type: {
-                            $literal: "corner"
-                        },
-                        color: {
-                            $literal: "#ff6868"
-                        },
-                        text: {
-                            $toString: "$count"
-                        } // 将出现的次数存储为 content 字段
-                    }
-                }
-            ]).end()
-            // console.log(marks)
-            this.setData({
-                marks: marks.data
-            })
+                ]).end()
+                // console.log(marks)
+                this.setData({
+                    marks: marks.data
+                })
             }
         },
         //切换日期到前一天
@@ -236,7 +238,8 @@ Component({
         },
         onSyncAlbumChange(e) {
             this.setData({
-                syncToAlbum: e.detail.value.includes('sync')
+                syncToAlbum: e.detail.value.includes('sync'),
+                getMsg: e.detail.value.includes('msg')
             });
         },
         async submitForm() {
@@ -245,7 +248,7 @@ Component({
                 this.showError('喵喵喵？日记内容不能为空哦~');
                 return;
             }
-            
+
             var fileList = this.data.fileList
             var link = []
             if (fileList != []) {
@@ -253,6 +256,11 @@ Component({
                     // console.log(e)
                     const tempFilePath = e.url;
                     console.log(tempFilePath)
+
+                    wx.showLoading({
+                        title: '正在上传(' + (fileList.length - link.length) + ')',
+                        mask: true,
+                    });
                     //获取后缀
                     const index = tempFilePath.lastIndexOf(".");
                     const ext = tempFilePath.substr(index + 1);
@@ -264,6 +272,7 @@ Component({
                         type: res.fileID.includes('.mp4') ? 'video' : 'image', // 判断媒体类型
                         url: res.fileID
                     })
+                    wx.hideLoading()
                 };
                 const params = {
                     cat_id: this.properties.cat._id,
@@ -291,7 +300,7 @@ Component({
                                 photo_id: i.url,
                                 user_id: this.properties.user._id,
                                 verified: false,
-                                shooting_date: new Date(Date.parse(this.data.currentDate + "T" + this.data.currentTime)),
+                                shooting_date: this.data.currentDate.substring(0, 7),
                                 photographer: getUserInfo(this.properties.user.openid).nickName
                             };
                             dbAddRes = (await api.curdOp({
@@ -304,23 +313,44 @@ Component({
                     }
                 }
             }
-            await requestNotice('verify');
-            
+
+
             setTimeout(() => {
                 this.setData({
                     submitPopShow: true
                 });
             }, 1000);
-            
+
             //三秒后关闭提交成功弹窗
             setTimeout(() => {
                 this.setData({
                     submitPopShow: false
                 });
                 this.closePopup()
-                
+
             }, 3000);
-            
+
+        },
+        async sendMsg() {
+            if (this.data.getMsg) {
+                await requestNotice('verify');
+            }
+        },
+        authOpt(e) {
+            console.log(e)
+            const {
+                _,
+                callback
+            } = e.detail;
+            wx.requirePrivacyAuthorize({
+                success: () => {
+                    callback(true);
+                },
+                fail: (err) => {
+                    console.log("err", err);
+                    wx.openPrivacyContract({})
+                }
+            })
         },
         openAction(e) {
             var diary = this.data.diary[e.currentTarget.dataset.index]
@@ -366,6 +396,10 @@ Component({
                 syncToAlbum: true, // 重置为默认值
                 validationError: ''
             });
+            const uploadComponent = this.selectComponent('#uploader');
+            if (uploadComponent) {
+                uploadComponent.resetFileList();
+            }
         },
         // 更新关闭弹窗的方法
         closePopup() {
@@ -399,11 +433,11 @@ Component({
             });
         },
         preview(e) {
-            if (!e.currentTarget.dataset.link.includes('.mp4')) {
-                wx.previewImage({
-                    urls: [e.currentTarget.dataset.link],
-                });
-            }
+                const idx = e.currentTarget.dataset.index
+                wx.previewMedia({
+                  sources: this.data.mediaList,
+                  current: idx
+                })
         },
         toggleExpand() {
             this.setData({

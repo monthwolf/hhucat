@@ -49,6 +49,7 @@ const permissionNeed = {
     "badge_code": 99,
     "rating": 99,
     "reward": 1,
+    "comment": 1,
     "diary": 1,
     "science": 1,
     "setting": 99,

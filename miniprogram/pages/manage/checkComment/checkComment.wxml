@@ -21,7 +21,7 @@
                 <view wx:if="{{item.isDiary}}" class="label user content" >
                     <text>附加媒体：{{item.link.length > 0?'':'无'}}</text>
                     <van-grid column-num="3" border="{{ true }}" square>
-                        <van-grid-item use-slot wx:for="{{ item.link }}" wx:for-item="l" bind:click="openBigPhoto" data-pid="{{l.url}}">
+                        <van-grid-item use-slot wx:for="{{ item.link }}" wx:for-item="l" wx:for-index="idx" bind:click="openBigPhoto" data-link="{{ item.link}}" data-index="{{idx}}">
                             <video style="height: 100%;width: 100%;"  object-fit="contain" wx:if="{{l.type === 'video'}}" src="{{l.url}}" />
                             <image wx:else src="{{l.url}}" style="height: 100%;width: 100%;"  mode="aspectFit"></image>
                         </van-grid-item>

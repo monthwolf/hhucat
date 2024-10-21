@@ -146,12 +146,18 @@ Page({
   },
 
   openBigPhoto(e) {
-    const pid = e.currentTarget.dataset.pid;
+    if (e.currentTarget.dataset.pid){
+        const pid = e.currentTarget.dataset.pid
+        wx.previewImage({
+          urls: [pid],
+        })
+        return
+    }
+    const link = e.currentTarget.dataset.link;
+    const idx = e.currentTarget.dataset.index
     wx.previewMedia({
-      sources: [{
-          url:pid,
-    type:pid.includes('.mp4')?'video':'image'
-    }],
+      sources: link,
+      current:idx
     })
   },
 

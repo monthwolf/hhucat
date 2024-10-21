@@ -75,11 +75,12 @@
                         <view class="note-container">
                             <text class="note-text"> 该项并非必填项，按需上传即可</text>
                             <text class="note-text"> 照片和视频加起来不能超过5个</text>
-                            <text class="note-text"> 上传的视频最长5分钟，请注意时间</text>
+                            <text class="note-text"> 上传的视频最大为200MB</text>
                         </view>
                     </view>
-                    <van-uploader file-list="{{ fileList }}" deletable="{{ true }}" max-count="5" bind:after-read="afterRead" accept="media" multiple="{{ true }}" max-duration="300" bind:delete="delete" />
-
+                    <block>
+                    <uploader id="uploader" deletable="{{ true }}" max-count="5" bind:after-read="afterRead" multiple="{{ true }}" bind:delete="delete"/>
+                </block>
                 </view>
 
 
@@ -90,11 +91,15 @@
                         <checkbox value="sync" checked="{{syncToAlbum}}" color="#5B8FF9" />
                         <text>同步上传照片到猫咪相册吗？</text>
                     </label>
+                    <label class="checkbox-label">
+                        <checkbox value="msg" checked="{{getMsg}}" bind:tap="sendMsg" color="#5B8FF9" />
+                        <text>接受审核结果通知</text>
+                    </label>
                 </checkbox-group>
             </view>
 
             <view class="submit-btn" bind:tap="submitForm">
-                <button class="custom-button">提交喵日记
+                <button class="custom-button">提交
                 </button>
             </view>
             <view class="validation-error" wx:if="{{validationError}}">
@@ -123,15 +128,17 @@
                 <text class="popup-title">喵日记详细</text>
                 <l-icon name="close" size="32" color="#5B8FF9" bindtap="hidePopup" />
             </view>
-            <swiper style="width: 100%;" autoplay indicator-dots indicator-active-color="#5B8FF9" class="media-swiper" wx:if="{{mediaList.length>0}}">
-                <!-- 循环显示图片或视频 -->
-                <swiper-item wx:for="{{mediaList}}" wx:key="url" style="position:absolute;height: auto;">
-                    <scroll-view bind:tap="preview" data-link="{{item.url}}">
-                        <image wx:if="{{item.type === 'image'}}" src="{{item.url}}" class="media-image" mode="aspectFit" />
-                        <video wx:if="{{item.type === 'video'}}" src="{{item.url}}" controls class="media-video"></video>
-                    </scroll-view>
-                </swiper-item>
-            </swiper>
+            <scroll-view>
+                <swiper style="width: 100%;" autoplay="{{false}}" indicator-dots indicator-active-color="#5B8FF9" class="media-swiper" wx:if="{{mediaList.length>0}}">
+                    <!-- 循环显示图片或视频 -->
+                    <swiper-item wx:for="{{mediaList}}" wx:key="url" style="position:absolute;height: auto;">
+                        <scroll-view bind:tap="preview" data-index="{{index}}">
+                            <image wx:if="{{item.type === 'image'}}" src="{{item.url}}" class="media-image" mode="aspectFit" />
+                            <video wx:if="{{item.type === 'video'}}" src="{{item.url}}" controls class="media-video"></video>
+                        </scroll-view>
+                    </swiper-item>
+                </swiper>
+            </scroll-view>
             <view class="diary-content-container">
                 <view class="diary-text-content animation-fade-in">
                     <view class="cat-thought-bubble">

@@ -101,6 +101,7 @@ async function getUserInfoMulti(openids, cacheOptions, retMap) {
   const coll_user = db.collection('user');
   if (not_found.length) {
     var db_res = (await coll_user.where({openid: _.in(not_found)}).get()).data;
+    console.log(db_res)
     for (var user of db_res) {
       const cacheKey = `uinfo-${user.openid}`;
       setCacheItem(cacheKey, user, 0, randomInt(25, 35));
@@ -265,6 +266,7 @@ async function fillUserInfo(items, openidKey, userInfoKey, cacheOptions) {
     const openid = item[openidKey];
     item[userInfoKey] = res[openid]?.userInfo;
   }
+  console.log(items)
   return;
 }
 

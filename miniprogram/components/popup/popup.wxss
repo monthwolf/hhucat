@@ -1,5 +1,6 @@
 .popup-container {
-    height: 40%;
+    min-height: 40%;
+    max-height: 75%;
   position: fixed;
   left: 0;
   right: 0;
