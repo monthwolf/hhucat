@@ -1,6 +1,5 @@
-name: get-oss-sts
+name: updateAllUser
 desc: ""
 methods:
-  - GET
   - POST
 tags: []

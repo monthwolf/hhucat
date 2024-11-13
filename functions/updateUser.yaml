@@ -1,4 +1,4 @@
-name: get-oss-sts
+name: updateUser
 desc: ""
 methods:
   - GET

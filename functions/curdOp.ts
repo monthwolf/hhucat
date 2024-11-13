@@ -17,7 +17,7 @@ const permissionNeed = {
     "news": 3,
     "photo": 0,
     "diary": 0,
-    "new_cat_feedback":0,
+    "new_cat_feedback": 0,
     "photo_rank": 3,
     "badge_code": 99,
     "rating": 0,
@@ -30,13 +30,13 @@ const permissionNeed = {
     "badge_def": 2,
     "cat": 2,
     "comment": 1,
-    "new_cat_feedback":1,
     "feedback": 1,
+    "new_cat_feedback": 1,
     "inter": 1,
     "news": 1,
     "photo": 1,
-    "diary": 1,
     "photo_rank": 1,
+    "diary": 1,
     "badge_code": 3,
     "rating": 1,
     "reward": 1,
@@ -45,12 +45,50 @@ const permissionNeed = {
     "user": 1,
   },
   "remove": {
+    "badge_def": 2,
+    "cat": 99,
+    "comment": 1,
+    "feedback": 1,
+    "inter": 1,
+    "news": 1,
+    "photo": 1,
+    "photo_rank": 1,
+    "badge_code": 99,
+    "rating": 99,
+    "reward": 99,
+    "science": 99,
+    "setting": 99,
+    "diary": 1,
+    "user": 1,
+  },
+  "set": {
+    "badge_def": 2,
+    "cat": 2,
+    "comment": 1,
+    "feedback": 1,
+    "inter": 1,
+    "news": 1,
+    "photo": 1,
     "photo_rank": 1,
     "badge_code": 99,
     "rating": 99,
     "reward": 1,
+    "science": 1,
+    "setting": 1,
+    "user": 1,
+  },
+  "inc": {
+    "badge_def": 2,
+    "cat": 0,
     "comment": 1,
-    "diary": 1,
+    "feedback": 1,
+    "inter": 1,
+    "news": 1,
+    "photo": 0,
+    "photo_rank": 1,
+    "badge_code": 99,
+    "rating": 99,
+    "reward": 1,
     "science": 1,
     "setting": 99,
     "user": 1,
@@ -223,12 +261,15 @@ async function delete_photo_for_news(item_id) {
 // 删除喵日记媒体
 async function delete_media_for_diary(item_id) {
   let item = (await db.collection('diary').doc(item_id).get()).data;
-
+  const _ = db.command;
   // 删除云储存的媒体文件
   console.log("Media path:", item.link);
   let fileIDs = item.link.map(item => item.url);
   if (item.link && item.link.length > 0) {
     await deleteFiles(fileIDs);
+    if (db.collection('photo').where({ photo_id: _.in(fileIDs)}).get().then(res => res.data.length > 0)) {
+      await db.collection('photo').where({ photo_id: _.in(fileIDs)}).remove();
+    }
     console.log("删除媒体", fileIDs);
   }
 }

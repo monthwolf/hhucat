@@ -148,17 +148,17 @@ Page({
       loadnomore: false
     });
 
-    const db = await cloud.databaseAsync();
+    const db = await cloud.databaseAsync(); 
     const _ = db.command;
     const curCount = this.data.columns[0].length + this.data.columns[1].length;
+    console.log(curCount)
     const timeRange = this.getTimeRange();
     const oneMonth = getDateWithDiffHours(-timeRange);
     var photos = (await db.collection('photo').where({
-      mdate: _.or([_.gte(oneMonth), _.gte(oneMonth.toISOString())]),
+    mdate: _.or([_.gte(oneMonth), _.gte(oneMonth.toISOString())]),
       like_count: _.gte(1),
-    }).orderBy('like_count', 'desc').skip(curCount).limit(7).get()).data;
-    
-    await fillUserInfo(photos, "_openid", "userInfo");
+    }).orderBy('like_count', 'desc').orderBy('mdate', 'desc').skip(curCount).limit(6).get()).data;
+    console.log(photos)
 
     // 浏览过程中点赞，会导致序变化，但目前只会加点赞，因此只需要去重
     photos = this.removeDupPhoto(photos);
@@ -172,6 +172,7 @@ Page({
     }
 
     // 网络请求
+    await fillUserInfo(photos, "_openid", "userInfo");
     var [cat_res, like_res] = await Promise.all([
       getCatItemMulti(photos.map(p => p.cat_id)),
       likeCheck(photos.map(p => p._id))

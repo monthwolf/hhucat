@@ -1,6 +1,7 @@
 import cloud from '@lafjs/cloud'
 
 import { login } from '@/login'
+import { updateUser } from '@/updateUser'
 
 export default async function (ctx: FunctionContext) {
   const { body } = ctx
@@ -58,6 +59,7 @@ export default async function (ctx: FunctionContext) {
       delete user.openid; // 这个键唯一
       delete user.manager; // 不能用这个函数更新
       await db.collection('user').doc(_id).update( user );
+      await updateUser(targetUser.openid);
       return (await db.collection('user').where({ 'openid': openid }).get()).data[0];
     }
     case 'updateRole': {

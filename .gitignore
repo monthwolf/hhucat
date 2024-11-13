@@ -9,7 +9,7 @@ $RECYCLE.BIN/
 .Spotlight-V100
 .TemporaryItems
 .Trashes
-
+backup/*/
 # Node.js
 node_modules/
 miniprogram_npm/
