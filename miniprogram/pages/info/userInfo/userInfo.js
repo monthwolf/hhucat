@@ -20,42 +20,37 @@ Page({
         type: 'option',
         items: [
           {
-            label:"修改个人信息",
-            icon:"icon-edit",
-            action:"editProfile",
-            btnAble: false,
-          }, {
-            label:"邀请好友",
-            icon:"icon-friends-o",
-            action:"shareApp",
+            label: "邀请好友",
+            icon: "icon-friends-o",
+            action: "shareApp",
             btnAble: true,
             btnType: "share",
           }, {
-            label:"我关注的猫猫",
-            icon:"icon-star-o",
-            action:"/pages/info/myFollowCats/myFollowCats",
+            label: "我关注的猫猫",
+            icon: "icon-star-o",
+            action: "/pages/info/myFollowCats/myFollowCats",
             btnAble: false,
           }, {
-            label:"信息反馈",
-            icon:"icon-chat-o",
-            action:"/pages/info/feedback/feedback",
+            label: "信息反馈",
+            icon: "icon-chat-o",
+            action: "/pages/info/feedback/feedback",
             btnAble: false,
           },
         ]
-      },{
+      }, {
         type: 'tool',
         items: [
           {
-            label:"清除缓存",
-            icon:"icon-cross",
-            action:"clearCache",
+            label: "清除缓存",
+            icon: "icon-cross",
+            action: "clearCache",
             btnAble: false,
           }
         ]
       }
     ],
   },
-  handleContact (e) {
+  handleContact(e) {
     console.log(e)
   },
   clickbtn(e) {
@@ -71,9 +66,9 @@ Page({
       url: to,
     });
   },
-  
+
   // 编辑个人信息弹窗
-  editProfile: function() {
+  editProfile: function () {
     if (!this.data.user) {
       this.setData({
         showEdit: true,
@@ -84,7 +79,7 @@ Page({
       });
     }
   },
-  closeEdit: function() {
+  closeEdit: function () {
     if (this.data.user) {
       this.setData({
         showEdit: false,
@@ -104,7 +99,7 @@ Page({
       imageUrl: "",
     };
   },
-  
+
   clearCache() {
     wx.clearStorageSync();
     wx.showToast({
@@ -116,15 +111,16 @@ Page({
    */
   async onLoad() {
     await this.loadUser();
-    
+
     // 获取用户数据
     const openid = this.data.user.openid;
-    const {result}  = await api.getUserStats({ openid });
+    const { result } = await api.getUserStats({ openid });
     this.setData({
       numUserComments: result.numUserComments,
       numUserLiked: result.numUserLiked,
       numUserPhotos: result.numUserPhotos,
-      numUserDiary: result.numUserDiary
+      numUserDiary: result.numUserDiary,
+      numCats: result.numCats
     });
   },
 
@@ -137,23 +133,23 @@ Page({
     if (!user.userInfo) {
       user.userInfo = {};
     }
-    
+
     // 创建角色映射便于管理和自定义
-    const roleMapping = {                                         // 自定义部分：（感觉可以写入config.js，但就这几个不知道是否有必要）
-      visitor: { displayName: "VISITOR", className: "visitor" },  // displayName: "游客"
-      manager: { displayName: "MANAGER", className: "manager" },  // displayName: "管理员"
-      pro: { displayName: "PRO", className: "pro" }               // displayName: "特邀用户"
+    const roleMapping = {
+      visitor: { displayName: "访客", className: "visitor" },     // displayName: "游客"
+      manager: { displayName: "管理员", className: "manager" },   // displayName: "管理员"
+      pro: { displayName: "特邀用户", className: "pro" }          // displayName: "特邀用户"
     };
-    
+
     let roleKey = 'visitor'; // 默认值
     if (user.manager > 0) {
       roleKey = 'manager';
     } else if (user.role === 1) {
       roleKey = 'pro';
     }
-    
+
     const badgeInfo = roleMapping[roleKey];
-    
+
     this.setData({
       user: user,
       badgeName: badgeInfo.displayName,

@@ -10,29 +10,35 @@ Page({
     text_cfg: text_cfg,
     github_link: "https://github.com/sysucats/zhongdamaopu",
     update_log: [{
-        version: "v1.14.6*",
-        content: [
-          "添加喵日记功能",
-          "喵日记上传、审核、删除",
-          "喵日记审核通知"
-        ],
-        time: "2024/09/20"
-      },{
-        version: "v1.14.5*",
-        content: [
-          "公告使用mphtml富文本渲染",
-          "添加了猫抓板公告独立编辑器",
-          "支持图片、视频、猫咪卡片插入公告"
-        ],
-        time: "2024/09/20"
-      },{
-      version: "v1.14.4",
+      version: "v1.14.6*",
+      content: [
+        "添加喵日记功能",
+        "喵日记上传、审核、删除",
+        "喵日记审核通知"
+      ],
+      time: "2024/09/20"
+    }, {
+      version: "v1.14.5*",
+      content: [
+        "公告使用mphtml富文本渲染",
+        "添加了猫抓板公告独立编辑器",
+        "支持图片、视频、猫咪卡片插入公告"
+      ],
+      time: "2024/09/20"
+    }, {
+      version: "v1.14.3",
+      content: [
+        "更新个人主页（xuann大佬提供）"
+      ],
+      time: "2024/11/03"
+    }, {
+      version: "v1.14.2",
       content: [
         "更新喵友圈UI（xuann大佬提供）",
       ],
       time: "2024/07/14"
     }, {
-      version: "v1.14.3",
+      version: "v1.14.1",
       content: [
         "更新喵友圈UI",
         "更新关注数",

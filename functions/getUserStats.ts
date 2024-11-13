@@ -11,7 +11,7 @@ export default async function (ctx: FunctionContext) {
   const db = cloud.database();
   const _ = db.command;
   const $ = db.command.aggregate;
-  const openid = ctx.user?.openid;;
+  const openid = ctx.user?.openid;
 
   // 定义查询条件
   const userPhotoQf = { _openid: openid, verified: true, photo_id: /^((?!\.heic$).)*$/i };
@@ -34,11 +34,34 @@ export default async function (ctx: FunctionContext) {
     db.collection('diary').where(userDiaryQf).count() // 用户的数量
   ]);
 
-  // 所有结果
+  // 查询该用户的照片（和评论）中涉及的猫猫数
+  const [photoCats] = await Promise.all([
+    db.collection('photo')
+      .aggregate()
+      .match(userPhotoQf)
+      .group({
+        _id: '$cat_id'
+      })
+      .end()
+      .then(res => res.data.map(item => item._id)),
+    // db.collection('comment')
+    //   .aggregate()
+    //   .match(userCommentQf)
+    //   .group({
+    //     _id: '$cat_id'
+    //   })
+    //   .end()
+    //   .then(res => res.data.map(item => item._id))
+  ]);
+
+  // 去重
+  const uniqueCats = new Set([...photoCats]);
+
   return {
     numUserPhotos: numUserPhotos.total,
     numUserComments: numUserComments.total,
     numUserLiked: numUserLiked,
-    numUserDiary: numUserDiary.total
+    numUserDiary: numUserDiary.total,
+    numCats: uniqueCats.size
   };
 }
