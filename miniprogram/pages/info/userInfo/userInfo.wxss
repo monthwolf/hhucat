@@ -1,3 +1,4 @@
+@import '/pages/public/wxss/iconfont.wxss';
 page {
   display: flex;
   width: 750rpx;
