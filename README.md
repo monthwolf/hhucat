@@ -1,3 +1,7 @@
+<h1  align="center">可每猫咪</h1>  
+<p  align="center"><img src="https://github.com/user-attachments/assets/9b49264e-3edc-48c5-b6f1-16608edf0bf7" >
+</img></p>
+
 ## 可每猫咪 1.14已更新功能
 - [x] 添加新猫表单+新猫审核，去除外部问卷
 - [x] 喵友圈添加喵友榜单，可看见热度最高的猫咪，长按菜单中可快速关注/取关
