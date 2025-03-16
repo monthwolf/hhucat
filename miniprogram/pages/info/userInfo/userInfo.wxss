@@ -1,4 +1,4 @@
-@import '/pages/public/wxss/iconfont.wxss';
+@import "/pages/public/wxss/iconfont.wxss";
 page {
   display: flex;
   width: 750rpx;
@@ -99,7 +99,7 @@ page {
   white-space: nowrap;
   font-size: 40rpx;
   font-weight: bold;
-  color: var(--color-white);
+  color: var(--color-text);
 }
 
 /* 用户数据 */
@@ -175,10 +175,10 @@ page {
   position: relative;
 }
 .hiddenbtn {
-  opacity:0;
-	position: absolute;
-	top: 10rpx;
-	right: 10rpx;
+  opacity: 0;
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
 }
 .icon-and-text {
   display: flex;
@@ -186,7 +186,7 @@ page {
 }
 .iconfont {
   font-size: 60rpx;
-  margin: 0 30rpx 0  40rpx;
+  margin: 0 30rpx 0 40rpx;
 }
 .label-small {
   font-size: 28rpx;

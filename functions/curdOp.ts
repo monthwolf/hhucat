@@ -25,6 +25,7 @@ const permissionNeed = {
     "science": 3,
     "setting": 3,
     "user": 0,
+    "vaccine": 2,
   },
   "update": {
     "badge_def": 2,
@@ -43,6 +44,7 @@ const permissionNeed = {
     "science": 1,
     "setting": 99,
     "user": 1,
+    "vaccine": 2,
   },
   "remove": {
     "badge_def": 2,
@@ -60,6 +62,7 @@ const permissionNeed = {
     "setting": 99,
     "diary": 1,
     "user": 1,
+    "vaccine": 2,
   },
   "set": {
     "badge_def": 2,
@@ -76,6 +79,7 @@ const permissionNeed = {
     "science": 1,
     "setting": 1,
     "user": 1,
+    "vaccine": 2,
   },
   "inc": {
     "badge_def": 2,
@@ -92,9 +96,11 @@ const permissionNeed = {
     "science": 1,
     "setting": 99,
     "user": 1,
+    "vaccine": 99,
   },
   "read": {
     "badge_code": 3,
+    "vaccine": 0,
   }
 }
 

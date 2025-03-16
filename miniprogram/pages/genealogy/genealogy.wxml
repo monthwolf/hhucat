@@ -82,11 +82,13 @@
           <view wx:if='{{item.adopt}}' class='adopt'>{{adopt_desc[item.adopt]}}</view>
           <view wx:if='{{item.to_star}}' class='to_star'>{{text_cfg.genealogy.to_star_tip}}</view>
           <view class='popularity'>
-            <image src='/pages/public/images/card/card/pop.png'></image>
-            <text>{{item.popularity + (item.photo_count_total? item.photo_count_total * photoPopWeight: 0) }}</text>
+            <view class='iconfont icon-fire'></view>
+            <text>
+              {{item.popularity + (item.photo_count_total? item.photo_count_total * photoPopWeight: 0) }}
+            </text>
           </view>
           <view class='comment' wx:if="{{item.comment_count}}">
-            <image src='/pages/public/images/card/card/comment.png'></image>
+            <view class='iconfont icon-chat'></view>
             <text>{{item.comment_count}}</text>
           </view>
         </view>
@@ -130,10 +132,11 @@
   <view class='loadnomore' wx:else>
     <image src='/pages/public/images/system/nomore.png'></image>
     <view style="text-align: center;">
-    <text>
-      没有找到猫猫？
-      </text>
-      去 <p bind:tap="toNewCat" style="font-weight: bolder;color: cornflowerblue;">添加新猫</p> or <p bind:tap="toFeedback" style="font-weight: bolder;color: cornflowerblue;">提供反馈</p>
+      <text>没有找到猫猫？</text>
+      去
+      <p bind:tap="toNewCat" style="font-weight: bolder;color: cornflowerblue;">添加新猫</p>
+      or
+      <p bind:tap="toFeedback" style="font-weight: bolder;color: cornflowerblue;">提供反馈</p>
     </view>
   </view>
   <!-- 底tab占位 -->

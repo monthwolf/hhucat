@@ -35,10 +35,10 @@
       <block wx:for="{{followCatsList}}" wx:key="_id">
         <view class="story-item">
           <view class="cat-avatar-wrapper" bind:tap="onCatAvatarTap" bind:longpress="onCatAvatarLongPress" data-cat="{{item}}">
-            <image class="gradientBorder {{item.showAnimation ? 'scale' : ''}}" src="{{item.svgImg}}" />
+            <image class="gradientBorder {{item.showAnimation ? 'scale' : ''}}" src="{{item.svgImg}}" lazy-load="true" />
             <view class="cat-avatar">
               <view class="scale-avatar {{item.showAnimation ? 'scale' : ''}}">
-                <image class="avatar" src="{{item.avatar.photo_compressed || item.avatar.photo_id}}" mode="aspectFill" />
+                <image class="avatar" src="{{item.avatar.photo_compressed || item.avatar.photo_id}}" mode="aspectFill" lazy-load="true" />
               </view>
             </view>
           </view>
@@ -55,12 +55,12 @@
     <view wx:if="{{feedItem.dtype == 'photo'}}" class="photo-block">
       <view class="cat-info" bind:tap="toCat" data-cat_id='{{feedItem.cat._id}}'>
         <view class="cat-avatar">
-          <image class="avatar" src="{{feedItem.cat.avatar.photo_compressed || feedItem.cat.avatar.photo_id}}" mode='aspectFill'></image>
+          <image class="avatar" src="{{feedItem.cat.avatar.photo_compressed || feedItem.cat.avatar.photo_id}}" mode='aspectFill' lazy-load="true"></image>
         </view>
         <view class="cat-name">
           <text>{{feedItem.cat.name || '-'}}</text>
           <view class='cat-campus'>
-            <image class="location-logo" src="/pages/public/images/filter/location_gray.png" mode="aspectFit"></image>
+            <image class="location-logo" src="/pages/public/images/filter/location_gray.png" mode="aspectFit" lazy-load="true"></image>
             {{feedItem.cat.campus || '-'}}
           </view>
         </view>
@@ -69,17 +69,14 @@
         <!-- 这里可以用上预览图片组件 -->
         <!-- 该照片是否被用户点赞 -->
         <view class="photo-img {{feedItem.items.length === 1 ? 'single-photo' : ''}}" wx:for="{{feedItem.items}}" wx:key="_id" wx:for-index="innerIndex" data-photo-index="{{innerIndex}}" data-feed-index="{{outerIndex}}" data-url="{{item.pic_prev}}" bind:tap="clickPhoto">
-          <image src="{{item.pic}}" mode='aspectFill'></image>
+          <image src="{{item.pic}}" mode='aspectFill' lazy-load="true" loading="eager" webp="true"></image>
         </view>
       </view>
       <view class="photo-by">
         <view class="user-info">
           <view class="user-avatar">
-            <image wx:if="{{feedItem.items[0].userInfo}}" src="{{feedItem.items[0].userInfo.avatarUrl}}" mode="aspectFit"></image>
-            <image wx:else class="avatar" src="/pages/public/images/info/default_avatar.png" mode="aspectFit"></image>
-          </view>
-          <view class="username">
-            {{feedItem.items[0].userInfo ? feedItem.items[0].userInfo.nickName : '-'}}
+            <image wx:if="{{feedItem.items[0].userInfo}}" src="{{feedItem.items[0].userInfo.avatarUrl}}" mode="aspectFit" lazy-load="true"></image>
+            <image wx:else class="avatar" src="/pages/public/images/app_logo.png" mode="aspectFit" lazy-load="true"></image>
           </view>
         </view>
         <view class="dot"></view>
@@ -90,25 +87,26 @@
     <view class="comment-block" wx:if="{{feedItem.dtype == 'comment'}}">
       <view class="cat-info" bind:tap="toCat" data-cat_id='{{feedItem.cat._id}}'>
         <view class="cat-avatar">
-          <image class="avatar" src="{{feedItem.cat.avatar.photo_compressed || feedItem.cat.avatar.photo_id}}" mode='aspectFill'></image>
+          <image class="avatar" src="{{feedItem.cat.avatar.photo_compressed || feedItem.cat.avatar.photo_id}}" mode='aspectFill' lazy-load="true"></image>
         </view>
         <view class="cat-name">
           <text>{{feedItem.cat.name || '-'}}</text>
           <view class='cat-campus'>
-            <image class="location-logo" src="/pages/public/images/filter/location_gray.png" mode="aspectFit"></image>
+            <image class="location-logo" src="/pages/public/images/filter/location_gray.png" mode="aspectFit" lazy-load="true"></image>
             {{feedItem.cat.campus || '-'}}
           </view>
         </view>
       </view>
-      <view wx:for="{{feedItem.items}}" wx:key="_id" class="comment {{item.paper_color}} {{item.needVerify? 'need-verify': ''}}" style="transform: rotate({{item.rotate || 0}}deg);">
-        <view class="wavy-line"></view>
-        <view class="paper">
-          <view class="user-info">
-            <view class="user-avatar">
-              <image wx:if="{{ item.userInfo}}" class="avatar" src="{{item.userInfo.avatarUrl}}" mode='aspectFit'></image>
-              <image wx:else class="avatar" src="/pages/public/images/info/default_avatar.png" mode='aspectFit'></image>
-            </view>
-            <view class="username">{{item.userInfo.nickName || '-'}}</view>
+    <view wx:for="{{feedItem.items}}" wx:key="_id" class="comment {{item.paper_color}} {{item.needVerify? 'need-verify': ''}}" style="transform: rotate({{item.rotate || 0}}deg);">
+      <view class="wavy-line"></view>
+      <view class="paper">
+        <view class="user-info">
+          <view class="user-avatar">
+            <image wx:if="{{ item.userInfo}}" class="avatar" src="{{item.userInfo.avatarUrl}}" mode='aspectFit' lazy-load="true"></image>
+            <image wx:else class="avatar" src="/pages/public/images/app_logo.png" mode='aspectFit' lazy-load="true"></image>
+          </view>
+          <view class="username">
+            {{item.userInfo.nickName || '-'}}
           </view>
           <view class="content">{{item.content}}</view>
           <view class="datetime">{{item.datetime}}</view>
@@ -120,22 +118,19 @@
       </view>
     </view>
     <!-- 留言 -->
+    </view>
   </block>
   <!-- 没有关注 -->
   <view class="noFollow" wx:if="{{loadnomore && (!followCats || followCats.length === 0)}}">
-    <view>
-      <text>你没有关注任何猫猫\n快到猫猫详情页去添加吧~</text>
-    </view>
-    <image class="icon" src='/pages/public/images/button/plus.svg'></image>
-    <image class="icon" src='/pages/public/images/button/follow.svg'></image>
+    <view><text>你没有关注任何猫猫\n快到猫猫详情页去添加吧~</text></view>
+    <image class="icon" src='/pages/public/images/button/plus.svg' lazy-load="true"></image>
+    <image class="icon" src='/pages/public/images/button/follow.svg' lazy-load="true"></image>
     <view>右下角菜单 → 关注猫猫</view>
     <view>关注后，在本页面下拉获取近30天的动态</view>
   </view>
   <view class='loadnomore' wx:if='{{loadnomore && followCats.length > 0}}'>
-    <view>
-      <text>近30天内没有新的动态咯</text>
-    </view>
-    <image src='/pages/public/images/system/nomore.png'></image>
+    <view><text>近30天内没有新的动态咯</text></view>
+    <image src='/pages/public/images/system/nomore.png' lazy-load="true"></image>
   </view>
   <view class='loading' wx:if='{{!loadnomore && followCats.length > 0}}'>
     <image src='/pages/public/images/system/loading.gif'></image>
@@ -146,7 +141,7 @@
     <view class="menu-item">
       <view class="cat-avatar-wrapper">
         <view class="cat-avatar">
-          <image class="avatar" src="{{selectedCat.avatar.photo_compressed || selectedCat.avatar.photo_id ||selectedCat.avatar}}" mode="aspectFill" />
+          <image class="avatar" src="{{selectedCat.avatar.photo_compressed || selectedCat.avatar.photo_id ||selectedCat.avatar}}" mode="aspectFill" lazy-load="true" />
         </view>
       </view>
       <view class="cat-name">{{selectedCat.name || '-'}}</view>

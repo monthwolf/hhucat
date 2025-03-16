@@ -12,27 +12,27 @@ Page({
   data: {
     logo_img,
     friendApps: [],
-    friendLinkImgLoaded:false,
+    friendLinkImgLoaded: false,
     text_cfg: text_cfg,
 
     // 卡片，不需要设计绘制卡片图，只需用放图标即可
     cards: [
       {
-        icon:"/pages/public/images/info/btn/user.svg", // 一个示例
-        label:"个人主页",
-        path:"/pages/info/userInfo/userInfo",
-      },{
-        icon:"/pages/public/images/info/btn/badge.svg",
-        label:"徽章口袋",
-        path:"/pages/packageA/pages/info/badge/badge",
-      },{
-        icon:"/pages/public/images/info/btn/team.svg",
-        label:"开发团队",
-        path:"/pages/info/devTeam/devTeam",
-      },{
-        icon:"/pages/public/images/info/btn/reward.svg",
-        label:"投喂罐头",
-        path:"/pages/info/reward/reward",
+        icon: "/pages/public/images/info/btn/user.svg", // 一个示例
+        label: "个人主页",
+        path: "/pages/info/userInfo/userInfo",
+      }, {
+        icon: "/pages/public/images/info/btn/badge.svg",
+        label: "徽章口袋",
+        path: "/pages/packageA/pages/info/badge/badge",
+      }, {
+        icon: "/pages/public/images/info/btn/team.svg",
+        label: "开发团队",
+        path: "/pages/info/devTeam/devTeam",
+      }, {
+        icon: "/pages/public/images/info/btn/reward.svg",
+        label: "投喂罐头",
+        path: "/pages/info/reward/reward",
       }
     ],
 
@@ -52,12 +52,12 @@ Page({
           {
             name: "部署指引",
             path: "/pages/debug/deployTip/deployTip",
-            icon:"icon-deploy"
+            icon: "icon-deploy"
           },
           {
             name: "生成秘钥",
             path: "/pages/debug/genKeys/genKeys",
-            icon:"icon-genkey"
+            icon: "icon-genkey"
           },],
       }, {
         title: "管理后台",
@@ -104,13 +104,8 @@ Page({
             icon: "icon-location-o"
           },
           {
-            name: "添加新猫",
-            path: "/pages/manage/addCat/addCat",
-            icon: "icon-add-o"
-          },
-          {
-            name: "猫猫关系",
-            path: "/pages/manage/addRelations/addRelations",
+            name: "猫猫管理",
+            path: "/pages/manage/catManage/catManage",
             icon: "icon-cluster-o"
           },
           {
@@ -143,7 +138,7 @@ Page({
             path: "/pages/manage/imProcess/imProcess",
             num: "numImProcess",
             icon: "icon-todo-list-o"
-          },
+          }
         ]
       }
     ],
@@ -167,7 +162,7 @@ Page({
     });
 
     // 设置为特邀用户
-    const {query} = wx.getLaunchOptionsSync();
+    const { query } = wx.getLaunchOptionsSync();
     console.log("query", query);
     if (query.inviteRole) {
       this.doInviteRole(options);
@@ -198,16 +193,23 @@ Page({
     const adoptQf = { adopt: 1 };
     // 所有绝育量
     const sterilizedQf = { sterilized: true };
+    // 去除已领养、失踪、去喵星的猫猫
+    const currentCatsQf = {
+      adopt: _.neq(1),
+      to_star: _.neq(true),
+      missing: _.neq(true)
+    };
 
-    let [numAllCats, numAllPhotos, numAllComments, numSterilized, numAdoptQf,numAllDiary] = await Promise.all([
+    let [numAllCats, numAllPhotos, numAllComments, numSterilized, numAdoptQf, numAllDiary, numCurrentCats] = await Promise.all([
       db.collection('cat').where(allCatQf).count(),
       db.collection('photo').where(allPhotoQf).count(),
       db.collection('comment').where(allCommentQf).count(),
       db.collection('cat').where(sterilizedQf).count(),
       db.collection('cat').where(adoptQf).count(),
-      db.collection('diary').where(allDiaryQf).count()
+      db.collection('diary').where(allDiaryQf).count(),
+      db.collection('cat').where(currentCatsQf).count(),
     ]);
-    
+
     // 计算绝育率
     const adoptRate = (numAdoptQf.total / numAllCats.total * 100).toFixed(1);
     const sterilizationRate = (numSterilized.total / numAllCats.total * 100).toFixed(1);
@@ -219,6 +221,7 @@ Page({
       numAllDiary: numAllDiary.total,
       sterilizationRate: sterilizationRate + '%',
       adoptRate: adoptRate + '%',
+      currentCatsCount: numCurrentCats.total,
     });
 
     if (!await isManagerAsync()) {
@@ -227,7 +230,7 @@ Page({
 
     // 待处理照片
     const imProcessQf = { photo_compressed: _.in([undefined, '']), verified: true, photo_id: /^((?!\.heic$).)*$/i };
-    var [numChkPhotos, numChkComments, numFeedbacks, numImProcess,numNewCat,numDiary] = await Promise.all([
+    var [numChkPhotos, numChkComments, numFeedbacks, numImProcess, numNewCat, numDiary] = await Promise.all([
       db.collection('photo').where({ verified: false }).count(),
       db.collection('comment').where({ needVerify: true }).count(),
       db.collection('feedback').where({ dealed: false }).count(),
@@ -255,7 +258,7 @@ Page({
     }
   },
 
-  onShareTimeline:function () {
+  onShareTimeline: function () {
     return {
       title: share_text,
     }
@@ -290,7 +293,7 @@ Page({
   async showMpCode(e) {
     wx.previewImage({
       urls: [await cloud.signCosUrl(mpcode_img)],
-      fail: function(e) {
+      fail: function (e) {
         console.error(e)
       }
     })
@@ -299,7 +302,7 @@ Page({
   showLogo(e) {
     wx.previewImage({
       urls: [logo_img],
-      fail: function(e) {
+      fail: function (e) {
         console.error(e)
       }
     })
@@ -308,15 +311,15 @@ Page({
   // 打开管理员手册tx文档
   guide(e) {
     wx.openEmbeddedMiniProgram({
-        appId: 'wxd45c635d754dbf59',
-        path: 'pages/detail/detail?url=https%3A%2F%2Fdocs.qq.com%2Fdoc%2FDSEl0aENOSEx5cmtE',// 此处链接需删除tx文档所复制路径中的.html
-        envVersion: 'release',
-        success(res) {
-          // 打开成功
-        },
-        fail: function (e) {
-          console.log(e)
-        }
+      appId: 'wxd45c635d754dbf59',
+      path: 'pages/detail/detail?url=https%3A%2F%2Fdocs.qq.com%2Fdoc%2FDSEl0aENOSEx5cmtE',// 此处链接需删除tx文档所复制路径中的.html
+      envVersion: 'release',
+      success(res) {
+        // 打开成功
+      },
+      fail: function (e) {
+        console.log(e)
+      }
     })
-    },
+  },
 })

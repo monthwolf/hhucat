@@ -10,6 +10,45 @@ Page({
     text_cfg: text_cfg,
     github_link: "https://github.com/sysucats/zhongdamaopu",
     update_log: [{
+      version: "v1.15.0",
+      content: [
+        "猫猫详情页面支持查看疫苗记录",
+        "优化猫猫详情页面样式和弹窗组件交互",
+        "重构管理页面目录结构",
+        "修复mask组件的事件穿透问题",
+        "优化喵友圈页面性能和缓存策略",
+        "统一管理页面权限提示样式",
+      ],
+      time: "2024/3/14"
+    }, {
+      version: "v1.14.6*",
+      content: [
+        "添加喵日记功能",
+        "喵日记上传、审核、删除",
+        "喵日记审核通知"
+      ],
+      time: "2024/09/20"
+    }, {
+      version: "v1.14.5*",
+      content: [
+        "公告使用mphtml富文本渲染",
+        "添加了猫抓板公告独立编辑器",
+        "支持图片、视频、猫咪卡片插入公告"
+      ],
+      time: "2024/09/20"
+    }, {
+      version: "v1.14.4",
+      content: [
+        "修复版本控制功能"
+      ],
+      time: "2024/11/16"
+    }, {
+      version: "v1.14.3",
+      content: [
+        "更新个人主页（xuann大佬提供）"
+      ],
+      time: "2024/11/03"
+    }, {
       version: "v1.14.6*",
       content: [
         "添加喵日记功能",
