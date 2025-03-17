@@ -104,6 +104,9 @@ Page({
     // 1. 首先加载用户信息，因为其他函数依赖于此
     await this.loadUser();
 
+    // 2. 加载榜单
+    await this.loadCatRank(); 
+
     // 2. 然后加载关注的猫咪列表
     await this.loadFollowCats();
 

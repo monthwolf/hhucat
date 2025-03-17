@@ -1,5 +1,5 @@
 /* pages/news/detailNews/detailNews.wxss */
-
+@import "/pages/public/wxss/iconfont.wxss";
 .news-box {
   box-sizing: border-box;
   padding: 30rpx 40rpx;

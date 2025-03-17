@@ -96,6 +96,10 @@
         <view class="form-label">撸猫指南</view>
         <textarea value="{{cat.tutorial}}" bindinput="inputText" data-key="tutorial" placeholder="如何正确撸猫？ta有什么故事？"></textarea>
       </view>
+      <view class="form-item">
+        <view class="form-label">喂食指南</view>
+        <textarea value="{{cat.feed}}" bindinput="inputText" data-key="feed" placeholder="如何正确喂猫？ta有什么故事？"></textarea>
+      </view>
     </view>
   </view>
 

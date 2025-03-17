@@ -62,7 +62,7 @@
 
 .form-item input, .form-item textarea {
   width: 100%;
-  box-sizing: border-box;
+  /* box-sizing: border-box; */
   border: 1rpx solid #eee;
   border-radius: 8rpx;
   padding: 15rpx 20rpx;

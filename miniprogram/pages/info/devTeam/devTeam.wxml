@@ -8,9 +8,12 @@
 <view class='block'>
   <view class='title'>开源代码</view>
   <view class='desc'>
-    <text selectable='true'>小程序代码开源啦！配备部署教程~\n高校可申请Laf后端代金券，已有十余所高校加入~\n{{github_link}}</text>
-    <button class="primary" bindtap='copyOpenSourceLink'>点击复制到剪切板</button>
-  </view>
+    <text selectable='true'>小程序代码开源啦！配备部署教程~\n高校可申请Laf后端代金券，已有十余所高校加入~\n{{github_link}}\n可每猫咪开源:{{hhucat_github_link}}</text>
+    <view style="display: flex;justify-content: space-between;">
+    <button class="primary" bindtap='copyOpenSourceLink'>复制原项目地址</button>
+    <button class="primary" bindtap='copyHhuOpenSourceLink'>复制hhucat地址</button>
+</view>
+</view>
 </view>
 
 <view class='block'>

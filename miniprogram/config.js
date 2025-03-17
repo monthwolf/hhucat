@@ -25,7 +25,8 @@ module.exports = {
   ],
 
   // 赞赏码图片
-  reward_img: ["https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/赞赏码.jpg", "dddd", "aaaa"],
+  reward_title: ["开发者投喂码","江宁校区投喂码","金坛校区投喂码"],
+  reward_img: ["https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/赞赏码.jpg"],
   // 新猫问卷图片
   feedback_wj_img: "https://cat-1327294719.cos.ap-nanjing.myqcloud.com/系统/新猫问卷.png",
   // 小程序菊花码图片

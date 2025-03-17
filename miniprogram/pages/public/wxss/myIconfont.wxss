@@ -1,0 +1,51 @@
+/* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
+@font-face {
+    font-family: 'icon';  /* Project id 4597490 */
+    src: 
+    url('data:application/x-font-woff2;charset=utf-8;base64,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') format('woff2'),
+    url('//at.alicdn.com/t/c/font_4597490_b8im43n7drs.woff?t=1742129731557') format('woff'),
+    url('//at.alicdn.com/t/c/font_4597490_b8im43n7drs.ttf?t=1742129731557') format('truetype');
+}
+
+.iconfont {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: "icon" !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: inherit;
+  
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .icon-photo-o:before {
+    content: "\e60b";
+  }
+
+  
+.icon-maomi::before {
+    content: "\e675";
+  }
+  
+  .icon-remove:before {
+    content: "\ea39";
+  }
+  
+  .icon-user:before {
+    content: "\ea8a";
+  }
+  
+  .icon-dingwei1:before {
+    content: "\e634";
+  }
+
+  .icon-shengri:before {
+    content: "\e650";
+  }
+
+  .icon-a-maotou1:before {
+    content: "\e68c";
+  }

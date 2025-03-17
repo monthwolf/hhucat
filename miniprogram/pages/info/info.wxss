@@ -1,5 +1,6 @@
 /* miniprogram/pages/info/info.wxss */
 @import "../public/wxss/iconfont.wxss";
+@import "../public/wxss/myIconfont.wxss";
 page {
   width: 750rpx;
   padding: 30rpx 30rpx;

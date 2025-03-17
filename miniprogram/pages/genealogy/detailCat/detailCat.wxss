@@ -1,3 +1,6 @@
+@import "/pages/public/wxss/iconfont.wxss";
+@import "/pages/public/wxss/myIconfont.wxss";
+
 page {
   height: 100%;
   overflow: hidden;
@@ -15,7 +18,7 @@ page {
 
 .down {
   position: relative;
-  bottom: 20px;
+  bottom: 5px;
   height: 30rpx;
   font-family: "黑体";
   font-style: normal;
@@ -134,7 +137,7 @@ swiper-item image {
   color: var(--color-black-light);
 }
 
-.identity .iconfont {
+.identity .iconfont{
   font-size: 30rpx;
   color: var(--color-primary);
 }
@@ -215,7 +218,7 @@ swiper-item image {
 }
 
 /* 卡片布局 */
-.details .card {
+ .card {
   width: 100%;
   background-color: #fff;
   border-radius: 20rpx;
@@ -231,24 +234,48 @@ swiper-item image {
   padding: 15rpx 30rpx;
 }
 .card-header {
-  display: flex;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   align-items: center;
   padding: 20rpx;
   border-bottom: 1rpx solid var(--color-gray-light);
 }
+
 .card-title {
   display: flex;
   align-items: center;
-  font-size: 28rpx;
+  font-size: 40rpx;
   font-weight: bold;
 }
 
 .card-title .iconfont {
-  font-size: 40rpx;
+  font-size: 50rpx;
   color: var(--color-primary);
   margin-right: 10rpx;
 }
 
+.base-info .iconfont {
+    font-size: 30rpx;
+    color: var(--color-primary);
+    margin-right: 10rpx;
+  }
+.base-info {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 26rpx;
+    color: var(--color-text);
+    line-height: 40rpx;
+    padding: 5rpx 10rpx;
+    letter-spacing: 2rpx;
+}
+
+.info-card {
+    display: flex;
+    align-items: center;
+}
 .details .item {
   width: 30%;
   padding: 30rpx 30rpx;
@@ -291,7 +318,7 @@ swiper-item image {
   width: 100%;
   font-size: 26rpx;
   line-height: 40rpx;
-  padding-bottom: 5rpx;
+  padding: 5rpx 10rpx;
   letter-spacing: 2rpx;
 }
 

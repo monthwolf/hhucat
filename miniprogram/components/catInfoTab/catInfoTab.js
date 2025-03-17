@@ -15,7 +15,7 @@ Component({
     cat_id: {
       type: String,
       value: '',
-      observer: function(newVal, oldVal) {
+      observer: function (newVal, oldVal) {
         if (newVal && newVal !== oldVal) {
           if (!this.jsData) {
             this.jsData = { cat_id: newVal, phers: {} };
@@ -37,8 +37,9 @@ Component({
     selectedCat: {
       type: Object,
       value: null,
-      observer: function(newVal) {
+      observer: function (newVal) {
         if (newVal) {
+          console.log('selectedCat', newVal);
           // 当外部传入 selectedCat 时自动加载
           this.loadCatData(newVal);
         }
@@ -75,22 +76,22 @@ Component({
   jsData: null,
 
   lifetimes: {
-    attached: async function() {
+    attached: async function () {
       this.jsData = {
         cat_id: this.properties.cat_id || null,
         phers: {}
       };
-      
+
       // 初始化adopts数据
       this.setData({
-        adopts: cat_status_adopt.map((x) => { return {desc: x} })
+        adopts: cat_status_adopt.map((x) => { return { desc: x } })
       });
-      
+
       // 设置pickers.adopt
       this.setData({
         'pickers.adopt': cat_status_adopt
       });
-      
+
       await this.loadPickers();
       if (this.properties.cat_id) {
         this.jsData.cat_id = this.properties.cat_id;
@@ -122,18 +123,20 @@ Component({
 
     // 加载外部传入的猫咪数据
     loadCatData(cat) {
-      if (!cat || !cat._id) return;
-      
+      if (!cat) return;
+      this.setData({
+        cat: cat
+      })
       // 确保 jsData 已初始化
       if (!this.jsData) {
-        this.jsData = { 
+        this.jsData = {
           cat_id: cat._id,
           phers: {}
         };
       } else {
         this.jsData.cat_id = cat._id;
       }
-      
+
       console.log('[loadCatData] - 加载外部传入的猫咪数据:', cat);
       this.loadCat();
     },
@@ -144,7 +147,7 @@ Component({
       if (!this.jsData) {
         this.jsData = { cat_id: undefined, phers: {} };
       }
-      
+
       this.setData({
         cat: {
           nickname: [],
@@ -154,7 +157,7 @@ Component({
         isNewMode: true
       });
       this.jsData.cat_id = undefined;
-      
+
       // 触发模式变化事件
       this.triggerEvent('modeChange', { isNewCat: true });
     },
@@ -168,14 +171,14 @@ Component({
           this.jsData.cat_id = catId;
         }
       }
-      
+
       // 确保 jsData 已初始化
       if (!this.jsData) {
         this.jsData = { cat_id: null, phers: {} };
         console.log('[loadCat] - 初始化 jsData');
       }
-      
-      if (this.jsData.cat_id === undefined) {
+
+      if (this.jsData.cat_id === undefined && !this.data.cat) {
         this.setData({
           cat: {
             nickname: [],
@@ -183,25 +186,25 @@ Component({
             popularity: 0,
           }
         });
-        //说明是新猫
+        //说明是新建
         return false;
       }
 
-      var cat = (await getCatItemMulti([this.jsData.cat_id], {nocache: true}))[0];
+      var cat = this.data.cat ? this.data.cat : (await getCatItemMulti([this.jsData.cat_id], { nocache: true }))[0];
       console.log("[loadCat] -", cat);
       cat.mphoto = String(new Date(cat.mphoto));
       // 处理一下picker
       var picker_selected = {};
       const pickers = this.data.pickers;
       const pickerValueMaps = this.data.pickerValueMaps;
-      
+
       for (const key in pickers) {
         const items = pickers[key];
         const value = cat[key];
         if (value == undefined) {
           continue;
         }
-        
+
         // 处理使用映射表的情况
         if (pickerValueMaps && pickerValueMaps[key]) {
           // 在映射表中找到对应的索引
@@ -211,7 +214,7 @@ Component({
             continue;
           }
         }
-        
+
         // 对于普通选项或者没找到映射值
         const idx = items.findIndex((v) => {
           if (typeof v === 'object' && v.desc !== undefined) {
@@ -219,7 +222,7 @@ Component({
           }
           return v === value;
         });
-        
+
         if (idx === -1 && typeof value === "number") {
           // 既不是undefined，也找不到，说明存的就是下标
           picker_selected[key] = value;
@@ -227,7 +230,7 @@ Component({
           picker_selected[key] = idx !== -1 ? idx : 0;
         }
       }
-      
+
       await this.setData({
         cat: cat,
         picker_selected: picker_selected,
@@ -242,7 +245,7 @@ Component({
         this.jsData = { cat_id: null, phers: {} };
         return; // 如果没有 cat_id，无法加载照片
       }
-      
+
       const only_best_photo = this.data.only_best_photo;
       const qf = { cat_id: this.jsData.cat_id, verified: true, best: only_best_photo };
       const db = await cloud.databaseAsync();
@@ -271,7 +274,7 @@ Component({
         return true;
       }
     },
-    
+
     // 点击加载更多
     async clickLoad(e) {
       await this.loadMorePhotos();
@@ -282,7 +285,7 @@ Component({
       if (!this.jsData) {
         this.jsData = { cat_id: null, phers: {} };
       }
-      
+
       if (this.jsData.cat_id === undefined) {
         // 新猫，没有照片
         return false;
@@ -301,7 +304,7 @@ Component({
       const db = await cloud.databaseAsync();
       var newPhotos = await db.collection('photo').where(qf).orderBy('mdate', 'desc').skip(now).limit(photoStep).get();
       await fillUserInfo(newPhotos.data, "_openid", "userInfo");
-      
+
       console.log("[loadMorePhotos] -", newPhotos);
       photo = photo.concat(newPhotos.data);
       this.setData({
@@ -317,12 +320,12 @@ Component({
         ['cat.' + key]: value
       });
     },
-    
+
     // 选择了东西
     pickerChange(e) {
       const key = e.currentTarget.dataset.key;
       const index = parseInt(e.detail.value);
-      
+
       // 根据映射表或直接使用选项值
       let value;
       if (this.data.pickerValueMaps && this.data.pickerValueMaps[key]) {
@@ -336,23 +339,23 @@ Component({
       } else {
         // 没有映射表，直接使用选项值
         value = this.data.pickers[key][index];
-        
+
         if (typeof value === "object" && value.desc !== undefined) {
           // 说明是一种映射关系，只保存下标
           value = parseInt(index);
         }
       }
-      
+
       // 设置数据并记录选择的索引
       this.setData({
-        ['cat.'+key]: value,
-        ['picker_selected.'+key]: index
+        ['cat.' + key]: value,
+        ['picker_selected.' + key]: index
       });
-      
+
       console.log(`选择了 ${key} = ${value}，索引 = ${index}`);
       return value;
     },
-    
+
     // 选择了出生日期
     pickerDateChange(e) {
       const key = e.currentTarget.dataset.key;
@@ -362,7 +365,7 @@ Component({
       });
       return value;
     },
-    
+
     pickerAreaColumnChange(e) {
       var pickers = this.data.pickers;
 
@@ -378,7 +381,7 @@ Component({
         });
       }
     },
-    
+
     bindAreaChange(e) {    // 这个和columnChange的区别是要确认才触发
       var pickers = this.data.pickers;
       const indices = e.detail.value;
@@ -387,7 +390,7 @@ Component({
         'cat.area': pickers.campus_area[1][indices[1]]
       });
     },
-    
+
     async loadPickers() {
       var filterRes = await loadFilter();
       console.log(filterRes);
@@ -407,13 +410,13 @@ Component({
         "pickers.colour": filterRes.colour,
       });
     },
-    
+
     // 提交表单
     async saveCat() {
       if (!this.jsData) {
         this.jsData = { cat_id: null, phers: {} };
       }
-      
+
       // 原upload方法的内容
       // 检查必要字段
       if (!this.data.cat.name) {
@@ -446,8 +449,8 @@ Component({
         title: '操作成功',
       });
       // 刷新缓存
-      await getCatItemMulti([this.jsData.cat_id], {nocache: true});
-      
+      await getCatItemMulti([this.jsData.cat_id], { nocache: true });
+
       // 触发事件，根据是新建还是更新触发不同事件
       if (this.data.isNewMode) {
         this.triggerEvent('catCreated', { catId: this.jsData.cat_id, cat: this.data.cat });
@@ -456,7 +459,12 @@ Component({
         this.triggerEvent('catUpdated', { catId: this.jsData.cat_id, cat: this.data.cat });
       }
     },
-    
+    getCat() {
+      return {
+        cat: this.data.cat,
+        cat_id: this.jsData.cat_id
+      };
+    },
     async deletePhoto(e) {
       console.log("[deletePhoto] -", e);
       const photo = e.currentTarget.dataset.photo;
@@ -521,22 +529,22 @@ Component({
         ['photo[' + index + '].best']: set_best
       });
     },
-    
+
     inputPher(e) {
       if (!this.jsData) {
         this.jsData = { cat_id: null, phers: {} };
       }
-      
+
       const input = e.detail.value;
       const pid = e.currentTarget.dataset.pid;
       this.jsData.phers[pid] = input;
     },
-    
+
     async updatePher(e) {
       if (!this.jsData) {
         this.jsData = { cat_id: null, phers: {} };
       }
-      
+
       const photo = e.currentTarget.dataset.photo;
       const index = e.currentTarget.dataset.index;
       const pid = photo._id;
@@ -556,7 +564,7 @@ Component({
         ['photo[' + index + '].photographer']: photographer
       });
     },
-    
+
     async switchOnlyBest() {
       const only_best_photo = this.data.only_best_photo;
       this.setData({

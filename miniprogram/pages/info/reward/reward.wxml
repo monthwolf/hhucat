@@ -13,7 +13,7 @@
 
     <view class="buttons" wx:if="{{canReward}}" wx:for="{{reward_img}}">
       <!-- 打开赞赏码 -->
-      <button  data-img="{{item}}"  bindtap='openImg' style='flex-basis:100%;'>投喂码-{{index}}</button>
+      <button  data-img="{{item}}"  bindtap='openImg' style='flex-basis:100%;'>{{reward_title[index]}}</button>
     </view>
       <view class="buttons" wx:if="{{canReward}}">
       <!-- 打开激励广告 -->

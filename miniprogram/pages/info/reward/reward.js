@@ -1,5 +1,5 @@
 // miniprogram/pages/info/reward/reward.js
-import { text as text_cfg, reward_img } from "../../../config";
+import { text as text_cfg, reward_img,reward_title } from "../../../config";
 import { checkCanReward } from "../../../utils/user";
 import { cloud } from "../../../utils/cloudAccess";
 import { getGlobalSettings } from "../../../utils/page";
@@ -14,7 +14,8 @@ Page({
   data: {
     showAdBlock: false,
     text_cfg: text_cfg,
-    reward_img: reward_img
+    reward_img: reward_img,
+    reward_title: reward_title
   },
 
   jsData: {

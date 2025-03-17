@@ -1,4 +1,5 @@
 /* pages/manage/catManage/catManage.wxss */
+@import "/pages/public/wxss/iconfont.wxss";
 .container {
   min-height: 100vh;
   background-color: #f8f8f8;

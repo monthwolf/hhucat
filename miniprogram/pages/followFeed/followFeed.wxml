@@ -78,6 +78,9 @@
             <image wx:if="{{feedItem.items[0].userInfo}}" src="{{feedItem.items[0].userInfo.avatarUrl}}" mode="aspectFit" lazy-load="true"></image>
             <image wx:else class="avatar" src="/pages/public/images/app_logo.png" mode="aspectFit" lazy-load="true"></image>
           </view>
+          <view class="username">
+            {{item.userInfo.nickName || '-'}}
+            </view>
         </view>
         <view class="dot"></view>
         <view class="datetime">{{feedItem.items[0].datetime}}</view>

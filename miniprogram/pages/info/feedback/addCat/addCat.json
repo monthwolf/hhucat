@@ -1,6 +1,6 @@
 {
   "usingComponents": {
-      "searchCat": "/components/searchCat/searchCat"
+    "cat-info-tab": "/components/catInfoTab/catInfoTab"
   },
-  "navigationBarTitleText": "修改猫猫信息"
+  "navigationBarTitleText": "反馈猫猫信息"
 }
