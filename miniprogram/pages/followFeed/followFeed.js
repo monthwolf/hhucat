@@ -1,4 +1,3 @@
-import { cloud } from "../../utils/cloudAccess";
 import {
   randomInt,
   formatDate,
@@ -20,14 +19,15 @@ import { text } from "../../config"
 import { async } from "../../packages/tencentcloud/cos";
 
 import api from "../../utils/cloudApi";
+import { signCosUrl } from "../../utils/common.js";
+
+const app = getApp();
 
 // 每次触底加载的数量
 const loadCount = 13;
 // 最多加载几天前的照片
 const maxNDaysAgo = 30;
 
-// 正则表达式：不以 HEIC 为文件后缀的字符串
-const no_heic = /^((?!\.heic$).)*$/i;
 
 // 头像渐变边框
 const { gradientAvatarSvg } = require('./gradientAvatar.svg.js');
@@ -70,7 +70,6 @@ Page({
       // 检查缓存是否过期
       const now = Date.now();
       const isCacheValid = cachedData.timestamp && (now - cachedData.timestamp < CACHE_TTL);
-
       if (isCacheValid) {
         // 恢复缓存数据
         this.setData({
@@ -249,13 +248,15 @@ Page({
   },
 
   async loadFollowCats() {
-    const db = await cloud.databaseAsync();
     let { openid } = this.data.user;
     // 获取用户的关注列表
-    const followCats = (await db.collection("user")
-      .where({ openid })
-      .field({ followCats: 1 })
-      .get()).data[0].followCats;
+    const followCats = (await app.mpServerless.db.collection('user').findOne({
+      openid: openid
+    }, {
+      projection: {
+        followCats: 1
+      }
+    })).result.followCats;
 
     console.log(followCats);
     // 重置一下，便于下拉刷新用
@@ -272,8 +273,6 @@ Page({
 
   // 加载关注猫列表的详细信息
   async loadFollowCatsDetail() {
-    const db = await cloud.databaseAsync();
-    const _ = db.command;
     const { followCats } = this.data;
 
     if (!followCats || followCats.length === 0) {
@@ -288,25 +287,22 @@ Page({
     const maxCreateDate = getDateWithDiffHours(-1 * maxNDaysAgo * 24);
 
     // 批量获取所有关注猫的最新照片（一次查询）
-    const latestPhotosQuery = db.collection("photo")
-      .where({
-        cat_id: _.in(followCats),
-        verified: true,
-        photo_id: no_heic,
-        create_date: _.gt(maxCreateDate),
-      })
-      .orderBy("create_date", "desc")
-      .get();
+    const latestPhotosQuery = await app.mpServerless.db.collection('photo').find({
+      cat_id: { $in: followCats },
+      verified: true,
+      create_date: { $gt: maxCreateDate },
+    }, {
+      sort: { create_date: -1 },
+    })
 
     // 批量获取所有关注猫的最新评论（一次查询）
-    const latestCommentsQuery = db.collection("comment")
-      .where({
-        cat_id: _.in(followCats),
-        deleted: _.neq(true),
-        create_date: _.gt(maxCreateDate),
-      })
-      .orderBy("create_date", "desc")
-      .get();
+    const latestCommentsQuery = await app.mpServerless.db.collection('comment').find({
+      cat_id: { $in: followCats },
+      deleted: { $ne: true },
+      create_date: { $gt: maxCreateDate },
+    }, {
+      sort: { create_date: -1 },
+    })
 
     // 并行执行两个批量查询
     const [latestPhotosResult, latestCommentsResult] = await Promise.all([
@@ -314,8 +310,8 @@ Page({
       latestCommentsQuery
     ]);
 
-    const latestPhotos = latestPhotosResult.data;
-    const latestComments = latestCommentsResult.data;
+    const latestPhotos = latestPhotosResult.result;
+    const latestComments = latestCommentsResult.result;
 
     // 并行获取所有猫咪的头像
     const avatarPromises = followCatsList.map(cat => getAvatar(cat._id, cat.photo_count_best));
@@ -325,12 +321,10 @@ Page({
     followCatsList.forEach((cat, index) => {
       cat.avatar = avatars[index];
       cat.unfollowed = false; // 默认未取关
-
       // 找出该猫的最新照片
       const catLatestPhoto = latestPhotos.find(photo => photo.cat_id === cat._id);
       // 找出该猫的最新评论
       const catLatestComment = latestComments.find(comment => comment.cat_id === cat._id);
-
       // 记录最近照片，评论的创建时间
       cat.latestTime = Math.max(
         catLatestPhoto ? catLatestPhoto.create_date : 0,
@@ -359,10 +353,6 @@ Page({
   async _loadData(coll, catId = null) {
     let { loadedCount } = this.jsData;
     let { followCats } = this.data;
-
-    const db = await cloud.databaseAsync();
-    const _ = db.command;
-
     // 每次加载每种类型数据的数量
     const limit = loadCount + 1;
 
@@ -372,14 +362,13 @@ Page({
     if (coll === 'photo') {
       whereField = {
         verified: true,
-        photo_id: no_heic,
-        create_date: _.gt(maxCreateDate),
+        create_date: { $gt: maxCreateDate },
       }
     } else if (coll === 'comment') {
       whereField = {
-        deleted: _.neq(true),
+        deleted: { $ne: true },
         needVerify: false,
-        create_date: _.gt(maxCreateDate),
+        create_date: { $gt: maxCreateDate },
       };
     }
 
@@ -388,29 +377,27 @@ Page({
       whereField.cat_id = catId;
     } else {
       // 加载全部数据
-      whereField.cat_id = _.in(followCats);
+      whereField.cat_id = { $in: followCats };
     }
 
     // 查询数据
-    let res = (await db.collection(coll)
-      .where(whereField)
-      .orderBy('create_date', 'desc')
-      .skip(loadedCount[coll])
-      .limit(limit)
-      .get()).data;
+    let { result: res } = await app.mpServerless.db.collection(coll).find(whereField, {
+      sort: { create_date: -1 },
+      skip: loadedCount[coll],
+      limit: limit,
+    });
 
     // 如果没有数据直接返回
     if (!res || res.length === 0) {
       return [];
     }
-
     // 预处理数据
     // 填充用户信息（可并行执行）
     let openidField = coll === 'photo' ? '_openid' : 'user_openid';
     const fillUserPromise = fillUserInfo(res, openidField, "userInfo");
 
     // 同时预处理每条数据
-    res.forEach(p => {
+    res.forEach(async p => {
       // 已经在followCatsList中的猫咪数据，直接引用
       p.cat = this.data.followCatsList.find(cat => cat._id === p.cat_id);
 
@@ -426,8 +413,8 @@ Page({
 
       if (coll == 'photo') {
         // 使用压缩版图片
-        p.pic = p.photo_compressed || p.photo_id;
-        p.pic_prev = p.photo_watermark || p.photo_id;
+        p.pic = await signCosUrl(p.photo_compressed || p.photo_id);
+        p.pic_prev = await signCosUrl(p.photo_watermark || p.photo_id);
       }
     });
 
@@ -462,7 +449,6 @@ Page({
       [() => yearsDiff < 1, `${date.getMonth() + 1}月${date.getDate()}日`],
       [() => true, `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`],
     ];
-
     for (const [condition, format] of formatMap) {
       if (condition()) {
         return format;
@@ -512,13 +498,11 @@ Page({
       if (photoRes.length === loadCount + 1 || commentRes.length === loadCount + 1) {
         loadnomore = false;
       }
-
       // 更新waiting列表和加载计数
       if (photoRes.length > 0) {
         waitingList.photo.push(...photoRes);
         loadedCount.photo += photoRes.length;
       }
-
       if (commentRes.length > 0) {
         waitingList.comment.push(...commentRes);
         loadedCount.comment += commentRes.length;
@@ -592,7 +576,6 @@ Page({
         }
         continue;
       }
-
       // 如果评论队列已空，添加照片
       if (waitingList.comment.length <= keepCount) {
         const photo = waitingList.photo.shift();
@@ -622,7 +605,6 @@ Page({
         }
         continue;
       }
-
       // 比较照片和评论的时间，较新的先加入
       const latestPhoto = waitingList.photo[0];
       const latestComment = waitingList.comment[0];
@@ -679,7 +661,6 @@ Page({
         }
       }
     }
-
     // 更新feed数据，添加新项到现有feed中
     if (newFeedItems.length > 0) {
       this.setData({
@@ -724,7 +705,6 @@ Page({
     if (selectedCat.svgImg.includes('url(%23gradient)')) {
       // 判断是展示某只猫猫的动态，还是全部动态
       const currentCatId = selectedCat._id === this.data.currentCatId ? null : selectedCat._id;
-
       // 更新当前猫猫名字
       const currentCatName = currentCatId ? selectedCat.name : '';
 
@@ -787,7 +767,6 @@ Page({
 
   closeThisCatFeed() {
     const currentCatId = this.data.currentCatId;
-
     // 更新猫猫头像状态
     const followCatsList = this.data.followCatsList.map(cat => {
       if (cat._id === currentCatId) {
@@ -810,7 +789,6 @@ Page({
   // 长按猫猫头像
   onCatAvatarLongPress(e) {
     const selectedCat = e.currentTarget.dataset.cat;
-
     // 触发动画
     const followCatsList = this.data.followCatsList.map(cat => {
       if (cat._id === selectedCat._id) {
@@ -838,7 +816,6 @@ Page({
       this.setData({ followCatsList });
     }, 350);  // 0.35s后隐藏动画
   },
-
   closeMenu() {
     this.setData({ showMenu: false });
   },
@@ -875,15 +852,14 @@ Page({
     });
 
     wx.showToast({
-      title: `${unfollowed ? "关注" : "取关"}${res.result ? "成功" : "失败"}`,
-      icon: res.result ? "success" : "error"
+      title: `${unfollowed ? "关注" : "取关"}${res ? "成功" : "失败"}`,
+      icon: res ? "success" : "error"
     });
 
     // 如果当前是该猫动态，取关后关闭
     if (this.data.currentCatId === catid && !unfollowed) {
       this.closeThisCatFeed();
     }
-
     this.jsData.updatingFollowCats = false;
   },
 
@@ -903,7 +879,6 @@ Page({
       },
       timestamp: Date.now()
     };
-
     try {
       wx.setStorageSync('followFeedCache', cacheData);
       console.log('已保存Feed数据到缓存');
@@ -919,7 +894,6 @@ Page({
     // 获取当前Feed中最新一条数据的时间
     let latestTimestamp = 0;
     const { feed } = this.data;
-
     if (feed && feed.length > 0) {
       // 查找当前Feed中最新的一条数据
       for (const item of feed) {
@@ -931,7 +905,6 @@ Page({
         }
       }
     }
-
     // 如果没有现有数据，直接加载所有数据
     if (latestTimestamp === 0) {
       return this.loadMoreFeed();
@@ -947,8 +920,6 @@ Page({
 
     try {
       // 准备数据库查询
-      const db = await cloud.databaseAsync();
-      const _ = db.command;
       const { followCats, currentCatId } = this.data;
 
       // 构建查询条件 - 只查询比现有数据更新的内容
@@ -959,56 +930,24 @@ Page({
 
       if (currentCatId) {
         // 查询指定猫的最新照片
-        photoQuery = db.collection("photo")
-          .where({
-            cat_id: currentCatId,
-            verified: true,
-            photo_id: no_heic,
-            create_date: _.gt(latestDate)
-          })
-          .orderBy("create_date", "desc")
-          .get();
+        photoQuery = app.mpServerless.db.collection('photo').find({ cat_id: currentCatId, verified: true, create_date: { $gt: latestDate } }, { sort: { create_date: -1 } });
 
         // 查询指定猫的最新评论
-        commentQuery = db.collection("comment")
-          .where({
-            cat_id: currentCatId,
-            deleted: _.neq(true),
-            needVerify: false,
-            create_date: _.gt(latestDate)
-          })
-          .orderBy("create_date", "desc")
-          .get();
+        commentQuery = app.mpServerless.db.collection('comment').find({ cat_id: currentCatId, deleted: { $ne: true }, needVerify: false, create_date: { $gt: latestDate } }, { sort: { create_date: -1 } });
       } else {
         // 查询所有关注猫的最新照片
-        photoQuery = db.collection("photo")
-          .where({
-            cat_id: _.in(followCats),
-            verified: true,
-            photo_id: no_heic,
-            create_date: _.gt(latestDate)
-          })
-          .orderBy("create_date", "desc")
-          .get();
+        photoQuery = app.mpServerless.db.collection('photo').find({ cat_id: { $in: followCats }, verified: true, create_date: { $gt: latestDate } }, { sort: { create_date: -1 } });
 
         // 查询所有关注猫的最新评论
-        commentQuery = db.collection("comment")
-          .where({
-            cat_id: _.in(followCats),
-            deleted: _.neq(true),
-            needVerify: false,
-            create_date: _.gt(latestDate)
-          })
-          .orderBy("create_date", "desc")
-          .get();
+        commentQuery = app.mpServerless.db.collection('comment').find({ cat_id: { $in: followCats }, deleted: { $ne: true }, needVerify: false, create_date: { $gt: latestDate } }, { sort: { create_date: -1 } });
       }
 
       // 并行执行查询
       const [photoRes, commentRes] = await Promise.all([photoQuery, commentQuery]);
 
       // 处理新照片
-      let newPhotos = photoRes.data || [];
-      let newComments = commentRes.data || [];
+      let newPhotos = photoRes.result || [];
+      let newComments = commentRes.result || [];
 
       console.log(`发现${newPhotos.length}张新照片，${newComments.length}条新评论`);
 
@@ -1021,11 +960,11 @@ Page({
       // 处理数据
       if (newPhotos.length > 0) {
         await fillUserInfo(newPhotos, '_openid', "userInfo");
-        newPhotos.forEach(p => {
+        newPhotos.forEach(async p => {
           p.cat = this.data.followCatsList.find(cat => cat._id === p.cat_id);
           p.datetime = this.formatDateTime(new Date(p.create_date));
-          p.pic = p.photo_compressed || p.photo_id;
-          p.pic_prev = p.photo_watermark || p.photo_id;
+          p.pic = await signCosUrl(p.photo_compressed || p.photo_id);
+          p.pic_prev = await signCosUrl(p.photo_watermark || p.photo_id);
           p.dtype = 'photo';
         });
       }
@@ -1078,7 +1017,6 @@ Page({
           currentGroup.items.push(item);
         }
       });
-
       // 将新items添加到feed的前面
       this.setData({
         feed: [...newFeedItems, ...feed]

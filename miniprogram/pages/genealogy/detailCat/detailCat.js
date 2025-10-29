@@ -26,15 +26,12 @@ import {
 } from "../../../utils/page";
 import { convertRatingList, genDefaultRating } from "../../../utils/rating";
 import { showMpcode } from "../../../utils/mpcode";
-import {
-  cloud
-} from "../../../utils/cloudAccess";
+import { signCosUrl } from "../../../utils/common";
 import api from "../../../utils/cloudApi";
 
+const app = getApp();
 
 import { loadUserBadge, loadBadgeDefMap, loadCatBadge, mergeAndSortBadges, } from "../../../utils/badge";
-
-const no_heic = /^((?!\.heic$).)*$/i; // 正则表达式：不以 HEIC 为文件后缀的字符串
 
 const max_follow_cats = 30; // 最大的猫猫关注数量
 
@@ -237,8 +234,9 @@ Page({
   },
 
   async loadCat() {
-    const db = await cloud.databaseAsync();
-    const cat = (await db.collection('cat').doc(this.jsData.cat_id).get()).data;
+    const { result: cat } = await app.mpServerless.db.collection('cat').findOne({
+      _id: this.jsData.cat_id
+    });
     cat.photo = [];
     if (cat.characteristics.length) {
       cat.characteristics_string = cat.characteristics + '\n';
@@ -253,7 +251,6 @@ Page({
     if (cat.rating) {
       cat.rating.catRatings = convertRatingList(cat.rating.scores);
     }
-
     this.setData({
       cat: cat
     });
@@ -333,14 +330,12 @@ Page({
 
   async reloadPhotos() {
     // 这些是精选照片
-    const db = await cloud.databaseAsync();
     const qf = {
       cat_id: this.jsData.cat_id,
       verified: true,
-      best: true,
-      photo_id: no_heic
+      best: true
     };
-    this.jsData.photoMax = (await db.collection('photo').where(qf).count()).total;
+    this.jsData.photoMax = (await app.mpServerless.db.collection('photo').count(qf)).result;
     await Promise.all([
       this.loadMorePhotos(),
       this.reloadAlbum(),
@@ -354,12 +349,10 @@ Page({
   },
 
   async loadFollowCount() {
-    const db = await cloud.databaseAsync();
-    const _ = db.command;
     const { cat_id } = this.jsData;
-    const { total } = (await db.collection('user').where({
-      followCats: _.elemMatch(_.eq(cat_id))
-    }).count())
+    const { result: total } = await app.mpServerless.db.collection('user').count({
+      followCats: cat_id
+    });
 
     this.setData({
       "cat.follow_count": total
@@ -368,13 +361,11 @@ Page({
 
   async reloadAlbum() {
     // 下面是相册的
-    const db = await cloud.databaseAsync();
     const qf_album = {
       cat_id: this.jsData.cat_id,
-      verified: true,
-      photo_id: no_heic
+      verified: true
     };
-    this.jsData.albumMax = (await db.collection('photo').where(qf_album).count()).total;
+    this.jsData.albumMax = (await app.mpServerless.db.collection('photo').count(qf_album)).result;
     this.jsData.album_raw = [];
     await this.loadMoreAlbum();
     this.setData({
@@ -391,8 +382,7 @@ Page({
     const qf = {
       cat_id: this.jsData.cat_id,
       verified: true,
-      best: true,
-      photo_id: no_heic
+      best: true
     };
     const step = this.jsData.page_settings.photoStep;
     const now = cat.photo.length;
@@ -402,14 +392,26 @@ Page({
     //   mask: true
     // })
 
-    const db = await cloud.databaseAsync();
-    let res = await db.collection('photo').where(qf).orderBy('mdate', 'desc').skip(now).limit(step).get();
+    let { result: res } = await app.mpServerless.db.collection('photo').find(
+      qf,
+      { skip: now, limit: step }
+    )
     console.log("[loadMorePhotos] -", res);
     const offset = cat.photo.length;
-    for (let i = 0; i < res.data.length; ++i) {
-      res.data[i].index = offset + i; // 把index加上，gallery预览要用到
+    for (let i = 0; i < res.length; ++i) {
+      res[i].index = offset + i; // 把index加上，gallery预览要用到
+      // 签名处理
+      if (res[i].photo_id) {
+        res[i].photo_id = await signCosUrl(res[i].photo_id);
+      }
+      if (res[i].photo_compressed) {
+        res[i].photo_compressed = await signCosUrl(res[i].photo_compressed);
+      }
+      if (res[i].photo_watermark) {
+        res[i].photo_watermark = await signCosUrl(res[i].photo_watermark);
+      }
     }
-    cat.photo = cat.photo.concat(res.data);
+    cat.photo = cat.photo.concat(res);
     this.setData({
       cat: cat
     });
@@ -501,33 +503,41 @@ Page({
     }
     const qf = {
       cat_id: this.jsData.cat_id,
-      verified: true,
-      photo_id: no_heic
+      verified: true
     };
     const step = this.jsData.page_settings.albumStep;
     const now = this.jsData.album_raw.length;
 
-    const db = await cloud.databaseAsync();
 
     this.jsData.loadingAlbum = true;
     const orderItem = photoOrder[this.data.photoOrderSelected];
 
     let res;
     if (orderItem.name == "最早收录") {
-      res = await db.collection('photo').where(qf).orderBy(orderItem.key, orderItem.order).skip(now).limit(step).get();
+      res = (await app.mpServerless.db.collection('photo').find(qf, { skip: now, limit: step })).result;
     } else {
-      res = await db.collection('photo').where(qf).orderBy(orderItem.key, orderItem.order).orderBy('mdate', 'desc').skip(now).limit(step).get();
+      res = (await app.mpServerless.db.collection('photo').find(qf, { sort: { shooting_date: -1 }, skip: now, limit: step })).result;
     }
 
     const offset = this.jsData.album_raw.length;
-    for (let i = 0; i < res.data.length; ++i) {
-      res.data[i].index = offset + i; // 把index加上，gallery预览要用到
+    for (let i = 0; i < res.length; ++i) {
+      res[i].index = offset + i; // 把index加上，gallery预览要用到
+      // 签名处理
+      if (res[i].photo_id) {
+        res[i].photo_id = await signCosUrl(res[i].photo_id);
+      }
+      if (res[i].photo_compressed) {
+        res[i].photo_compressed = await signCosUrl(res[i].photo_compressed);
+      }
+      if (res[i].photo_watermark) {
+        res[i].photo_watermark = await signCosUrl(res[i].photo_watermark);
+      }
     }
-    this.jsData.album_raw = this.jsData.album_raw.concat(res.data);
+    this.jsData.album_raw = this.jsData.album_raw.concat(res);
     this.updateAlbum();
   },
 
-  updateAlbum() {
+  async updateAlbum() {
     // 为了页面显示，要把这个结构处理一下
     // 先按日期分类，分为拍摄日期、上传日期
     var orderIdx = this.data.photoOrderSelected;
@@ -552,7 +562,7 @@ Page({
     var result = [];
     var keys = Object.keys(group);
     var order = photoOrder[orderIdx].order == 'asc' ? 1 : -1;
-    keys.sort((a, b) => order * (a - b));
+    keys.sort((a, b) => order * a.localeCompare(b));
     for (const key of keys) {
       const shooting_date = key.split('-');
       var birth = this.data.cat.birthday;
@@ -674,7 +684,6 @@ Page({
   closeFunction() {
     this.setData({ showFunc: false });
   },
-
   async loadUser() {
     var user = await getUser({
       nocache: true,
@@ -733,7 +742,7 @@ Page({
       catId: this.data.cat._id,
       badgeDef: badgeDef
     });
-    if (res.result.ok) {
+    if (res.ok) {
       wx.showToast({
         title: '赠予成功',
         icon: "success"
@@ -867,7 +876,6 @@ Page({
   async showPoster() {
     // 关掉弹窗
     this.closeFunction();
-
     let posterComponent = this.selectComponent('#posterComponent');
     if (posterComponent) {
       posterComponent.startDrawing();
@@ -903,8 +911,8 @@ Page({
     ]);
 
     wx.showToast({
-      title: `${followedCat ? "取关" : "关注"}${res.result ? "成功" : "失败"}`,
-      icon: res.result ? "success" : "error"
+      title: `${followedCat ? "取关" : "关注"}${res ? "成功" : "失败"}`,
+      icon: res ? "success" : "error"
     });
     this.jsData.updatingFollowCats = false;
   },
@@ -912,12 +920,9 @@ Page({
   // 获取最新疫苗记录
   async getLatestVaccine(cat_id) {
     try {
-      const { result } = await cloud.callFunction({
-        name: 'vaccineOp',
-        data: {
-          operation: 'list',
-          cat_id: cat_id
-        }
+      const result = await api.vaccineOp({
+        operation: 'list',
+        cat_id: cat_id
       });
 
       if (result?.result === true && Array.isArray(result.data) && result.data.length > 0) {
@@ -927,7 +932,6 @@ Page({
           const today = new Date();
           const expireDate = vaccine.expire_date ? new Date(vaccine.expire_date) : null;
           const is_expired = expireDate ? today > expireDate : false;
-
           return {
             ...vaccine,
             vaccine_date_formatted: vaccine.vaccine_date ? formatDate(vaccine.vaccine_date, "yyyy-MM-dd") : '',

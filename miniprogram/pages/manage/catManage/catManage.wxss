@@ -2,7 +2,7 @@
 @import "/pages/public/wxss/iconfont.wxss";
 .container {
   min-height: 100vh;
-  background-color: #f8f8f8;
+  background-color: var(--color-gray-light);
   box-sizing: border-box;
 }
 
@@ -70,14 +70,14 @@
 
 .tab .iconfont {
   font-size: 40rpx;
-  color: #666;
+  color: var(--color-gray-max);
   margin-bottom: 5rpx;
   transition: all 0.3s ease;
 }
 
 .tab .tab-text {
   font-size: 24rpx;
-  color: #666;
+  color: var(--color-gray-max);
   transition: all 0.3s ease;
 }
 
@@ -127,7 +127,7 @@
   height: 120rpx;
   border-radius: 60rpx;
   margin-right: 20rpx;
-  background-color: #f0f0f0;
+  background-color: var(--color-gray-light);
   flex-shrink: 0;
 }
 
@@ -146,7 +146,7 @@
 
 .cat-details {
   font-size: 26rpx;
-  color: #999;
+  color: var(--color-gray-max);
 }
 
 /* 内容区域 */
@@ -179,7 +179,7 @@
   z-index: 100;
   font-size: 55rpx;
   background-color: var(--color-primary);
-  color: white;
+  color: var(--color-text-onPrimary);
 }
 
 .action-button:active {
@@ -221,7 +221,7 @@
 }
 
 .search-results .empty-message {
-  color: #999;
+  color: var(--color-gray-max);
   font-size: 28rpx;
   text-align: center;
 }
@@ -231,7 +231,7 @@
   display: flex;
   align-items: center;
   padding: 20rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid var(--color-gray-normal);
 }
 
 .search-cat:last-child {
@@ -239,7 +239,7 @@
 }
 
 .search-cat:active {
-  background-color: #f8f8f8;
+  background-color: var(--color-gray-light);
 }
 
 .search-cat-avatar {
@@ -247,7 +247,7 @@
   height: 80rpx;
   border-radius: 40rpx;
   margin-right: 20rpx;
-  background-color: #f0f0f0;
+  background-color: var(--color-gray-light);
 }
 
 .search-cat-info {
@@ -256,13 +256,13 @@
 
 .search-cat-name {
   font-size: 28rpx;
-  color: #333;
+  color: var(--color-black-light);
   margin-bottom: 6rpx;
 }
 
 .search-cat-details {
   font-size: 24rpx;
-  color: #999;
+  color: var(--color-gray-max);
 }
 
 /* 提示信息 */
@@ -286,42 +286,6 @@
 .tip-text {
   font-size: 28rpx;
 }
-
-/* 未授权提示 */
-/* .no-auth-container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, calc(-50% - 0.5 * 100%));
-}
-
-.no-auth {
-  text-align: center;
-  padding: 100rpx 0;
-  color: var(--color-gray-max);
-}
-
-.no-auth-icon {
-  font-size: 80rpx;
-  margin-bottom: 20rpx;
-  animation: bounceIn 0.6s ease;
-}
-
-.no-auth-text {
-  font-size: 28rpx;
-}
-
-.no-auth-btn {
-  background-color: var(--color-gray);
-  color: white;
-  height: 80rpx;
-  margin-top: 20rpx;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  border-radius: 50rpx;
-  padding: 10rpx 20rpx;
-} */
 
 @keyframes bounceIn {
   0% {
@@ -378,7 +342,7 @@
 
 .option-text {
   font-size: 26rpx;
-  color: #333;
+  color: var(--color-black-light);
   margin-right: 10rpx;
   white-space: nowrap;
 }

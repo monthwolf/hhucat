@@ -2,15 +2,14 @@
 import { generateUUID } from "../../../utils/utils";
 import { text as text_cfg } from "../../../config";
 import { checkAuth, fillUserInfo } from "../../../utils/user";
-import { cloud } from "../../../utils/cloudAccess";
 import api from "../../../utils/cloudApi";
-
+import { uploadFile, signCosUrl } from "../../../utils/common"
 import drawUtils from "../../../utils/draw";
-import lockUtils from "./lock";
+// import lockUtils from "./lock";
 
 const canvasMax = 1200; // 正方形画布的尺寸px
 const compressLength = 500; // 压缩图的最长边大小
-
+const app = getApp();
 
 Page({
 
@@ -48,41 +47,41 @@ Page({
       });
     }
 
-    this.setData({
-      gLockKey: await lockUtils.geneKey("device"),
-    });
-    await this.getLock();
+    // this.setData({
+    //   gLockKey: await lockUtils.geneKey("device"),
+    // });
+    // await this.getLock();
   },
 
-  async getLock() {
-    const scene = "imProcess";
-    const key = this.data.gLockKey;
-    const limit = 1;
-    const expire_minutes = 5;
-    const res = await lockUtils.lock(scene, key, limit, expire_minutes);
-    const allLocks = await lockUtils.getLockList(scene);
-    this.setData({
-      gLocking: res,
-      allLocks: allLocks,
-    });
-    if (!res) {
-      wx.showToast({
-        title: '其他人还在操作...',
-        icon: "loading"
-      });
-      return false;
-    }
-    return true;
-  },
+  // async getLock() {
+  //   const scene = "imProcess";
+  //   const key = this.data.gLockKey;
+  //   const limit = 1;
+  //   const expire_minutes = 5;
+  //   const res = await lockUtils.lock(scene, key, limit, expire_minutes);
+  //   const allLocks = await lockUtils.getLockList(scene);
+  //   this.setData({
+  //     gLocking: res,
+  //     allLocks: allLocks,
+  //   });
+  //   if (!res) {
+  //     wx.showToast({
+  //       title: '其他人还在操作...',
+  //       icon: "loading"
+  //     });
+  //     return false;
+  //   }
+  //   return true;
+  // },
 
-  async releaseLock() {
-    const scene = "imProcess";
-    const key = this.data.gLockKey;
-    await lockUtils.unlock(scene, key);
-    this.setData({
-      gLocking: false
-    });
-  },
+  // async releaseLock() {
+  // const scene = "imProcess";
+  // const key = this.data.gLockKey;
+  // await lockUtils.unlock(scene, key);
+  // this.setData({
+  //   gLocking: false
+  // });
+  // },
 
   onShow: function () {
     console.log('设置屏幕常亮');
@@ -104,17 +103,14 @@ Page({
       keepScreenOn: false
     });
     // 释放一下key
-    await this.releaseLock();
+    // await this.releaseLock();
   },
 
   async loadProcess() {
-    const db = await cloud.databaseAsync();
-    const _ = db.command;
-    const total = (await db.collection('photo').where({
-      photo_compressed: _.in([undefined, '']),
-      verified: true,
-      photo_id: /^((?!\.heic$).)*$/i
-    }).count()).total;
+    const { result: total } = await app.mpServerless.db.collection('photo').count({
+      photo_compressed: { $in: [undefined, ''] },
+      verified: true
+    });
     console.log("imProcess loadProcess:", total);
     this.setData({
       total: total,
@@ -161,13 +157,14 @@ Page({
   },
 
   beginProcess: async function (isTesting) {
-    const db = await cloud.databaseAsync();
-    const _ = db.command;
-    while (this.data.processing && (await this.getLock())) {
-      var photos = (await db.collection('photo').where({
-        photo_compressed: _.in([undefined, '']),
+    // while (this.data.processing && (await this.getLock())) {
+    while (this.data.processing) {
+      var { result: photos } = await app.mpServerless.db.collection('photo').find({
+        photo_compressed: { $in: [undefined, ''] },
         verified: true
-      }).limit(1).get()).data;
+      }, {
+        limit: 1
+      });
 
       await fillUserInfo(photos, "_openid", "userInfo");
       console.log("imProcess beginProcess", photos);
@@ -212,7 +209,7 @@ Page({
     if (photoInfo.photographer == " ") photoInfo.photographer = text_cfg.genealogy.photo_by_unknow_tip
     try {
       var photoObj = await wx.getImageInfo({
-        src: photoInfo.photo_id,
+        src: await signCosUrl(photoInfo.photo_id),
       });
     } catch (error) {
       console.error(error);
@@ -248,17 +245,17 @@ Page({
     }
     // 上传压缩图
     this.setPhase(4);
-    const compressCloudPath = `compressed/${generateUUID()}.jpg`;
+    const compressCloudPath = `/compressed/${generateUUID()}.jpg`;
     const compressCloudID = await this.uploadImage(compressPath, compressCloudPath);
     console.log("compressCloudID", compressCloudID);
     // 上传水印图
     this.setPhase(5);
-    const watermarkCloudPath = `watermark/${generateUUID()}.jpg`;
-    const watermarkCloudID = await this.uploadImage(watermarkPath, watermarkCloudPath);
-    console.log("watermarkCloudID", watermarkCloudID);
+    const watermarkCloudPath = `/watermark/${generateUUID()}.jpg`;
+    const watermarkCloud = await this.uploadImage(watermarkPath, watermarkCloudPath);
+    console.log("watermarkCloud", watermarkCloud);
     // 更新数据库
     this.setPhase(6);
-    await this.updataDatabase(photoInfo, compressCloudID, watermarkCloudID);
+    await this.updataDatabase(photoInfo, compressCloudID, watermarkCloud);
     // 结束
     this.setPhase(0);
   },
@@ -345,21 +342,29 @@ Page({
 
   // 上传图片
   uploadImage: async function (filePath, cloudPath) {
-    const res = (await cloud.uploadFile({
-      cloudPath: cloudPath,
+    const res = await uploadFile({
       filePath: filePath,
-    }));
-    return res.fileID;
+      cloudPath: cloudPath,
+    })
+    return res;
   },
 
   // 更新数据库
-  updataDatabase: async function (oriPhoto, compressFileID, watermarkCloudID) {
+  updataDatabase: async function (oriPhoto, compressFile, watermarkCloud) {
     await api.managePhoto({
       photo: oriPhoto,
       type: 'setProcess',
-      compressed: compressFileID,
-      watermark: watermarkCloudID,
-    })
+      compressed: compressFile.fileUrl,
+      compressedId: compressFile.fileId,
+      watermark: watermarkCloud.fileUrl,
+      watermarkId: watermarkCloud.fileId,
+    });
+
+    // 触发图片处理完成事件
+    app.globalData.eventBus.$emit('photoProcessed', {
+      photoId: oriPhoto._id,
+      catId: oriPhoto.cat_id // 假设照片记录中有关联的猫ID
+    });
   },
 
   preview: function (e) {

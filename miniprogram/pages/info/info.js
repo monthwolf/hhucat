@@ -2,11 +2,14 @@
 import { isManagerAsync } from "../../utils/user";
 import { text as text_cfg, mpcode_img } from "../../config";
 import { showTab } from "../../utils/page";
-import { cloud } from "../../utils/cloudAccess";
 
 const share_text = text_cfg.app_name + ' - ' + text_cfg.info.share_tip;
 
-const logo_img = "https://oss.laf.run/n0002i-cloud-bin/app_logo.png";
+const logo_img = "/pages/public/images/app_logo.png";
+
+import { signCosUrl } from "../../utils/common";
+
+const app = getApp();
 
 Page({
   data: {
@@ -54,11 +57,12 @@ Page({
             path: "/pages/debug/deployTip/deployTip",
             icon: "icon-deploy"
           },
-          {
-            name: "生成秘钥",
-            path: "/pages/debug/genKeys/genKeys",
-            icon: "icon-genkey"
-          },],
+          // {
+          //   name: "生成秘钥",
+          //   path: "/pages/debug/genKeys/genKeys",
+          //   icon: "icon-genkey"
+          // },
+        ],
       }, {
         title: "管理后台",
         show: "manager",
@@ -68,6 +72,11 @@ Page({
             path: "guide",
             icon: "icon-description",
             dot: "true"
+          },
+          {
+            name: "数据看板",
+            path: "/pages/manage/dashboard/dashboard",
+            icon: "icon-bar-chart-o"
           },
           {
             name: "照片审核",
@@ -155,10 +164,14 @@ Page({
       "showCond.dev": sysInfo.platform === "devtools"
     });
 
-    const db = await cloud.databaseAsync();
-    var friendLinkRes = await db.collection('setting').doc('friendLink').get();
+    const { result: friendLinkRes } = await app.mpServerless.db.collection('setting').findOne({ _id: 'friendLink' });
+    
+    let { apps } = friendLinkRes;
+    for (let i = 0; i < apps.length; i++) {
+      apps[i].logo = await signCosUrl(apps[i].logo);
+    }
     this.setData({
-      friendApps: friendLinkRes.data.apps,
+      friendApps: apps,
     });
 
     // 设置为特邀用户
@@ -179,15 +192,13 @@ Page({
       version: getApp().globalData.version
     });
 
-    const db = await cloud.databaseAsync();
-    const _ = db.command;
     // 获取普通用户也能看的数据
     // 所有猫猫数量
     const allCatQf = {};
     // 所有照片数量
-    const allPhotoQf = { verified: true, photo_id: /^((?!\.heic$).)*$/i };
+    const allPhotoQf = { verified: true };
     // 所有便利贴数量
-    const allCommentQf = { deleted: _.neq(true), needVerify: _.neq(true) };
+    const allCommentQf = { deleted: { $ne: true }, needVerify: { $ne: true } };
     const allDiaryQf = { verified: true }
     // 所有领养
     const adoptQf = { adopt: 1 };
@@ -195,56 +206,50 @@ Page({
     const sterilizedQf = { sterilized: true };
     // 去除已领养、失踪、去喵星的猫猫
     const currentCatsQf = {
-      adopt: _.neq(1),
-      to_star: _.neq(true),
-      missing: _.neq(true)
+      adopt: { $ne: 1 },
+      to_star: { $ne: true },
+      missing: { $ne: true }
     };
 
-    let [numAllCats, numAllPhotos, numAllComments, numSterilized, numAdoptQf, numAllDiary, numCurrentCats] = await Promise.all([
-      db.collection('cat').where(allCatQf).count(),
-      db.collection('photo').where(allPhotoQf).count(),
-      db.collection('comment').where(allCommentQf).count(),
-      db.collection('cat').where(sterilizedQf).count(),
-      db.collection('cat').where(adoptQf).count(),
-      db.collection('diary').where(allDiaryQf).count(),
-      db.collection('cat').where(currentCatsQf).count(),
-    ]);
+    const { result: numAllCats } = await app.mpServerless.db.collection('cat').count(allCatQf);
+    const { result: numAllPhotos } = await app.mpServerless.db.collection('photo').count(allPhotoQf);
+    const { result: numAllComments } = await app.mpServerless.db.collection('comment').count(allCommentQf);
+    const { result: numSterilized } = await app.mpServerless.db.collection('cat').count(sterilizedQf);
+    const { result: numAdoptQf } = await app.mpServerless.db.collection('cat').count(adoptQf);
+    const { result: numCurrentCats } = await app.mpServerless.db.collection('cat').count(currentCatsQf);
+    const { result: numAllDiary } = await app.mpServerless.db.collection('diary').count(allDiaryQf);
 
     // 计算绝育率
-    const adoptRate = (numAdoptQf.total / numAllCats.total * 100).toFixed(1);
-    const sterilizationRate = (numSterilized.total / numAllCats.total * 100).toFixed(1);
+    const adoptRate = (numAdoptQf / numAllCats * 100).toFixed(1);
+    const sterilizationRate = (numSterilized / numAllCats * 100).toFixed(1);
 
     this.setData({
-      numAllCats: numAllCats.total,
-      numAllPhotos: numAllPhotos.total,
-      numAllComments: numAllComments.total,
-      numAllDiary: numAllDiary.total,
+      numAllCats: numAllCats,
+      numAllPhotos: numAllPhotos,
+      numAllComments: numAllComments,
+      numAllDiary: numAllDiary,
       sterilizationRate: sterilizationRate + '%',
       adoptRate: adoptRate + '%',
-      currentCatsCount: numCurrentCats.total,
+      currentCatsCount: numCurrentCats,
     });
 
     if (!await isManagerAsync()) {
       return;
     }
-
     // 待处理照片
-    const imProcessQf = { photo_compressed: _.in([undefined, '']), verified: true, photo_id: /^((?!\.heic$).)*$/i };
-    var [numChkPhotos, numChkComments, numFeedbacks, numImProcess, numNewCat, numDiary] = await Promise.all([
-      db.collection('photo').where({ verified: false }).count(),
-      db.collection('comment').where({ needVerify: true }).count(),
-      db.collection('feedback').where({ dealed: false }).count(),
-      db.collection('photo').where(imProcessQf).count(),
-      db.collection('new_cat_feedback').where({ needVerify: true }).count(),
-      db.collection('diary').where({ verified: false }).count()
-    ]);
-    // console.log(numNewCat)
+    const imProcessQf = { photo_compressed: { $in: [undefined, ''] }, verified: true };
+    const { result: numChkPhotos } = await app.mpServerless.db.collection('photo').count({ verified: false });
+    const { result: numChkComments } = await app.mpServerless.db.collection('comment').count({ needVerify: true });
+    const { result: numFeedbacks } = await app.mpServerless.db.collection('feedback').count({ dealed: false });
+    const { result: numImProcess } = await app.mpServerless.db.collection('photo').count(imProcessQf);
+    const { result: numNewCat } = await app.mpServerless.db.collection('new_cat_feedback').count({ needVerify: true });
+    const { result: numDiary } = await app.mpServerless.db.collection('diary').count({ verified: false });
     this.setData({
-      "nums.numChkPhotos": numChkPhotos.total,
-      "nums.numChkComments": numChkComments.total + numDiary.total,
-      "nums.numFeedbacks": numFeedbacks.total,
-      "nums.numImProcess": numImProcess.total,
-      "nums.numNewCat": numNewCat.total,
+      "nums.numChkPhotos": numChkPhotos,
+      "nums.numChkComments": numChkComments + numDiary,
+      "nums.numFeedbacks": numFeedbacks,
+      "nums.numImProcess": numImProcess,
+      "nums.numNewCat": numNewCat,
       "showCond.manager": true,
     });
   },
@@ -292,16 +297,16 @@ Page({
 
   async showMpCode(e) {
     wx.previewImage({
-      urls: [await cloud.signCosUrl(mpcode_img)],
+      urls: [await signCosUrl(mpcode_img)],
       fail: function (e) {
         console.error(e)
       }
     })
   },
 
-  showLogo(e) {
+  async showLogo(e) {
     wx.previewImage({
-      urls: [logo_img],
+      urls: [await signCosUrl(logo_img)],
       fail: function (e) {
         console.error(e)
       }
@@ -310,16 +315,21 @@ Page({
 
   // 打开管理员手册tx文档
   guide(e) {
-    wx.openEmbeddedMiniProgram({
-      appId: 'wxd45c635d754dbf59',
-      path: 'pages/detail/detail?url=https%3A%2F%2Fdocs.qq.com%2Fdoc%2FDSEl0aENOSEx5cmtE',// 此处链接需删除tx文档所复制路径中的.html
-      envVersion: 'release',
-      success(res) {
-        // 打开成功
-      },
-      fail: function (e) {
-        console.log(e)
-      }
+    wx.showModal({
+      title: '操作文档请查看github仓库文档链接',
+      content: 'laf版文档链接也在仓库md文件中',
+      showCancel: true,
     })
+    // wx.openEmbeddedMiniProgram({
+    //   appId: 'wxd45c635d754dbf59',
+    //   path: 'pages/detail/detail?url=https%3A%2F%2Fdocs.qq.com%2Fdoc%2FDSEl0aENOSEx5cmtE',// 此处链接需删除tx文档所复制路径中的.html
+    //   envVersion: 'release',
+    //   success(res) {
+    //     // 打开成功
+    //   },
+    //   fail: function (e) {
+    //     console.log(e)
+    //   }
+    // })
   },
 })

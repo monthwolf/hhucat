@@ -59,6 +59,7 @@ button {
   margin-top: 10rpx;
   margin-bottom: 10rpx;
   background-color: var(--color-primary);
+  color: var(--color-text-onPrimary);
   border: 1rpx solid var(--color-gray-max);
   border-radius: 20rpx;
 }
@@ -130,7 +131,7 @@ button {
 .checked_button {
   margin: 10rpx;
   background-color: var(--color-primary);
-  color: white
+  color: var(--color-text-onPrimary);
 }
 
 .line {

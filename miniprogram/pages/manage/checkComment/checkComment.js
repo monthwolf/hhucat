@@ -12,13 +12,10 @@ import {
   getCatItem
 } from "../../../utils/cat";
 import {
-  cloud
-} from "../../../utils/cloudAccess";
-import {
   formatDate
 } from "../../../utils/utils";
 import api from "../../../utils/cloudApi";
-
+const app = getApp();
 Page({
 
   /**
@@ -54,33 +51,37 @@ Page({
 
   async loadComments() {
     // 常用的对象
-    const db = await cloud.databaseAsync();
-    const _ = db.command;
     var comments = [];
-    var qf = {
-      needVerify: _.eq(true),
-      deleted: _.neq(true)
-    };
-    
-    var res = await db.collection('comment').where(qf).orderBy("create_date", "desc").get();
-    console.log(res);
-    qf = {
-        verified: false,
-        deleted: _.neq(true)
-    };
-    var res2 = await db.collection('diary').where(qf).orderBy("mdate","desc").orderBy("time","desc").get()
-    console.log(res2)
+    var { result} = await app.mpServerless.db.collection('comment').find({
+      needVerify: { $eq: true },
+      deleted: { $ne: true }
+    }, {
+      sort: {
+        create_date: -1
+      }
+    })
+    var { result: result2 } = await app.mpServerless.db.collection('diary').find({
+      verified: { $eq: false },
+      deleted: { $ne: true }
+    }, {
+      sort: {
+        mdate: -1,
+        time: -1
+      }
+    })
+    console.log(result, result2);
+
     // 填充userInfo
-    await fillUserInfo(res.data, "user_openid", "userInfo");
-    await fillUserInfo(res2.data,"_openid","userInfo")
-    for (var item of res.data) {
+    await fillUserInfo(result, "user_openid", "userInfo");
+    await fillUserInfo(result2, "_openid", "userInfo");
+    for (var item of result) {
       item.datetime = formatDate(new Date(item.create_date), "yyyy-MM-dd hh:mm:ss")
       comments.push(item);
     }
-    for (var item of res2.data) {
-        item.isDiary = true
-        item.datetime = item.date + " " + item.time
-        comments.push(item)
+    for (var item of result2) {
+      item.isDiary = true
+      item.datetime = item.date + " " + item.time
+      comments.push(item)
     }
 
     // 填充猫猫信息

@@ -26,6 +26,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-bar-chart-o:before {
+  content: "\e61f";
+}
+
 .icon-bulb-o:before {
   content: "\e61e";
 }

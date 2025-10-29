@@ -176,7 +176,7 @@ swiper-item image {
 
 .tags .to_star {
   background-color: var(--color-gray-max);
-  color: var(--color-text);
+  color: white;
 }
 
 .tags .mpcode {
@@ -769,7 +769,7 @@ swiper-item image {
 }
 .search-btn.active {
   background-color: var(--color-primary);
-  color: var(--color-text);
+  color: var(--color-text-onPrimary)
 }
 .search-btn.active.hover {
   background-color: var(--color-primary-dark);
@@ -911,7 +911,7 @@ one-rating-title {
 
 /* 疫苗记录 */
 .latest-vaccine {
-  background-color: rgba(255, 192, 67, 0.15);
+  background-color: var(--color-vaccine-light);
   border-radius: 15rpx;
   padding: 15rpx;
   width: 100%;
@@ -921,7 +921,6 @@ one-rating-title {
 }
 
 .latest-vaccine .icon-success {
-  color: #ffc043;
   margin-right: 10rpx;
 }
 
@@ -1000,12 +999,12 @@ one-rating-title {
 }
 
 .icon-success {
-  color: #ffc043;
   font-size: 40rpx;
+  color: var(--color-vaccine);
 }
 
 .icon-bulb-o {
-  color: var(--color-primary-dark);
+  color: var(--color-red-dark); /* 过期图标颜色 */
   font-size: 40rpx;
 }
 
@@ -1030,7 +1029,7 @@ one-rating-title {
 
 /* 第一条卡片特殊背景色 */
 .timeline-content.first-card {
-  background-color: rgba(255, 192, 67, 0.15);
+  background-color: var(--color-vaccine-light);
 }
 
 /* 过期卡片样式 */

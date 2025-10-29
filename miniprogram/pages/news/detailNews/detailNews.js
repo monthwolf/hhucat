@@ -9,12 +9,10 @@ import {
 import {
     isManagerAsync
 } from "../../../utils/user";
-import {
-    cloud
-} from "../../../utils/cloudAccess";
 import api from "../../../utils/cloudApi";
+import { signCosUrl } from "../../../utils/common";
 
-
+const app = getApp();
 Page({
 
     /**
@@ -57,32 +55,38 @@ Page({
         return shareTo(share_text, path);
     },
 
-    async loadNews() {
-        const that = this;
-        const db = await cloud.databaseAsync();
-        var res = await db.collection('news').doc(that.data.news_id).get();
-        console.log("[loadNews] - NewsDetail:", res);
-        if (!res.data) {
-            that.setData({
-                err: true,
-            })
-            return;
-        }
+  async loadNews() {
+    const that = this;
+    var { result } = await app.mpServerless.db.collection('news').findOne({
+      _id: this.data.news_id
+    })
+    console.log("[loadNews] - NewsDetail:", result);
+    if (!result) {
+      that.setData({
+        err: true,
+      })
+      return;
+    }
 
-        var news = res.data;
-        news.ddate = formatDate(new Date(news.date), "yyyy年MM月dd日 hh:mm:ss");
-        if (news.dateLastModify) {
-            news.ddateLastModify = formatDate(new Date(news.dateLastModify), "yyyy年MM月dd日 hh:mm:ss");
-        }
-        news.mainContent = decodeUrls(news.mainContent)
-        news.mainContent = await getSignContent(cloud,news.mainContent)
-        // console.log(news.mainContent)
-        that.setData({
-            news: news,
-            photos_path: news.photosPath,
-            cover_path: news.coverPath,
-        })
-    },
+    var news = result;
+    news.ddate = formatDate(new Date(news.date), "yyyy年MM月dd日 hh:mm:ss");
+    if (news.dateLastModify) {
+      news.ddateLastModify = formatDate(new Date(news.dateLastModify), "yyyy年MM月dd日 hh:mm:ss");
+    }
+    // 签名 coverPath
+    if (news.coverPath) {
+      news.coverPath = await signCosUrl(news.coverPath);
+    }
+
+    // 签名 photosPath
+    const signedPhotosPath = await Promise.all(news.photosPath.map(val => signCosUrl(val)));
+
+    that.setData({
+      news: news,
+      photos_path: signedPhotosPath,
+      cover_path: news.coverPath,
+    });
+  },
 
     previewImg: function (event) {
         const that = this;
@@ -101,24 +105,24 @@ Page({
         });
     },
 
-    async _doRemove(item_id) {
-        var res = (await api.curdOp({
-            operation: "remove",
-            collection: "news",
-            item_id: item_id
-        })).result;
+  async _doRemove(item_id) {
+    var res = await api.curdOp({
+      operation: "remove",
+      collection: "news",
+      item_id: item_id
+    });
 
-        console.log("curdOp(remove) res:", res);
-        if (!res) {
-            wx.showToast({
-                icon: 'none',
-                title: '删除失败',
-            });
-            return
-        }
-        await sleep(1000);
-        wx.navigateBack();
-    },
+    console.log("curdOp(remove) res:", res);
+    if (!res.ok) {
+      wx.showToast({
+        icon: 'none',
+        title: '删除失败',
+      });
+      return
+    }
+    await sleep(1000);
+    wx.navigateBack();
+  },
 
     async removeNews() {
         if (this.data.showManager == false) {
