@@ -1,9 +1,7 @@
 import { text as text_cfg, cat_status_adopt } from "../../../../config";
 import { getPageUserInfo, checkCanFeedback } from "../../../../utils/user";
-import { cloud } from "../../../../utils/cloudAccess";
 import api from "../../../../utils/cloudApi";
-import { async } from "../../../../packages/tencentcloud/cos";
-
+const app = getApp();
 const photoStep = 5; // 每次加载的图片数量
 
 Page({
@@ -26,7 +24,7 @@ Page({
   },
 
   jsData: {
-    name: null,
+    id: null,
     phers: {}, // 暂时存放摄影师名字
   },
 
@@ -37,7 +35,7 @@ Page({
     if (Boolean(options.noUpload)) {
       this.setData({ noUpload: Boolean(options.noUpload) })
     }
-    this.jsData.name = options?.name;
+    this.jsData.id = options?.id;
   },
 
   /**
@@ -99,16 +97,18 @@ Page({
   // 检查权限
 
   async loadCat() {
-    if (this.jsData.name === undefined) {
+    if (this.jsData.id === undefined) {
       this.data.infoTab.createNewCat();
       //说明是新猫
       return false;
     }
-    const db = await cloud.databaseAsync();
-    var cat = (await db.collection('new_cat_feedback').where({ cat: { name: this.jsData.name } }).limit(1).get()).data[0].cat;
-    console.log("[loadCat] -", cat);
+    // const db = await cloud.databaseAsync();
+    var { result } = await app.mpServerless.db.collection('new_cat_feedback')
+    .find({ _id: this.jsData.id })
+    // var cat = (await db.collection('new_cat_feedback').where({ cat: { name: this.jsData.name } }).limit(1).get()).data[0].cat;
+    console.log("[loadCat] -", result);
     await this.setData({
-      cat: cat
+      cat: result[0].cat
     });
   },
   async upload(cat, cat_id) {

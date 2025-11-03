@@ -143,7 +143,10 @@ Component({
 
     // 加载外部传入的猫咪数据
     loadCatData(cat) {
-      if (!cat || !cat._id) return;
+      if (!cat) return;
+      this.setData({
+        cat: cat
+      })
 
       // 确保 jsData 已初始化
       if (!this.jsData) {
@@ -156,6 +159,14 @@ Component({
       }
       console.log('[loadCatData] - 加载外部传入的猫咪数据:', cat);
       this.loadCat();
+    },
+
+    // 获取猫咪数据
+    getCat() {
+      return {
+        cat: this.data.cat,
+        cat_id: this.jsData.cat_id
+      };
     },
 
     // 创建新猫
@@ -190,7 +201,7 @@ Component({
         this.jsData = { cat_id: null, phers: {} };
         console.log('[loadCat] - 初始化 jsData');
       }
-      if (this.jsData.cat_id === undefined) {
+      if (this.jsData.cat_id === undefined && !this.data.cat) {
         this.setData({
           cat: {
             nickname: [],
@@ -202,7 +213,7 @@ Component({
         return false;
       }
 
-      var cat = (await getCatItemMulti([this.jsData.cat_id], { nocache: true }))[0];
+      var cat = this.data.cat ? this.data.cat : (await getCatItemMulti([this.jsData.cat_id], { nocache: true }))[0];
       console.log("[loadCat] -", cat);
       cat.mphoto = String(new Date(cat.mphoto));
       // 处理一下picker

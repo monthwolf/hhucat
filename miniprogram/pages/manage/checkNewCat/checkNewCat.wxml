@@ -10,7 +10,7 @@
   <block wx:for="{{campus_list[active_campus]}}" wx:key="_id" wx:if="{{index < 20}}">
     <view class='verify-box'>
       <view class="info">
-        <view class='label cat'><text bindtap="toCatDetail" data-cat_name="{{item.cat.name}}">{{item.cat.name}}（{{item.cat.campus}}）</text></view>
+        <view class='label cat'><text bindtap="toCatDetail" data-cat_id="{{item._id}}">{{item.cat.name}}（{{item.cat.campus}}）</text></view>
         <view class='label user user-info'>
           <text>上传者：</text>
           <image mode='aspectFill' src='{{item.userInfo.avatarUrl}}' bindtap='openBigPhoto' data-pid='{{item.userInfo.avatarUrl}}' class="user-avatar"></image>

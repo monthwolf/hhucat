@@ -8,9 +8,9 @@ module.exports = {
   // 版本号
   app_version: "v1.17.1",
   // 小程序appid
-  app_id: "wx5bd705b2bc91c73b",
+  app_id: "wxeb1cddee1c6c4a87",
   // EMAS空间ID
-  space_id: "mp-4bc42af8-4abd-490d-85dd-7cb5b9e58f5b",
+  space_id: "mp-7f2dc1ed-43c3-4cf1-b750-39427a063e41",
   // 服务空间 secret key
   space_secret: require('./appSecret').space_secret,
   // 服务空间地址Api Endpoint

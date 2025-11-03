@@ -8,6 +8,8 @@ const permissionNeed = {
         "inter": 0,
         "news": 3,
         "photo": 0,
+        "diary": 0,
+        "new_cat_feedback": 0,
         "photo_rank": 3,
         "badge_code": 99,
         "rating": 0,
@@ -22,10 +24,12 @@ const permissionNeed = {
         "cat": 2,
         "comment": 1,
         "feedback": 1,
+        "new_cat_feedback": 1,
         "inter": 1,
         "news": 1,
         "photo": 1,
         "photo_rank": 1,
+        "diary": 1,
         "badge_code": 3,
         "rating": 1,
         "reward": 1,
@@ -48,6 +52,7 @@ const permissionNeed = {
         "reward": 99,
         "science": 99,
         "setting": 99,
+        "diary": 1,
         "user": 1,
         "vaccine": 2,
     },
@@ -99,7 +104,8 @@ const permissionAuthor = {
         "rating": true,
     },
     "remove": {
-        "comment": true
+        "comment": true,
+        "diary": true
     },
     "set": {},
     "inc": {},
@@ -153,6 +159,9 @@ module.exports = async (ctx) => {
     else if (operation == "remove") {  // 移除记录
         if (collection == "news") {  // 删除公告关联的图片和封面
             await delete_photo_for_news(item_id);
+        }
+        if (collection == "diary") {  // 删除喵日记媒体
+          await delete_media_for_diary(item_id);
         }
         return await ctx.mpserverless.db.collection(collection).deleteOne({ _id: item_id });
     }
@@ -214,6 +223,20 @@ module.exports = async (ctx) => {
             }
             await ctx.mpserverless.function.invoke("deleteCosFiles", { photoUrls: photoUrls });
         }
+    }
+
+    // 删除喵日记媒体
+    async function delete_media_for_diary(item_id) {
+      let { result: item } = await ctx.mpserverless.db.collection('diary').findOne({ _id: item_id });
+      // 删除云储存的媒体文件
+      console.log("Media path:", item.link);
+      let fileIDs = item.link.map(item => item.url);
+      if (item.link && item.link.length > 0) {
+        await ctx.mpserverless.function.invoke("deleteCosFiles", { photoUrls: photoIDs });
+        // await deleteFiles(fileIDs);
+        mpserverless.db.collection('photo').delete({ photo_id: {$in:fileIDs} });
+        console.log("删除媒体", fileIDs);
+      }
     }
 }
 

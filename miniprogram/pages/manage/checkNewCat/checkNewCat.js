@@ -10,15 +10,10 @@ import {
 } from "../../../utils/msg";
 import cache from "../../../utils/cache";
 import {
-    getCatItem
-} from "../../../utils/cat";
-import {
-    cloud
-} from "../../../utils/cloudAccess";
-import {
     formatDate
 } from "../../../utils/utils";
 import api from "../../../utils/cloudApi";
+const app = getApp();
 
 Page({
 
@@ -56,19 +51,21 @@ Page({
 
     async loadComments() {
         // 常用的对象
-        const db = await cloud.databaseAsync();
-        const _ = db.command;
         var newcat = [];
         var qf = {
-            needVerify: _.eq(true),
-            deleted: _.neq(true)
+            needVerify: true,
+            deleted: { $ne: true }
         };
-        var res = await db.collection('new_cat_feedback').where(qf).orderBy("create_date", "desc").get();
+        var {result:res} = await app.mpServerless.db.collection('new_cat_feedback').find(qf,{
+          sort:{ create_date:-1 }
+        });
+        
+        // await db.collection('new_cat_feedback').where(qf).orderBy("create_date", "desc").get();
         console.log(res);
 
         // 填充userInfo
-        await fillUserInfo(res.data, "_openid", "userInfo");
-        for (var item of res.data) {
+        await fillUserInfo(res, "_openid", "userInfo");
+        for (var item of res) {
             item.datetime = formatDate(new Date(item.create_date), "yyyy-MM-dd hh:mm:ss")
             newcat.push(item);
         }
@@ -141,9 +138,9 @@ Page({
 
     // 点击所属猫猫名称，可以跳转到猫猫详情
     toCatDetail(e) {
-        const name = e.currentTarget.dataset.cat_name;
+        const _id = e.currentTarget.dataset.cat_id;
         wx.navigateTo({
-            url: '/pages/info/feedback/addCat/addCat?name=' + name + '&noUpload=' + true,
+            url: '/pages/info/feedback/addCat/addCat?id=' + _id + '&noUpload=' + true,
         })
     },
 
@@ -223,10 +220,17 @@ Page({
                     cat_id: cat.cat.cat_id
                 }))
             }
-            const db = await cloud.databaseAsync();
-            await db.collection('new_cat_feedback').where({
-                _id: cat._id
-            }).update(data);
+            // const db = await cloud.databaseAsync();
+            // await db.collection('new_cat_feedback').where({
+            //     _id: cat._id
+            // }).update(data);
+            await api.curdOp({
+              operation: "update",
+              collection: "new_cat_feedback",
+              item_id: cat._id,
+              data: data
+            });
+            
             this.addNotice(cat, (cat.mark != "delete"));
         }
         // 阻塞一下
